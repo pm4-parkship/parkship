@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+
 export default function Home() {
   const [joke, setJoke] = useState("")
 

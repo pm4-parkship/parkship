@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:1.23.3
+    ports:
+      - "9000:80"
+    volumes:
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+    environment:
+      - NGINX_PORT=80
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=parkshipdb
+      - POSTGRES_USER=parkshipdbuser
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./database/data:/var/lib/postgresql/data
+
+  backend:
+    container_name: backend
+    image: maven:3.9.0-eclipse-temurin-17
+    working_dir: /app
+    depends_on:
+      - postgres
+    environment:
+      - JDBC_DATABASE_URL=jdbc:postgresql://postgres:5432/parkshipdb
+      - JDBC_DATABASE_USERNAME=parkshipdbuser
+      - JDBC_DATABASE_PASSWORD=password
+    volumes:
+      - ./backend:/app
+    command:
+      - /bin/sh
+      - -c
+      - |
+        mvn package
+        java -jar ./target/parkship-0.0.1-SNAPSHOT.jar
+
+  frontend:
+    container_name: frontend
+    image: node:18-alpine
+    working_dir: /app
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:9000/api
+    volumes:
+      - ./frontend:/app
+    command:
+      - /bin/sh
+      - -c
+      - |
+        npm install
+        npm run build
+        npm start
