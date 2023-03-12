@@ -68,6 +68,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>parkship-backend</finalName>
 		<sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
 		<testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 		<plugins>
