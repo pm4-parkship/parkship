@@ -10,9 +10,9 @@ name: Backend CI flow
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "backend" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "backend" ]
 
 jobs:
   build:
@@ -26,9 +26,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    #- name: Build with Maven
-    #  working-directory: ./backend
-    #  run: mvn test --batch-mode
+    - name: Build with Maven
+      working-directory: ./backend
+      run: mvn clean install
 
     - uses: mr-smithers-excellent/docker-build-push@v6
       name: Build & push Docker image
@@ -36,7 +36,6 @@ jobs:
           image: edelmetall/parkship-backend
           tags: latest
           registry: docker.io
-          build-context: ./
           dockerfile: ./backend/Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
