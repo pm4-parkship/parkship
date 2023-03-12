@@ -4,10 +4,10 @@ FROM eclipse-temurin:17 as build_stage
 WORKDIR /opt/app
 
 # copy sources
-COPY mvnw ./
-COPY .mvn/ .mvn/
-COPY pom.xml ./
-COPY src/ src/
+COPY ./mvnw ./
+COPY ./.mvn/ .mvn/
+COPY ./pom.xml ./
+COPY ./src/ src/
 
 # build application
 RUN ./mvnw --batch-mode install -DskipTests
