@@ -37,7 +37,7 @@ jobs:
     - uses: mr-smithers-excellent/docker-build-push@v6
       name: Build & push Docker image
       with:
-          image: edelmetall/spring-boot-azure
+          image: edelmetall/parkship-backend
           tags: latest
           registry: docker.io
           dockerfile: ./backend/Dockerfile
