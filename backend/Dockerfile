@@ -1,4 +1,4 @@
 FROM eclipse-temurin:17
 EXPOSE 8080
-COPY target/parkship-backend.jar /backend/parkship-backend.jar
+ADD ./backend/target/parkship-backend.jar /backend/parkship-backend.jar
 ENTRYPOINT ["java","-jar", "/backend/parkship-backend.jar"]
