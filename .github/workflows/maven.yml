@@ -16,9 +16,6 @@ on:
 
 jobs:
   build:
-    defaults:
-      run:
-        working-directory: ./backend
     runs-on: ubuntu-latest
 
     steps:
@@ -30,12 +27,12 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
+      working-directory: ./backend
       run: mvn clean install
 
     - uses: mr-smithers-excellent/docker-build-push@v5
       name: Build & push Docker image
       with:
-          context: ../
           image: edelmetall/parkship-backend
           tags: latest
           registry: docker.io
