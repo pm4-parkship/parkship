@@ -32,7 +32,7 @@ jobs:
     - name: Build with Maven
       run: mvn clean install
 
-    - uses: mr-smithers-excellent/docker-build-push@v6
+    - uses: mr-smithers-excellent/docker-build-push@v5
       name: Build & push Docker image
       with:
           image: edelmetall/parkship-backend
