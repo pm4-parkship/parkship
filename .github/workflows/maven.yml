@@ -36,6 +36,6 @@ jobs:
           image: edelmetall/parkship-backend
           tags: latest
           registry: docker.io
-          dockerfile: Dockerfile-Backend
+          dockerfile: ./backend/Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
