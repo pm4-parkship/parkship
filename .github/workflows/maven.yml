@@ -40,5 +40,6 @@ jobs:
           image: edelmetall/spring-boot-azure
           tags: latest
           registry: docker.io
+          dockerfile: ./backend/Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
