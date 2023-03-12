@@ -1,4 +1,4 @@
-FROM openjdk:11 as build_stage
+FROM eclipse-temurin:17 as build_stage
 
 # prepare environment
 WORKDIR /opt/app
