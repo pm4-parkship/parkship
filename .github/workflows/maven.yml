@@ -41,7 +41,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           
     - uses: mr-smithers-excellent/docker-build-push@v6
-      name: Build & push backend Docker image
+      name: Build & push frontend Docker image
       with:
           image: edelmetall/parkship-frontend
           tags: latest
