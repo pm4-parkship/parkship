@@ -37,10 +37,15 @@ jobs:
           username: ${{secrets.DOCKER_USERNAME}}
           password: ${{secrets.DOCKER_PASSWORD}}
           
-      - uses: actions/checkout@v2
-      - name: Build docker image
-        run: docker build -f backend/Dockerfile backend/ --tag edelmetall/parkship-backend:latest && docker push edelmetall/parkship-backend:latest 
-
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        name: Build & push frontend Docker image
+        with:
+            image: edelmetall/parkship-frontend
+            tags: latest
+            registry: docker.io
+            dockerfile: ./frontend/Dockerfile
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
           
   frontend:
     runs-on: ubuntu-latest
