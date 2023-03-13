@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Backend CI flow
+name: Parkship CI flow
 
 on:
   push:
@@ -27,12 +27,12 @@ jobs:
           distribution: 'temurin'
           cache: maven
           
-      - name: Build Backend with Maven
+      - name: Build backend with Maven
         working-directory: ./backend
         run: mvn clean install
         
       - uses: mr-smithers-excellent/docker-build-push@v6
-        name: Build & push backend Docker image
+        name: Build docker image
         with:
             image: edelmetall/parkship-backend
             tags: latest
