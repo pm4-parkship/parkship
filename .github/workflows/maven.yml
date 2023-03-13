@@ -51,4 +51,4 @@ jobs:
           password: ${{secrets.DOCKER_PASSWORD}}
       - uses: actions/checkout@v2
       - name: Build docker image
-        run: docker build . --tag edelmetall/parkship-frontend:latest && docker push edelmetall/parkship-frontend:latest 
+        run: docker build -f frontend/Dockerfile frontend/ --tag edelmetall/parkship-frontend:latest && docker push edelmetall/parkship-frontend:latest 
