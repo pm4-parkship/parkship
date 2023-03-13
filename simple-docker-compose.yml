@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  backend:
+    container_name: backend
+    image: edelmetall/parkship-backend
+    ports:
+      - "8080:8080"
+  frontend:
+    container_name: frontend
+    image: edelmetall/parkship-frontend
+    #working_dir: /app
+    ports:
+      - "80:3000"
