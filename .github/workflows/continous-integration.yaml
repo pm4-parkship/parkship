@@ -1,23 +1,22 @@
 name: Continous Integration
 
-env:
-  CHECKOUT_REF: ${{ github.ref }}
-  WORKING_DIRECTORY: frontend
 
 on:
   push:
     branches: ['main']
     paths:
-      - ${{ env.WORKING_DIRECTORY }}/**
+      - frontend/**
   pull_request:
     branches: ['**']
     paths:
-      - ${{ env.WORKING_DIRECTORY }}/**
+      - frontend/**
 
 defaults:
   run:
     working-directory: frontend
 
+env:
+  CHECKOUT_REF: ${{ github.ref }}
 
 jobs:
   lint:
@@ -84,7 +83,7 @@ jobs:
         uses: ataylorme/eslint-annotate-action@v2
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
-          report-json: 'frontend/eslint_report.json'
+          report-json: 'eslint_report.json'
   build:
     name: 'Build'
     runs-on: ubuntu-latest
