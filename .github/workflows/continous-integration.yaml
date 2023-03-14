@@ -11,11 +11,6 @@ on:
     paths:
       - frontend/**
 
-permissions:
-  id-token: write
-  contents: read
-
-
 defaults:
   run:
     working-directory: frontend
@@ -87,8 +82,8 @@ jobs:
       - name: Annotate Code Linting Results
         uses: ataylorme/eslint-annotate-action@v2
         with:
-          repo-token: '${{ secrets.GITHUB_TOKEN }}'
-          report-json: 'frontend/eslint_report.json'
+          repo-token: '${{ secrets.MANUAL_TOKEN }}'
+          report-json: 'eslint_report.json'
   build:
     name: 'Build'
     runs-on: ubuntu-latest
