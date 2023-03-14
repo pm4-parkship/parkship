@@ -1,7 +1,7 @@
-import React, {ReactNode} from 'react';
+import React, { ReactNode } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
-import {Toolbar, Typography} from '@mui/material';
-import {useTheme} from '@mui/styles';
+import { Toolbar, Typography } from '@mui/material';
+import { useTheme } from '@mui/styles';
 
 export type LayoutProps = {
   children: ReactNode;
@@ -10,7 +10,6 @@ export type LayoutProps = {
 export function Layout({ children }: LayoutProps) {
   const classes = useStyles();
   const theme = useTheme();
-
 
   return (
     <>
@@ -22,9 +21,7 @@ export function Layout({ children }: LayoutProps) {
       <main>
         <div className={classes.root}>{children}</div>
       </main>
-      <div>
-        Bottom Bar
-      </div>
+      <div>Bottom Bar</div>
     </>
   );
 }

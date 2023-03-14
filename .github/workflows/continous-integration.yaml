@@ -1,22 +1,27 @@
 name: Continous Integration
 
+env:
+  CHECKOUT_REF: ${{ github.ref }}
+  WORKING_DIRECTORY: frontend
+
 on:
   push:
     branches: ['main']
     paths:
-      - frontend/**
+      - ${{ env.WORKING_DIRECTORY }}/**
   pull_request:
     branches: ['**']
     paths:
-      - frontend/**
+      - ${{ env.WORKING_DIRECTORY }}/**
 
-env:
-  CHECKOUT_REF: ${{ github.event.pull_request.head.ref || github.ref_name }}
+defaults:
+  run:
+    working-directory: frontend
+
 
 jobs:
   lint:
     name: 'Lint'
-    working-directory: ./frontend
     runs-on: ubuntu-latest
     steps:
       # ----------------------- start of common steps -----------------------
@@ -24,7 +29,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          lfs: true
           ref: ${{ env.CHECKOUT_REF }}
 
       - uses: actions/setup-node@v3
@@ -32,6 +36,7 @@ jobs:
         with:
           node-version-file: 'frontend/.nvmrc'
           cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
 
       - name: Cache node_modules
         uses: actions/cache@v3
@@ -49,7 +54,7 @@ jobs:
         env:
           cache-name: cache-eslint-v2
         with:
-          path: node_modules/.cache/eslint
+          path: frontend/node_modules/.cache/eslint
           key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('pages/**/*.ts', 'pages/**/*.tsx') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}
           restore-keys: |
             ${{ runner.os }}-${{ env.cache-name }}-
@@ -60,7 +65,7 @@ jobs:
           # See here for caching with `yarn` https://github.com/actions/cache/blob/main/examples.md#node---yarn or you can leverage caching with actions/setup-node https://github.com/actions/setup-node
           path: |
             ~/.npm
-            ${{ github.workspace }}/.next/cache
+            ${{ github.workspace }}/frontend/.next/cache
           # Generate a new cache whenever packages or source files change.
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           # If source files changed but packages didn't, rebuild from a prior cache.
@@ -79,42 +84,31 @@ jobs:
         uses: ataylorme/eslint-annotate-action@v2
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
-          report-json: 'eslint_report.json'
-      - name: Upload ESLint report
-        uses: actions/upload-artifact@v2
-        with:
-          name: eslint_report.json
-          path: eslint_report.json
+          report-json: 'frontend/eslint_report.json'
   build:
     name: 'Build'
-    working-directory: ./frontend
     runs-on: ubuntu-latest
     steps:
       # ----------------------- start of common steps -----------------------
-      - name: Continue workflow
-        run: touch continue
-
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
 
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          lfs: true
           ref: ${{ env.CHECKOUT_REF }}
 
       - uses: actions/setup-node@v3
         name: Setup Node
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: 'frontend/.nvmrc'
           cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
 
       - name: Cache node_modules
         uses: actions/cache@v3
         env:
           cache-name: cache-node-modules-v1
         with:
-          path: node_modules
+          path: frontend/node_modules
           key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-${{ env.cache-name }}-
@@ -125,7 +119,7 @@ jobs:
         env:
           cache-name: cache-eslint-v2
         with:
-          path: node_modules/.cache/eslint
+          path: frontend/node_modules/.cache/eslint
           key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('pages/**/*.ts', 'pages/**/*.tsx') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}
           restore-keys: |
             ${{ runner.os }}-${{ env.cache-name }}-

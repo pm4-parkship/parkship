@@ -10,47 +10,47 @@ const Index = () => {
   const router = useRouter();
 
   return (
-      <div className={classes.superRoot}>
-        <Grid
-            className={classes.bottomButtons}
-            container
-            justifyContent="center"
-            display="flex"
-        >
-          <Grid item sm={3} xs={12}>
-            <Paper className={classes.buildPaper}>
-              <Icon className={classes.iconStats} icon="gridicons:create" />
-              <Typography component={'span'} variant="h4">
-                Landing
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item sm={3} xs={12}>
-            <Paper className={classes.buildPaper}>
-              <Icon className={classes.iconStats} icon="wpf:create-new" />
-              <Typography component={'span'} variant="h4">
-                Experience
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item sm={3} xs={12}>
-            <Paper className={classes.buildPaper}>
-              <Icon className={classes.iconStats} icon="akar-icons:lock-on" />
-              <Typography component={'span'} variant="h4">
-                Test Me
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid item sm={3} xs={12}>
-            <Paper className={classes.buildPaper}>
-              <Icon className={classes.iconStats} icon="tabler:parachute" />
-              <Typography component={'span'} variant="h4">
-                Today
-              </Typography>
-            </Paper>
-          </Grid>
+    <div className={classes.superRoot}>
+      <Grid
+        className={classes.bottomButtons}
+        container
+        justifyContent="center"
+        display="flex"
+      >
+        <Grid item sm={3} xs={12}>
+          <Paper className={classes.buildPaper}>
+            <Icon className={classes.iconStats} icon="gridicons:create" />
+            <Typography component={'span'} variant="h4">
+              Landing
+            </Typography>
+          </Paper>
         </Grid>
-      </div>
+        <Grid item sm={3} xs={12}>
+          <Paper className={classes.buildPaper}>
+            <Icon className={classes.iconStats} icon="wpf:create-new" />
+            <Typography component={'span'} variant="h4">
+              Experience
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid item sm={3} xs={12}>
+          <Paper className={classes.buildPaper}>
+            <Icon className={classes.iconStats} icon="akar-icons:lock-on" />
+            <Typography component={'span'} variant="h4">
+              Test Me
+            </Typography>
+          </Paper>
+        </Grid>
+        <Grid item sm={3} xs={12}>
+          <Paper className={classes.buildPaper}>
+            <Icon className={classes.iconStats} icon="tabler:parachute" />
+            <Typography component={'span'} variant="h4">
+              Today
+            </Typography>
+          </Paper>
+        </Grid>
+      </Grid>
+    </div>
   );
 };
 
@@ -147,6 +147,5 @@ const useStyles = makeStyles((theme) => ({
     padding: '20px'
   }
 }));
-
 
 export default Index;

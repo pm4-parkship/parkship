@@ -1,8 +1,8 @@
-import {NextApiRequest, NextApiResponse} from 'next';
-import stream, {Stream} from 'stream';
+import { NextApiRequest, NextApiResponse } from 'next';
+import stream, { Stream } from 'stream';
 import merge from 'lodash.merge';
-import {DeepPartial, Options} from './types';
-import {logger} from '../logger';
+import { DeepPartial, Options } from './types';
+import { logger } from '../logger';
 
 export function withImageProxy(passedOptions?: DeepPartial<Options>) {
   const defaultOptions: Options = {

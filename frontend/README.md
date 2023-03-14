@@ -142,7 +142,6 @@ import { Icon } from '@iconify/react';
 
 Run `npm run test` to execute the unit tests via [Jest](https://jestjs.io).
 
-
 <a name="create-type-interface"></a>
 
 ## Creating Type Interfaces
@@ -237,4 +236,3 @@ Add BREAKING CHANGE in the description if there is a significant change.
 | 28 px | 1.75 rem |
 | 32 px | 2 rem    |
 | 40 px | 2.5 rem  |
-
