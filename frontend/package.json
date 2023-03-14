@@ -10,7 +10,7 @@
     "check-types": "tsc --pretty --noEmit",
     "check-format": "prettier --check --ignore-path .eslintignore .",
     "check-lint": "eslint . --ext ts --ext tsx --ext js",
-    "format": "prettier --write --ignore-path .eslintignore . && eslint --output-file eslint_report.json --format json . --ext ts --ext tsx --ext tsx --fix && git add ."
+    "format": "prettier --write --ignore-path .eslintignore . && eslint --output-file eslint_report.json --format json . --ext ts --ext tsx --ext tsx --fix"
   },
   "pre-commit": [
     "check-lint",
