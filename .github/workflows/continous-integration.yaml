@@ -83,7 +83,7 @@ jobs:
         uses: ataylorme/eslint-annotate-action@v2
         with:
           repo-token: '${{ secrets.MANUAL_TOKEN }}'
-          report-json: 'eslint_report.json'
+          report-json: 'frontend/eslint_report.json'
   build:
     name: 'Build'
     runs-on: ubuntu-latest
