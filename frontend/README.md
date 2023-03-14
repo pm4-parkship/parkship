@@ -5,7 +5,7 @@
 
 # PM4 Project
 
-Development for all Dx Branded Apps
+Development for all PM4 Branded Apps
 
 - [Getting Started](#getting-started)
 - [Frontend Libraries](#frontend-libraries)
