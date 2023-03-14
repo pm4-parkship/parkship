@@ -12,7 +12,7 @@ on:
       - frontend/**
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 
