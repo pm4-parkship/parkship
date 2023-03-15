@@ -14,6 +14,8 @@ Development for all PM4 Branded Apps
 - [Updating packages](#updating-packages)
 - [Using Icons](#using-icons)
 - [Using Forms](#using-forms)
+- [Using Images](#using-images)
+- [Using Links](#using-links)
 - [Running unit tests](#unit-tests)
 - [Creating Type Interfaces](#create-type-interface)
 - [Branching Name Convention](#branching-name-convention)
@@ -217,6 +219,39 @@ First of all, you need to create a type schema, which contains all the fields of
           Submit
         </Button>
       </form>
+```
+
+<a name="using-images"></a>
+
+## Using Images
+To use Images in our Repository make sure to use the following component:
+
+You can find it unter `src/components/image/image-custom.tsx` for more details
+
+```
+ <ImageCustom
+    localImage
+    src={myImageURL}
+    alt={'ChainLogo'}
+    width={18}
+    height={18}
+ />
+```
+
+<a name="using-links"></a>
+
+## Using Links
+To use Links in our Repository make sure to use the following component:
+
+You can find it under `src/components/link/link-custom.tsx` for more details
+
+```
+ <LinkCustom
+    href={'https://google.com'}
+    skipLocaleHandling
+  >
+    <Typography variant={'body2'}>Google</Typography>
+  </LinkCustom>
 ```
 
 

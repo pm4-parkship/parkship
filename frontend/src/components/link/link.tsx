@@ -5,7 +5,6 @@ import React, { FC } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 
 export interface LinkProps {
-  locale?: string;
   href?: string;
   children: React.ReactNode;
   type?: 'link' | 'button';
@@ -13,7 +12,6 @@ export interface LinkProps {
 }
 
 const Link: FC<LinkProps> = ({
-  locale = 'en',
   href,
   children,
   skipLocaleHandling = false,
@@ -21,18 +19,10 @@ const Link: FC<LinkProps> = ({
 }) => {
   const classes = useStyles();
   const router = useRouter();
-  const localeTemp = locale || router.query.locale || '';
 
-  let hrefLocal = href || router.asPath;
+  const hrefLocal = href || router.asPath;
   if (hrefLocal.indexOf('http') === 0) {
     skipLocaleHandling = true;
-  }
-  if (locale && !skipLocaleHandling) {
-    if (typeof localeTemp === 'string') {
-      hrefLocal = hrefLocal
-        ? `/${localeTemp}${hrefLocal}`
-        : router.pathname.replace('[locale]', localeTemp);
-    }
   }
 
   if (skipLocaleHandling) {
@@ -60,7 +50,7 @@ const Link: FC<LinkProps> = ({
 
 export default Link;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   nativeLink: {
     textDecoration: 'none',
     color: 'inherit'
