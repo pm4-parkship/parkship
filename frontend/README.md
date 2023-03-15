@@ -13,6 +13,7 @@ Development for all PM4 Branded Apps
 - [Recommend Working Tools](#recommend-working-tools)
 - [Updating packages](#updating-packages)
 - [Using Icons](#using-icons)
+- [Using Forms](#using-forms)
 - [Running unit tests](#unit-tests)
 - [Creating Type Interfaces](#create-type-interface)
 - [Branching Name Convention](#branching-name-convention)
@@ -78,6 +79,7 @@ Make sure to use the following libraries for the frontend, to keep the code cons
 - [TypeScript](https://www.typescriptlang.org/)
 - [Material UI](https://mui.com/material-ui/)
 - [React Hook Form](https://github.com/dohomi/react-hook-form-mui)
+- [ZOD (Schema Validation)](https://zod.dev/)
 - [Typescript Reset](https://github.com/total-typescript/ts-reset)
 
 <a name="console-log-alternative"></a>
@@ -132,6 +134,92 @@ import { Icon } from '@iconify/react';
 <Icon icon="carbon:arrow--up" />
 ```
 
+<a name="using-forms"></a>
+
+## Using Forms
+
+To use forms, make sure to use the following libraries:
+
+- [React Hook Form](https://github.com/dohomi/react-hook-form-mui)
+- [ZOD (Schema Validation)](https://zod.dev/)
+
+### 1. Create a ZOD Schema
+
+First of all, you need to create a type schema, which contains all the fields of your form.
+
+```
+  const formSchema = z.object({
+    test0: z.string().min(2).max(20),
+    test1: z.custom((data) => {
+      if (typeof data === 'string') {
+        return parseInt(data) <= 18;
+      }
+      return true;
+    }),
+  });
+```
+
+### 2. Create a custom Error Map (optional, only needed in special cases)
+
+```
+  const customErrorMap = () => {
+    return (issue: ZodIssueOptionalMessage, ctx: ErrorMapCtx) => {
+      if (issue.code === z.ZodIssueCode.custom) {
+        if (issue.path.includes('test1')) {
+          return {
+            message: `It has to be between 1 and 18`
+          };
+        }
+      }
+      return { message: ctx.defaultError };
+    };
+  }; 
+```
+
+### 3. Create a Form
+
+```
+  const { handleSubmit, control } = useForm<StandardTokenProps>({
+    resolver: zodResolver(formSchema, {
+      errorMap: customErrorMap()
+    }),
+    defaultValues: {
+      test0: '',
+      test1: '',
+    }
+  });
+```
+
+```
+      <form
+        style={{ display: 'grid', width: '100%', gap: '10px' }}
+        onSubmit={handleSubmit((data) => handleSubmitCreate(data))}
+      >
+        <TextFieldElement
+          placeholder="e.g Test"
+          control={control}
+          name="test0"
+          label="Test 0"
+          variant="outlined"
+          fullWidth
+          required
+        />
+        <TextFieldElement
+          placeholder="e.g Test"
+          control={control}
+          name="test1"
+          label="Test 1"
+          variant="outlined"
+          fullWidth
+          required
+        />
+        <Button type={'submit'} variant={'contained'} color={'primary'}>
+          Submit
+        </Button>
+      </form>
+```
+
+
 <a name="unit-tests"></a>
 
 ## Running unit tests (not yet applied)
@@ -177,8 +265,6 @@ Available types are:
 ## Commit Message Guidelines
 
 This repository follows [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
-Commit message will be checked using [husky and commit lint](https://theodorusclarence.com/library/husky-commitlint-prettier), you can't commit if not using the proper convention below.
-
 ### Format
 
 `<type>(optional scope): <description>`
@@ -202,16 +288,6 @@ Available types are:
 ### 3. Description
 
 Description must fully explain what is being done.
-
-Add BREAKING CHANGE in the description if there is a significant change.
-
-**If there are multiple changes, then commit one by one**
-
-- After colon, there are a single space Ex: `feat: add something`
-- When using `fix` type, state the issue Ex: `fix: file size limiter not working`
-- Use imperative, dan present tense: "change" not "changed" or "changes"
-- Don't use capitals in front of the sentence
-- Don't add full stop (.) at the end of the sentence
 
 <a name="spacing-and-indentation"></a>
 
