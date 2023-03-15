@@ -1,0 +1,18 @@
+name: PR Size
+
+on: [pull_request]
+
+jobs:
+  pr-size:
+    runs-on: ubuntu-latest
+    name: Label the PR size
+    steps:
+      - uses: codelytv/pr-size-labeler@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          xs_max_size: 300
+          s_max_size: 500
+          m_max_size: 1000
+          l_max_size: 3000
+          fail_if_xl: false
+          files_to_ignore: 'package-lock.json'

@@ -1,4 +1,13 @@
+tree_init.md
+Dockerfile
+.dockerignore
 node_modules
-.eslintrc.json
-.gitignore
+npm-debug.log
 README.md
+.next
+.github
+.husky
+.vscode
+.vercel
+
+
