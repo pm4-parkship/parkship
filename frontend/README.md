@@ -35,10 +35,6 @@ Make sure you have installed all of the following prerequisites on your developm
 
 Run `npm install` to install all dependencies.
 
-### Initialize Husky
-
-Run `npm run prepare` to initialize husky.
-
 ### Run the app
 
 Run `npm run dev` to start the development server.
