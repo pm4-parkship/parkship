@@ -1,25 +1,6 @@
-const removeImports = require('next-remove-imports')();
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+}
 
-module.exports =   removeImports({
-    async redirects() {
-      return [
-        {
-          source: '/about',
-          destination: '/',
-          permanent: true // triggers 308
-        }
-      ];
-    },
-    images: {
-      dangerouslyAllowSVG: true,
-      contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
-    },
-    staticPageGenerationTimeout: 1000,
-    output: 'standalone',
-    productionBrowserSourceMaps: false,
-    experimental: {
-      esmExternals: true,
-      swcTraceProfiling: true
-    }
-  }
-);
+module.exports = nextConfig

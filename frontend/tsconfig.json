@@ -1,33 +1,23 @@
 {
-  "compileOnSave": false,
   "compilerOptions": {
-    "jsx": "preserve",
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "strictNullChecks": true,
+    "skipLibCheck": true,
     "strict": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "types": ["node", "jest"],
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "resolveJsonModule": true,
-    "incremental": true,
-    "rootDir": ".",
-    "sourceMap": false,
-    "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "target": "ES2022",
+    "esModuleInterop": true,
     "module": "esnext",
-    "lib": ["ES2021", "dom"],
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "baseUrl": ".",
-    "isolatedModules": true
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "public/**", "jest.config.ts"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }
