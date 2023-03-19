@@ -3,6 +3,7 @@ version: "3.8"
 services:
   parkship:
     container_name: parkship
+    restart: always
     build: "."
     depends_on:
       - postgres
