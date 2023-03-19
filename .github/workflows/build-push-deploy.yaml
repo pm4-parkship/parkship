@@ -2,9 +2,9 @@ name: Build Push Deploy Docker Image
 
 on:
   push:
-    branches: [ "ivan-dev" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "ivan-dev" ]
+    branches: [ "main" ]
 
 jobs:
   buildpush:
@@ -66,7 +66,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'pm4parkship-test'
+          app-name: 'parkship-app'
           slot-name: 'production'
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_08694967903243238e488ccba1ea9450 }}
-          images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_5ff6782f67904783a566d4077d754f55 }}/parkship:${{ github.sha }}'
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_6e30f50bc3df43d4a15607742c52585f }}
+          images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_b88fc97a3b844ab4ac8937bbfe4fe249 }}/parkship:${{ github.sha }}'
