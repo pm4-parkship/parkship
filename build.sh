@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/zsh
 
-cd backend && ./gradlew bootJar
+cd backend &&  ./mvnw clean install
 cd ../frontend && npm run build

@@ -18,7 +18,7 @@ RUN apt install openjdk-17-jdk -y
 WORKDIR /app
 
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
-COPY backend/build/libs/backend.jar .
+COPY backend/target/parkship.jar .
 COPY frontend .
 COPY ./run.sh .
 

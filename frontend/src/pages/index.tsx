@@ -7,13 +7,11 @@ import { useEffect, useRef, useState } from 'react'
 const font = Font({ subsets: ['latin'], weight: "600" })
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [todos, setTodos] = useState([])
   const [error, setError] = useState("")
 
   useEffect(() => {
-    if(isLoading) return
-    setIsLoading(true)
     const fetchTodos = async () => {
       try {
         const response = await fetch("/api/todos")

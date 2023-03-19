@@ -1,7 +1,7 @@
-package ch.zhaw.backend;
+package ch.zhaw.parkship;
 
-import ch.zhaw.backend.todos.Todo;
-import ch.zhaw.backend.todos.TodoRepository;
+import ch.zhaw.parkship.todos.Todo;
+import ch.zhaw.parkship.todos.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

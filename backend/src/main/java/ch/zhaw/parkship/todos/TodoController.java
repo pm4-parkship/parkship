@@ -1,4 +1,4 @@
-package ch.zhaw.backend.todos;
+package ch.zhaw.parkship.todos;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/todos")
-//@CrossOrigin(origins = "http://localhost:3000")
 public class TodoController {
     private final TodoRepository todoRepository;
     

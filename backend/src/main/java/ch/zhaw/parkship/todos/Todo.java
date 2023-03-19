@@ -1,4 +1,4 @@
-package ch.zhaw.backend.todos;
+package ch.zhaw.parkship.todos;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

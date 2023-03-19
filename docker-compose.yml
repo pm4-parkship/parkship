@@ -4,6 +4,8 @@ services:
   parkship:
     container_name: parkship
     build: "."
+    depends_on:
+      - postgres
     environment:
       - PARKSHIP_ENV=${PARKSHIP_ENV}
       - JDBC_DATABASE_URL=${JDBC_DATABASE_URL}

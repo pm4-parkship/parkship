@@ -1,4 +1,4 @@
-package ch.zhaw.backend.todos;
+package ch.zhaw.parkship.todos;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

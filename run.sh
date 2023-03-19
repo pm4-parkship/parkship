@@ -1,5 +1,5 @@
 #!/bin/sh 
 
 npm start &
-java -jar backend.jar &
+java -jar parkship.jar &
 nginx -g "daemon off;"
