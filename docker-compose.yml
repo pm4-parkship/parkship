@@ -17,7 +17,7 @@ services:
   postgres:
     container_name: postgres
     image: postgres:latest
-    platform: linux/amd64
+    # macos: platform: linux/amd64
     restart: always
     ports:
       - "5432:5432"
