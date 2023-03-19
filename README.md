@@ -1,12 +1,5 @@
 # Parkship
 
-# TODO
-
-- github secrets
-- .github/workflows/build-push-deploy.yaml => image url dockerhub
-- azure
-
-
 ## Local build
 
 Rename the file .env.example to env, then do:
