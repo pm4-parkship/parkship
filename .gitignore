@@ -1,3 +1,12 @@
 database/data
+.DS_Store
+.idea/jpa-buddy.xml
+.idea/misc.xml
+.idea/vcs.xml
+.idea/workspace.xml
+frontend/.idea/frontend.iml
+frontend/.idea/inspectionProfiles/Project_Default.xml
+frontend/.idea/modules.xml
+frontend/.idea/vcs.xml
 **/.DS_STORE
 .env
