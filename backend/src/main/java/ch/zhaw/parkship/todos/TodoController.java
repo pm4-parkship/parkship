@@ -1,9 +1,9 @@
 package ch.zhaw.parkship.todos;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,10 +14,12 @@ import java.util.List;
 @RequestMapping("/todos")
 public class TodoController {
     private final TodoRepository todoRepository;
-    
+    private final SpecialTodoService specialTodoService;
+
     @Autowired
-    public TodoController(TodoRepository todoRepository) {
+    public TodoController(TodoRepository todoRepository, SpecialTodoService specialTodoService) {
         this.todoRepository = todoRepository;
+        this.specialTodoService = specialTodoService;
     }
 
     @GetMapping
@@ -25,9 +27,10 @@ public class TodoController {
         return todoRepository.findAll();
     }
 
-    @GetMapping("{id}")
-    public Todo read(@PathVariable Integer id) {
-        return todoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+    @GetMapping("{title}")
+    public Todo readTodoByTitle(@PathVariable String title) {
+        return todoRepository.findTodoByTitle(title).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
@@ -41,11 +44,8 @@ public class TodoController {
     }
 
     @DeleteMapping("{id}")
+    @Transactional
     public void delete(@PathVariable Integer id) {
-        try {
-            todoRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item could not be deleted");
-        }
+        specialTodoService.verySpecial(id);
     }
 }
