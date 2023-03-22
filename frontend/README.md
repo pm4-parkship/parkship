@@ -82,7 +82,7 @@ Make sure to use the following libraries for the frontend, to keep the code cons
 - [Material UI](https://mui.com/material-ui/)
 - [React Hook Form](https://github.com/dohomi/react-hook-form-mui)
 - [ZOD (Schema Validation)](https://zod.dev/)
-- [Typescript Reset](https://github.com/total-typescript/ts-reset)
+- [Redux](https://react-redux.js.org/)
 
 <a name="console-log-alternative"></a>
 

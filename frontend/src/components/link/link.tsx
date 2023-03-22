@@ -3,9 +3,12 @@ import { Link as MuiLink } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
+import { UrlObject } from 'url';
+
+declare type Url = string | UrlObject;
 
 export interface LinkProps {
-  href?: string;
+  href?: Url;
   children: React.ReactNode;
   type?: 'link' | 'button';
   skipLocaleHandling?: boolean;
@@ -21,11 +24,8 @@ const Link: FC<LinkProps> = ({
   const router = useRouter();
 
   const hrefLocal = href || router.asPath;
-  if (hrefLocal.indexOf('http') === 0) {
-    skipLocaleHandling = true;
-  }
 
-  if (skipLocaleHandling) {
+  if (skipLocaleHandling && typeof hrefLocal === 'string') {
     return (
       <a href={hrefLocal} target="_blank" {...props}>
         {children}
@@ -41,7 +41,7 @@ const Link: FC<LinkProps> = ({
       legacyBehavior
       className={classes.nativeLink}
     >
-      <MuiLink {...props} className={classes.nativeLink} href={hrefLocal}>
+      <MuiLink {...props} className={classes.nativeLink}>
         {children}
       </MuiLink>
     </NextLink>
