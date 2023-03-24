@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Button, Grid, Paper, Typography } from '@mui/material';
 import { Icon } from '@iconify/react';
@@ -9,8 +9,20 @@ const Index = () => {
   const classes = useStyles();
   const router = useRouter();
 
+  const [todos, setTodos] = useState([]);
+
+  useEffect(() => {
+    const fetchTodos = async () => {
+      const response = await fetch("/api/todos");
+      const todos = await response.json();
+      setTodos(todos);
+    };
+    fetchTodos();
+  }, []);
+
   return (
     <div className={classes.superRoot}>
+      <pre>{JSON.stringify(todos, null, 4)}</pre>
       <Grid
         className={classes.bottomButtons}
         container
