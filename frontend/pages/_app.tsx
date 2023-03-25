@@ -14,7 +14,7 @@ import {CssBaseline, responsiveFontSizes} from '@mui/material';
 import {AppProps} from 'next/app';
 
 // When using TypeScript 4.x and above
-import {Layout} from '../src/components/layout/layout';
+import {Layout, LayoutProps} from '../src/components/layout/layout';
 import {ColorModeContext} from 'context';
 
 // Client-side cache, shared for the whole session of the user in the browser.
@@ -29,8 +29,8 @@ const App = ({
   pageProps,
   emotionCache = clientSideEmotionCache
 }: AppPropsWithApm) => {
-  const [mode, setMode] = useState('dark');
-  const [mounted, setMounted] = useState(false);
+  const [mode, setMode] = useState<string>('dark');
+  const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
     setMounted(true);

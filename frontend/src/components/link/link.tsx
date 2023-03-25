@@ -33,6 +33,16 @@ const Link: FC<LinkProps> = ({
     );
   }
 
+  if (!skipLocaleHandling && typeof href === 'object') {
+    return (
+      <NextLink {...props} href={href} className={classes.nativeLink}>
+        <MuiLink {...props} className={classes.nativeLink}>
+          {children}
+        </MuiLink>
+      </NextLink>
+    );
+  }
+
   return (
     <NextLink
       {...props}
