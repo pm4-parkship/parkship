@@ -14,9 +14,7 @@ export function Layout({ children }: LayoutProps) {
   return (
     <>
       <Toolbar className={classes.topBarBottom}>
-        <div className={classes.rightSide}>
           <Typography component={'span'}>Header on Top</Typography>
-        </div>
       </Toolbar>
       <main>
         <div className={classes.root}>{children}</div>
@@ -36,11 +34,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
-    [theme.breakpoints.up('sm')]: {
-      display: 'none'
-    }
   },
-  rightSide: { display: 'flex', alignItems: 'center' },
   toggleBtn: {
     marginRight: 20,
     [theme.breakpoints.down('xs')]: {
