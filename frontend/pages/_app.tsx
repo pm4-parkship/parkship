@@ -23,7 +23,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 const clientSideEmotionCache = createEmotionCache();
 
 type AppPropsWithApm = AppProps & {
-  emotionCache?: EmotionCache;
+    emotionCache?: EmotionCache;
 };
 
 const App = ({
@@ -34,68 +34,71 @@ const App = ({
   const [mode, setMode] = useState<string>('light');
   const [mounted, setMounted] = useState<boolean>(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, [mode]);
+    useEffect(() => {
+        setMounted(true);
+    }, [mode]);
 
-  const colorMode = React.useMemo(
-    () => ({
-      toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-      }
-    }),
-    []
-  );
-
-
-  const theme: Theme = React.useMemo(() => {
-    return responsiveFontSizes(createTheme(getDesignTokens(mode)));
-  }, [mode]);
+    const colorMode = React.useMemo(
+        () => ({
+            toggleColorMode: () => {
+                setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+            }
+        }),
+        []
+    );
 
 
+    const theme: Theme = React.useMemo(() => {
+        return responsiveFontSizes(createTheme(getDesignTokens(mode)));
+    }, [mode]);
 
-  return (
-    <React.Fragment>
-      <CacheProvider value={emotionCache}>
-        <Head>
-          <title>PM4 - Parkship</title>
-          <meta
-            name="viewport"
-            content="minimum-scale=1, initial-scale=1, width=device-width"
-          />
-          <meta name="description" content="This is a project." />
-        </Head>
-        {mounted && (
-          <ColorModeContext.Provider value={colorMode}>
-            <ThemeProvider theme={theme}>
-              <CssBaseline enableColorScheme>
-                <ToastContainer
-                  position="bottom-right"
-                  autoClose={3000}
-                  hideProgressBar={false}
-                  newestOnTop={false}
-                  closeOnClick
-                  rtl={false}
-                  pauseOnFocusLoss
-                  draggable
-                  pauseOnHover
-                  limit={5}
-                />
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
+
+    return (
+        <React.Fragment>
+            <CacheProvider value={emotionCache}>
+                <Head>
+                    <title>PM4 - Parkship</title>
+                    <meta
+                        name="viewport"
+                        content="minimum-scale=1, initial-scale=1, width=device-width"
+                    />
+                    <meta name="description" content="This is a project."/>
+                </Head>
+                {mounted && (
+                    <ColorModeContext.Provider value={colorMode}>
+                        <ThemeProvider theme={theme}>
+                            <CssBaseline enableColorScheme>
+                                <ToastContainer
+                                    position="bottom-right"
+                                    autoClose={3000}
+                                    hideProgressBar={false}
+                                    newestOnTop={false}
+                                    closeOnClick
+                                    rtl={false}
+                                    pauseOnFocusLoss
+                                    draggable
+                                    pauseOnHover
+                                    limit={5}
+                                />
+                                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>
+                                {/*<LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={dayjs.locale(navigator.language)}>*/}
+                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <Layout>
-                  <Component {...pageProps} />
-                </Layout></LocalizationProvider>
-              </CssBaseline>
-            </ThemeProvider>
-          </ColorModeContext.Provider>
-        )}
-      </CacheProvider>
-    </React.Fragment>
-  );
+                                        <Component {...pageProps} />
+                                    </Layout>
+                                </LocalizationProvider>
+                            </CssBaseline>
+                        </ThemeProvider>
+                    </ColorModeContext.Provider>
+                )}
+            </CacheProvider>
+        </React.Fragment>
+    );
 };
 
 export default App;
 
 declare module '@mui/styles/defaultTheme' {
-  interface DefaultTheme extends Theme {}
+    interface DefaultTheme extends Theme {
+    }
 }
