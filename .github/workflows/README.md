@@ -52,7 +52,7 @@ _runs-on: ubuntu-latest Github-hosted runner_
 
 1. Adds size label to pull request
 
----
+
 
 ## Deployment Setup
 ### Workflow
