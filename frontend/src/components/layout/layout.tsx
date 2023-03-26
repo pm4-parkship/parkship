@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { TextFieldElement } from 'react-hook-form-mui';
 import { logger } from '../../logger';
 import ImageCustom from '../image/image-custom';
+import TableComponent from '../table/table';
 
 export type LayoutProps = {
   children: ReactNode;
@@ -109,6 +110,7 @@ export function Layout({ children }: LayoutProps) {
               fullWidth
               required
             />
+            <TableComponent></TableComponent>
             <Button type={'submit'} variant={'contained'} color={'primary'}>
               Submit
             </Button>

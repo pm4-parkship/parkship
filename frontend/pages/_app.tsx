@@ -14,7 +14,7 @@ import { CssBaseline, responsiveFontSizes } from '@mui/material';
 import { AppProps } from 'next/app';
 
 // When using TypeScript 4.x and above
-import { Layout, LayoutProps } from '../src/components/layout/layout';
+import { Layout } from '../src/components/layout/layout';
 import { ColorModeContext } from 'context';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -31,7 +31,7 @@ const App = ({
   pageProps,
   emotionCache = clientSideEmotionCache
 }: AppPropsWithApm) => {
-  const [mode, setMode] = useState<string>('dark');
+  const [mode, setMode] = useState<string>('light');
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -47,9 +47,12 @@ const App = ({
     []
   );
 
+
   const theme: Theme = React.useMemo(() => {
     return responsiveFontSizes(createTheme(getDesignTokens(mode)));
   }, [mode]);
+
+
 
   return (
     <React.Fragment>
@@ -80,9 +83,8 @@ const App = ({
                 />
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <Layout>
-                    <Component {...pageProps} />
-                  </Layout>
-                </LocalizationProvider>
+                  <Component {...pageProps} />
+                </Layout></LocalizationProvider>
               </CssBaseline>
             </ThemeProvider>
           </ColorModeContext.Provider>
