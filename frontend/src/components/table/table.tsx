@@ -102,7 +102,7 @@ const TableComponent = () => {
                 <Link
                   href="#"
                   onClick={() => {
-                    console.info('Reservierungsinfos');
+                    //Todo Reservation
                   }}
                 >
                   Reservieren

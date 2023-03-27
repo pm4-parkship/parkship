@@ -17,7 +17,6 @@ export type LayoutProps = {
 
 export function Layout({ children }: LayoutProps) {
   const classes = useStyles();
-  const theme = useTheme();
 
   const formSchema = z.object({
     test0: z.string().min(2).max(20),

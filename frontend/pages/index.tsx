@@ -1,12 +1,10 @@
 import React from 'react';
-import { useRouter } from 'next/router';
 import { Button, Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Link from 'src/components/link/link';
 
 const Index = () => {
   const classes = useStyles();
-  const router = useRouter();
 
   return (
     <div className={classes.superRoot}>
