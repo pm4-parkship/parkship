@@ -54,8 +54,7 @@ export const getDesignTokens = (mode: any) => ({
     ...(mode === 'light'
       ? {
           primary: {
-            main: palette.light.primary.main,
-            light: palette.light.primary.light
+            main: palette.light.primary.main
           },
           divider: palette.light.divider,
           background: {
