@@ -2,8 +2,11 @@ import React from 'react';
 import {useRouter} from 'next/router';
 import {Grid} from '@mui/material';
 import {makeStyles} from '@mui/styles';
-import Searchbar from "../src/components/search-parkspace-bar/searchbar";
-import Tagsbar from "../src/components/search-parkspace-bar/tags-bar";
+import SearchBar from "../src/components/search-bar/search-bar";
+import TagBar, {TagData} from "../src/components/search-bar/tag-bar";
+import {logger} from "../src/logger";
+
+
 
 const Index = () => {
     const classes = useStyles();
@@ -18,13 +21,9 @@ const Index = () => {
                 spacing={2}
             >
                 <Grid item xs={12}>
-
-                    <Searchbar></Searchbar>
+                    <SearchBar fetchParkspace={logger.log}></SearchBar> /*@todo */
                 </Grid>
-                <Grid item xs={10}>
 
-                    <Tagsbar></Tagsbar>
-                </Grid>
             </Grid>
         </div>
     );

@@ -16,83 +16,90 @@ import {AppProps} from 'next/app';
 // When using TypeScript 4.x and above
 import {Layout} from '../src/components/layout/layout';
 import {ColorModeContext} from 'context';
+import {LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
+import {de} from "date-fns/locale";
+import dayjs from "dayjs";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
 type AppPropsWithApm = AppProps & {
-  emotionCache?: EmotionCache;
+    emotionCache?: EmotionCache;
 };
 
 const App = ({
-  Component,
-  pageProps,
-  emotionCache = clientSideEmotionCache
-}: AppPropsWithApm) => {
-  const [mode, setMode] = useState('light');
-  const [mounted, setMounted] = useState(false);
+                 Component,
+                 pageProps,
+                 emotionCache = clientSideEmotionCache
+             }: AppPropsWithApm) => {
+    const [mode, setMode] = useState('light');
+    const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, [mode]);
+    useEffect(() => {
+        setMounted(true);
+    }, [mode]);
 
-  const colorMode = React.useMemo(
-      () => ({
-        toggleColorMode: () => {
-          setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-        }
-      }),
-      []
-  );
-
-
-  const theme: Theme = React.useMemo(() => {
-    return responsiveFontSizes(createTheme(getDesignTokens(mode)));
-  }, [mode]);
+    const colorMode = React.useMemo(
+        () => ({
+            toggleColorMode: () => {
+                setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+            }
+        }),
+        []
+    );
 
 
+    const theme: Theme = React.useMemo(() => {
+        return responsiveFontSizes(createTheme(getDesignTokens(mode)));
+    }, [mode]);
 
-  return (
-    <React.Fragment>
-      <CacheProvider value={emotionCache}>
-        <Head>
-          <title>PM4 - Parkship</title>
-          <meta
-            name="viewport"
-            content="minimum-scale=1, initial-scale=1, width=device-width"
-          />
-          <meta name="description" content="This is a project." />
-        </Head>
-        {mounted && (
-            <ColorModeContext.Provider value={colorMode}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline enableColorScheme>
-              <ToastContainer
-                position="bottom-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                limit={5}
-              />
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </CssBaseline>
-          </ThemeProvider>
-            </ColorModeContext.Provider>
-        )}
-      </CacheProvider>
-    </React.Fragment>
-  );
+
+    return (
+        <React.Fragment>
+            <CacheProvider value={emotionCache}>
+                <Head>
+                    <title>PM4 - Parkship</title>
+                    <meta
+                        name="viewport"
+                        content="minimum-scale=1, initial-scale=1, width=device-width"
+                    />
+                    <meta name="description" content="This is a project."/>
+                </Head>
+                {mounted && (
+                    <ColorModeContext.Provider value={colorMode}>
+                        <ThemeProvider theme={theme}>
+                            <CssBaseline enableColorScheme>
+                                <ToastContainer
+                                    position="bottom-right"
+                                    autoClose={3000}
+                                    hideProgressBar={false}
+                                    newestOnTop={false}
+                                    closeOnClick
+                                    rtl={false}
+                                    pauseOnFocusLoss
+                                    draggable
+                                    pauseOnHover
+                                    limit={5}
+                                />
+                                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>
+                                {/*<LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={dayjs.locale(navigator.language)}>*/}
+                                    <Layout>
+                                        <Component {...pageProps} />
+                                    </Layout>
+                                </LocalizationProvider>
+                            </CssBaseline>
+                        </ThemeProvider>
+                    </ColorModeContext.Provider>
+                )}
+            </CacheProvider>
+        </React.Fragment>
+    );
 };
 
 export default App;
 
 declare module '@mui/styles/defaultTheme' {
-  interface DefaultTheme extends Theme {}
+    interface DefaultTheme extends Theme {
+    }
 }
