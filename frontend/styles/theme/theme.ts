@@ -1,22 +1,31 @@
 const palette = {
   light: {
     primary: {
-      main: '#3C62DF',
-      light: '#7391F3'
+      main: '#8bccd6'
     },
     secondary: {
-      main: '#bdd3e5',
-      light: '#ffffff'
+      main: '#AED9E0'
+    },
+    error: {
+      main: '#FF7C70'
+    },
+    warning: {
+      main: '#f0da94'
+    },
+    success: {
+      main: '#70a288'
+    },
+    text: {
+      primary: '#494E5A',
+      secondary: 'rgba(73,78,90,0.5)',
+      disabled: 'rgba(73,78,90,0.38)',
+      hint: 'rgba(73,78,90,0.38)'
     },
     background: {
       paper: '#e0f0ff',
       default: '#ffffff'
     },
-    divider: '#ADB2B7',
-    text: {
-      primary: '#000000',
-      secondary: '#ADB2B7'
-    }
+    divider: 'rgba(73,78,90,0.12)'
   },
   dark: {
     primary: {
@@ -45,8 +54,7 @@ export const getDesignTokens = (mode: any) => ({
     ...(mode === 'light'
       ? {
           primary: {
-            main: palette.light.primary.main,
-            light: palette.light.primary.light
+            main: palette.light.primary.main
           },
           divider: palette.light.divider,
           background: {

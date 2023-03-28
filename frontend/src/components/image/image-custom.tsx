@@ -1,5 +1,5 @@
 import React from 'react';
-import Image, {ImageProps} from 'next/image';
+import Image, { ImageProps } from 'next/image';
 
 export interface ImageCustomProps extends ImageProps {
   proxyUrl?: string;
