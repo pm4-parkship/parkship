@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import fetchJson, { FetchError } from '../src/auth/fetchJson';
+import fetchJson, { FetchError } from '../src/auth/fetch-json';
 import { logger } from '../src/logger';
 import Form from '../src/auth/form';
-import useUser from '../src/auth/useUser';
+import useUser from '../src/auth/use-user';
 
 export default function Login() {
   // here we just check if user is already logged in and redirect to profile
