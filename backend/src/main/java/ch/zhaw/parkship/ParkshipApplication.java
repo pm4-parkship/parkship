@@ -26,7 +26,7 @@ public class ParkshipApplication {
     }
 
     @Bean
-    @Profile({"dev", "production"})
+    @Profile({"dev", "production", "test"})
     CommandLineRunner initTemplate(@Autowired TodoRepository todoRepository) {
         return args -> {
             if (todoRepository.count() == 0) {
