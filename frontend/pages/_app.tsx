@@ -1,21 +1,23 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 
-import {getDesignTokens} from '../styles/theme/theme';
+import { getDesignTokens } from '../styles/theme/theme';
 import createEmotionCache from '../src/emotion-cache/create-emotion-cache';
-import {CacheProvider, EmotionCache} from '@emotion/react';
+import { CacheProvider, EmotionCache } from '@emotion/react';
 import '../styles/globals.css';
-import {ToastContainer} from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import {createTheme, Theme, ThemeProvider} from '@mui/material/styles';
-import {CssBaseline, responsiveFontSizes} from '@mui/material';
-import {AppProps} from 'next/app';
+import { createTheme, Theme, ThemeProvider } from '@mui/material/styles';
+import { CssBaseline, responsiveFontSizes } from '@mui/material';
+import { AppProps } from 'next/app';
 
 // When using TypeScript 4.x and above
-import {Layout, LayoutProps} from '../src/components/layout/layout';
-import {ColorModeContext} from 'context';
+import { Layout, LayoutProps } from '../src/components/layout/layout';
+import { ColorModeContext } from 'context';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -37,20 +39,17 @@ const App = ({
   }, [mode]);
 
   const colorMode = React.useMemo(
-      () => ({
-        toggleColorMode: () => {
-          setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-        }
-      }),
-      []
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+      }
+    }),
+    []
   );
-
 
   const theme: Theme = React.useMemo(() => {
     return responsiveFontSizes(createTheme(getDesignTokens(mode)));
   }, [mode]);
-
-
 
   return (
     <React.Fragment>
@@ -64,27 +63,29 @@ const App = ({
           <meta name="description" content="This is a project." />
         </Head>
         {mounted && (
-            <ColorModeContext.Provider value={colorMode}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline enableColorScheme>
-              <ToastContainer
-                position="bottom-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                limit={5}
-              />
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </CssBaseline>
-          </ThemeProvider>
-            </ColorModeContext.Provider>
+          <ColorModeContext.Provider value={colorMode}>
+            <ThemeProvider theme={theme}>
+              <CssBaseline enableColorScheme>
+                <ToastContainer
+                  position="bottom-right"
+                  autoClose={3000}
+                  hideProgressBar={false}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  limit={5}
+                />
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <Layout>
+                    <Component {...pageProps} />
+                  </Layout>
+                </LocalizationProvider>
+              </CssBaseline>
+            </ThemeProvider>
+          </ColorModeContext.Provider>
         )}
       </CacheProvider>
     </React.Fragment>
