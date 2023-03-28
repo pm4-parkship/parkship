@@ -1,8 +1,9 @@
-package ch.zhaw.parkship.parking;
+package ch.zhaw.parkship.parking.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import ch.zhaw.parkship.parking.entity.ReservationEntity;
 import ch.zhaw.parkship.user.User;
 import lombok.Getter;
 import lombok.Setter;

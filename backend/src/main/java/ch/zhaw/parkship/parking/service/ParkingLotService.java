@@ -1,4 +1,4 @@
-package ch.zhaw.parkship.parking;
+package ch.zhaw.parkship.parking.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,6 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
+import ch.zhaw.parkship.parking.dto.ParkingLotDto;
+import ch.zhaw.parkship.parking.entity.ParkingLotEntity;
+import ch.zhaw.parkship.parking.repository.ParkingLotRepository;
 import jakarta.persistence.EntityNotFoundException;
 
 @Component

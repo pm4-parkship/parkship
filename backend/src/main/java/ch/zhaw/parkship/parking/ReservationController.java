@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ch.zhaw.parkship.parking.dto.ReservationDto;
+import ch.zhaw.parkship.parking.service.ReservationService;
 import jakarta.persistence.EntityNotFoundException;
 
 @RestController

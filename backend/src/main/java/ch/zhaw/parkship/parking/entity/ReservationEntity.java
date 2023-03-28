@@ -1,4 +1,4 @@
-package ch.zhaw.parkship.parking;
+package ch.zhaw.parkship.parking.entity;
 
 import java.time.LocalDate;
 

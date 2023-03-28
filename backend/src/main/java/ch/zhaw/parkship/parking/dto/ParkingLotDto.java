@@ -1,8 +1,9 @@
-package ch.zhaw.parkship.parking;
+package ch.zhaw.parkship.parking.dto;
 
 import java.io.Serializable;
 import java.util.Set;
 
+import ch.zhaw.parkship.parking.entity.ParkingLotEntity;
 import ch.zhaw.parkship.tags.Tag;
 import ch.zhaw.parkship.user.User;
 import lombok.Getter;
