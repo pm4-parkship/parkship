@@ -6,7 +6,7 @@ import { InferGetServerSidePropsType } from 'next';
 import { sessionOptions } from '../../src/auth/session';
 
 export default function SsrProfile({
-  user,
+  user
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <div>
@@ -40,7 +40,7 @@ export default function SsrProfile({
 
 export const getServerSideProps = withIronSessionSsr(async function ({
   req,
-  res,
+  res
 }) {
   const user = req.session.user;
 
@@ -50,13 +50,13 @@ export const getServerSideProps = withIronSessionSsr(async function ({
     res.end();
     return {
       props: {
-        user: { isLoggedIn: false, login: '', avatarUrl: '' } as User,
-      },
+        user: { isLoggedIn: false, login: '', avatarUrl: '' } as User
+      }
     };
   }
 
   return {
-    props: { user: req.session.user },
+    props: { user: req.session.user }
   };
 },
 sessionOptions);

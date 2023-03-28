@@ -6,7 +6,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { sessionOptions } from '../../src/auth/session';
 
 export type Events =
-  Endpoints['GET /users/{username}/events']['response']['data']
+  Endpoints['GET /users/{username}/events']['response']['data'];
 
 const octokit = new Octokit();
 
@@ -21,7 +21,7 @@ async function eventsRoute(req: NextApiRequest, res: NextApiResponse<Events>) {
   try {
     const { data: events } =
       await octokit.rest.activity.listPublicEventsForUser({
-        username: user.login,
+        username: user.login
       });
 
     res.json(events);

@@ -175,7 +175,7 @@ First of all, you need to create a type schema, which contains all the fields of
       }
       return { message: ctx.defaultError };
     };
-  }; 
+  };
 ```
 
 ### 3. Create a Form
@@ -224,6 +224,7 @@ First of all, you need to create a type schema, which contains all the fields of
 <a name="using-images"></a>
 
 ## Using Images
+
 To use Images in our Repository make sure to use the following component:
 
 You can find it unter `src/components/image/image-custom.tsx` for more details
@@ -241,6 +242,7 @@ You can find it unter `src/components/image/image-custom.tsx` for more details
 <a name="using-links"></a>
 
 ## Using Links
+
 To use Links in our Repository make sure to use the following component:
 
 You can find it under `src/components/link/link-custom.tsx` for more details
@@ -253,7 +255,6 @@ You can find it under `src/components/link/link-custom.tsx` for more details
     <Typography variant={'body2'}>Google</Typography>
   </LinkCustom>
 ```
-
 
 <a name="unit-tests"></a>
 
@@ -300,6 +301,7 @@ Available types are:
 ## Commit Message Guidelines
 
 This repository follows [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+
 ### Format
 
 `<type>(optional scope): <description>`

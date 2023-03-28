@@ -12,7 +12,7 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
 
   try {
     const {
-      data: { login, avatar_url },
+      data: { login, avatar_url }
     } = await octokit.rest.users.getByUsername({ username });
 
     const user = { isLoggedIn: true, login, avatarUrl: avatar_url } as User;

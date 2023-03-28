@@ -8,13 +8,13 @@ export default function Login() {
   // here we just check if user is already logged in and redirect to profile
   const { mutateUser } = useUser({
     redirectTo: '/profile/',
-    redirectIfFound: true,
+    redirectIfFound: true
   });
 
   const [errorMsg, setErrorMsg] = useState('');
 
-  return (<div>
-
+  return (
+    <div>
       <div className="login">
         <Form
           errorMessage={errorMsg}
@@ -22,7 +22,7 @@ export default function Login() {
             event.preventDefault();
 
             const body = {
-              username: event.currentTarget.username.value,
+              username: event.currentTarget.username.value
             };
 
             try {
@@ -30,7 +30,7 @@ export default function Login() {
                 await fetchJson('/api/login', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(body),
+                  body: JSON.stringify(body)
                 })
               );
             } catch (error) {

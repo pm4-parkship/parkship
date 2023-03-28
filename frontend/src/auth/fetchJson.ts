@@ -1,18 +1,19 @@
 export class FetchError extends Error {
   response: Response;
   data: {
-    message: string
+    message: string;
   };
+
   constructor({
     message,
     response,
-    data,
+    data
   }: {
-    message: string
-    response: Response
+    message: string;
+    response: Response;
     data: {
-      message: string
-    }
+      message: string;
+    };
   }) {
     // Pass remaining arguments (including vendor specific ones) to parent constructor
     super(message);
@@ -47,6 +48,6 @@ export default async function fetchJson<JSON = unknown>(
   throw new FetchError({
     message: response.statusText,
     response,
-    data,
+    data
   });
 }
