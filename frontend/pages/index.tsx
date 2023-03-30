@@ -2,9 +2,7 @@ import React from 'react';
 import {useRouter} from 'next/router';
 import {Grid} from '@mui/material';
 import {makeStyles} from '@mui/styles';
-import SearchBar from "../src/components/search-bar/search-bar";
-import TagBar, {TagData} from "../src/components/search-bar/tag-bar";
-import {logger} from "../src/logger";
+import SearchPage from "./search";
 
 
 
@@ -21,7 +19,7 @@ const Index = () => {
                 spacing={2}
             >
                 <Grid item xs={12}>
-                    <SearchBar fetchParkspace={logger.log}></SearchBar> /*@todo */
+                <SearchPage></SearchPage>
                 </Grid>
 
             </Grid>

@@ -3,6 +3,7 @@ import React, {useState} from "react";
 import {DatePicker} from "@mui/x-date-pickers";
 import dayjs, {Dayjs} from "dayjs";
 import TagBar, {TagData} from "./tag-bar";
+import {SearchParameters} from "../../../pages/search";
 
 
 const dummyTags: TagData[] = [
@@ -13,14 +14,7 @@ const dummyTags: TagData[] = [
     {key: 4, label: 'Garage'},
 ];
 
-interface SearchParameters {
-    searchTerm: string,
-    fromDate: string,
-    toDate: string,
-    tags: TagData[]
-}
-
-const SearchBar = (props: { fetchParkspace: (arg: SearchParameters) => void }) => {
+const SearchBar = (props: { fetchParkingSpots: (arg: SearchParameters) => void }) => {
 
     const [fromDate, setFromDate] = useState<Dayjs | null>(dayjs(Date.now()));
     const [toDate, setToDate] = useState<Dayjs | null>(dayjs(Date.now()));
@@ -34,7 +28,7 @@ const SearchBar = (props: { fetchParkspace: (arg: SearchParameters) => void }) =
             toDate: toDate?.toISOString() || '',
             tags: selectedTags
         };
-        props.fetchParkspace(searchParam);
+        props.fetchParkingSpots(searchParam);
     };
 
     const addTag = (tag: TagData) => {
