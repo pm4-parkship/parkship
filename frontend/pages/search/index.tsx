@@ -23,6 +23,7 @@ const SearchPage = () =>{
         </Grid>
 
         <Grid item xs={12}> {/*todo add result and loading*/}
+            loading and result here
         </Grid>
     </Grid>;
 };
