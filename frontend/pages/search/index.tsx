@@ -1,8 +1,8 @@
 import SearchBar from "../../src/components/search-bar/search-bar";
-import {logger} from "../../src/logger";
-import React from "react";
-import {Grid} from "@mui/material";
+import React, {useState} from "react";
+import {Grid, Typography} from "@mui/material";
 import {TagData} from "../../src/components/search-bar/tag-bar";
+import TableComponent from "../../src/components/table/table";
 
 export interface SearchParameters {
     searchTerm: string,
@@ -11,19 +11,25 @@ export interface SearchParameters {
     tags: TagData[]
 }
 
-const SearchPage = () =>{
+const SearchPage = () => {
 
-    const fetchParkingSpots = (searchParameters:SearchParameters) => {
-        logger.log(searchParameters);
-    } ;
+    const [searchResult, setSearchResult] = useState<SearchParameters | null>(null);
 
-    return <Grid>
+    const fetchParkingSpots = (searchParameters: SearchParameters) => {
+        setSearchResult(() => searchParameters);
+
+    };
+
+    return <Grid >
         <Grid item xs={12}>
             <SearchBar fetchParkingSpots={fetchParkingSpots}></SearchBar>
         </Grid>
 
         <Grid item xs={12}> {/*todo add result and loading*/}
-            loading and result here
+            {searchResult
+                ? <div><Typography>{JSON.stringify(searchResult)}</Typography><TableComponent></TableComponent></div>
+                : <Typography>Todo loading and result here</Typography>
+            }
         </Grid>
     </Grid>;
 };

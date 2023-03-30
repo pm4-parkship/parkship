@@ -27,8 +27,6 @@ const palette = {
       paper: '#e0f0ff',
       default: '#ffffff'
     },
-    divider: 'rgba(73,78,90,0.12)'
-    }
   },
   dark: {
     primary: {
