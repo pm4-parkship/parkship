@@ -2,6 +2,7 @@ package ch.zhaw.parkship.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,20 +16,19 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ch.zhaw.parkship.dtos.ReservationDto;
 import ch.zhaw.parkship.services.ReservationService;
+import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/reservation")
+@RequestMapping("/reservations")
 public class ReservationController {
 
-	private final ReservationService reservationService;
+	@Autowired
+	private ReservationService reservationService;
 
-	public ReservationController(ReservationService reservationService) {
-		this.reservationService = reservationService;
-	}
-
-	@GetMapping
-	public List<ReservationDto> getAllReservations() {
-		return reservationService.readAll();
+	@PostMapping
+	public ReservationDto createReservation(@Valid @RequestBody ReservationDto reservationDto) {
+		return reservationService.create(reservationDto)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 	}
 
 	@GetMapping("/{id}")
@@ -36,27 +36,24 @@ public class ReservationController {
 		return reservationService.getById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 	}
 
-	@PostMapping
-	public ReservationDto createReservation(@RequestBody ReservationDto reservation) {
-		try {
-			return reservationService.create(reservation);
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT);
-		}
+	@GetMapping
+	public List<ReservationDto> getAllReservations() {
+		return reservationService.getAll();
 	}
 
 	@PutMapping("/{id}")
-	public ReservationDto updateReservation(@PathVariable Long id, @RequestBody ReservationDto reservation) {
-		try {
-			return reservationService.update(id, reservation);
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT);
-		}
+	public ReservationDto updateReservation(@PathVariable Long id, @Valid @RequestBody ReservationDto reservationDto) {
+		reservationDto.setId(id);
+		return reservationService.update(reservationDto)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 	}
 
 	@DeleteMapping("/{id}")
-	public void deleteReservation(@PathVariable Long id) {
-		reservationService.delete(id);
+	public void deleteReservationById(@PathVariable Long id) {
+		var deleted = reservationService.deleteById(id);
+		if (!deleted.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
 	}
 
 }

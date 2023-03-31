@@ -24,11 +24,9 @@ public class TagEntity {
 	private Long id;
 
 	@Column(nullable = false)
-	@NotBlank
 	private String name;
 
 	@Column(nullable = false)
-	@NotBlank
 	private String category;
 	
 	@ManyToMany(mappedBy = "tags")

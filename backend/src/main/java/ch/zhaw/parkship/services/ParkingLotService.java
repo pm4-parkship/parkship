@@ -1,53 +1,70 @@
 package ch.zhaw.parkship.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import ch.zhaw.parkship.dtos.ParkingLotDto;
 import ch.zhaw.parkship.entities.ParkingLotEntity;
 import ch.zhaw.parkship.repositories.ParkingLotRepository;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.stereotype.Service;
 
 @Service
 public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Long> {
-	private final ParkingLotRepository parkingLotRepository;
 
-	public ParkingLotService(ParkingLotRepository parkingLotRepository) {
-		this.parkingLotRepository = parkingLotRepository;
-	}
+	@Autowired
+	private ParkingLotRepository parkingLotRepository;
 
 	@Override
-	public List<ParkingLotDto> readAll() {
-		return parkingLotRepository.findAll().stream().map(ParkingLotDto::new).toList();
-	}
-
-	@Override
-	public ParkingLotDto create(ParkingLotDto parkingLot) {
+	public Optional<ParkingLotDto> create(ParkingLotDto data) {
 		var parkingLotEntity = new ParkingLotEntity();
-		BeanUtils.copyProperties(parkingLot, parkingLotEntity);
-		return new ParkingLotDto(parkingLotRepository.save(parkingLotEntity));
+		BeanUtils.copyProperties(data, parkingLotEntity);
+		var savedEntity = parkingLotRepository.save(parkingLotEntity);
+		return Optional.of(new ParkingLotDto(savedEntity));
 	}
 
 	@Override
 	public Optional<ParkingLotDto> getById(Long id) {
-		return parkingLotRepository.findById(id).map(ParkingLotDto::new);
+		var parkingLotEntity = parkingLotRepository.findById(id);
+		if (parkingLotEntity.isPresent()) {
+			return Optional.of(new ParkingLotDto(parkingLotEntity.get()));
+		}
+		return Optional.empty();
 	}
 
 	@Override
-	public ParkingLotDto update(Long id, ParkingLotDto data) {
-		var parkingLotEntity = parkingLotRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-		BeanUtils.copyProperties(data, parkingLotEntity);
-
-		return new ParkingLotDto(parkingLotRepository.save(parkingLotEntity));
+	public List<ParkingLotDto> getAll() {
+		var parkingLotEntities = parkingLotRepository.findAll();
+		List<ParkingLotDto> parkingLotDtos = new ArrayList<>();
+		for (ParkingLotEntity entity : parkingLotEntities) {
+			parkingLotDtos.add(new ParkingLotDto(entity));
+		}
+		return parkingLotDtos;
 	}
 
 	@Override
-	public void delete(Long id) {
-		var parkingLotEntity = parkingLotRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-		parkingLotRepository.delete(parkingLotEntity);
+	public Optional<ParkingLotDto> update(ParkingLotDto data) {
+		var optionalEntity = parkingLotRepository.findById(data.getId());
+		if (optionalEntity.isPresent()) {
+			var parkingLotEntity = optionalEntity.get();
+			BeanUtils.copyProperties(data, parkingLotEntity);
+			var updatedEntity = parkingLotRepository.save(parkingLotEntity);
+			return Optional.of(new ParkingLotDto(updatedEntity));
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<ParkingLotDto> deleteById(Long id) {
+		var optionalEntity = parkingLotRepository.findById(id);
+		if (optionalEntity.isPresent()) {
+			var parkingLotEntity = optionalEntity.get();
+			parkingLotRepository.deleteById(id);
+			return Optional.of(new ParkingLotDto(parkingLotEntity));
+		}
+		return Optional.empty();
 	}
 }

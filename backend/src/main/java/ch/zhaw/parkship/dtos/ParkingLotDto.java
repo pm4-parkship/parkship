@@ -1,6 +1,7 @@
 package ch.zhaw.parkship.dtos;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -63,5 +64,6 @@ public class ParkingLotDto implements Serializable {
 	}
 
 	public ParkingLotDto() {
+		this.tags = new HashSet<>();
 	}
 }

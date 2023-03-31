@@ -1,59 +1,70 @@
 package ch.zhaw.parkship.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
-
-import ch.zhaw.parkship.dtos.ReservationDto;
-import ch.zhaw.parkship.entities.ParkingLotEntity;
-import ch.zhaw.parkship.entities.ReservationEntity;
-import ch.zhaw.parkship.repositories.ParkingLotRepository;
-import ch.zhaw.parkship.repositories.ReservationRepository;
-import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ch.zhaw.parkship.dtos.ReservationDto;
+import ch.zhaw.parkship.entities.ReservationEntity;
+import ch.zhaw.parkship.repositories.ReservationRepository;
+
 @Service
-public class ReservationService implements CRUDServiceInterface<ReservationDto, Long>{
-	private final ReservationRepository reservationRepository;
-	private final ParkingLotRepository parkingLotRepository;
+public class ReservationService implements CRUDServiceInterface<ReservationDto, Long> {
 
-	public ReservationService(ReservationRepository reservationRepository, ParkingLotRepository parkingLotRepository) {
-		this.reservationRepository = reservationRepository;
-		this.parkingLotRepository = parkingLotRepository;
-	}
+	@Autowired
+	private ReservationRepository reservationRepository;
 
 	@Override
-	public List<ReservationDto> readAll() {
-		return reservationRepository.findAll().stream().map(ReservationDto::new).toList();
-	}
-
-	@Override
-	public ReservationDto create(ReservationDto reservation) {
-		var parkingLotEntity = parkingLotRepository.findById(reservation.getParkingLot().getId())
-				.orElseThrow(EntityNotFoundException::new);
+	public Optional<ReservationDto> create(ReservationDto data) {
 		var reservationEntity = new ReservationEntity();
-		BeanUtils.copyProperties(reservation, reservationEntity);
-		reservationEntity.setParkingLot(parkingLotEntity);
-		return new ReservationDto(reservationRepository.save(reservationEntity));
-	}
-
-	@Override
-	public void delete(Long id) {
-		var reservationEntity = reservationRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-		reservationRepository.delete(reservationEntity);
+		BeanUtils.copyProperties(data, reservationEntity);
+		var savedEntity = reservationRepository.save(reservationEntity);
+		return Optional.of(new ReservationDto(savedEntity));
 	}
 
 	@Override
 	public Optional<ReservationDto> getById(Long id) {
-		return reservationRepository.findById(id).map(ReservationDto::new);
+		var reservationEntity = reservationRepository.findById(id);
+		if (reservationEntity.isPresent()) {
+			return Optional.of(new ReservationDto(reservationEntity.get()));
+		}
+		return Optional.empty();
 	}
 
 	@Override
-	public ReservationDto update(Long id, ReservationDto data) {
-		var reservationEntity = reservationRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-		BeanUtils.copyProperties(data, reservationEntity);
+	public List<ReservationDto> getAll() {
+		var reservationEntities = reservationRepository.findAll();
+		List<ReservationDto> reservationDtos = new ArrayList<>();
+		for (ReservationEntity entity : reservationEntities) {
+			reservationDtos.add(new ReservationDto(entity));
+		}
+		return reservationDtos;
+	}
 
-		return new ReservationDto(reservationRepository.save(reservationEntity));
+	@Override
+	public Optional<ReservationDto> update(ReservationDto data) {
+		var optionalEntity = reservationRepository.findById(data.getId());
+		if (optionalEntity.isPresent()) {
+			var reservationEntity = optionalEntity.get();
+			BeanUtils.copyProperties(data, reservationEntity);
+			var updatedEntity = reservationRepository.save(reservationEntity);
+			return Optional.of(new ReservationDto(updatedEntity));
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<ReservationDto> deleteById(Long id) {
+		var optionalEntity = reservationRepository.findById(id);
+		if (optionalEntity.isPresent()) {
+			var reservationEntity = optionalEntity.get();
+			reservationRepository.deleteById(id);
+			return Optional.of(new ReservationDto(reservationEntity));
+		}
+		return Optional.empty();
 	}
 }
