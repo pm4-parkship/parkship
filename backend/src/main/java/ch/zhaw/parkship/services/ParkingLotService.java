@@ -1,4 +1,4 @@
-package ch.zhaw.parkship.parking.service;
+package ch.zhaw.parkship.services;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,12 +6,13 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
-import ch.zhaw.parkship.parking.dto.ParkingLotDto;
-import ch.zhaw.parkship.parking.entity.ParkingLotEntity;
-import ch.zhaw.parkship.parking.repository.ParkingLotRepository;
+import ch.zhaw.parkship.dtos.ParkingLotDto;
+import ch.zhaw.parkship.entities.ParkingLotEntity;
+import ch.zhaw.parkship.repositories.ParkingLotRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Long> {
 	private final ParkingLotRepository parkingLotRepository;
 

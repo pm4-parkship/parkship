@@ -1,10 +1,9 @@
-package ch.zhaw.parkship.parking.dto;
+package ch.zhaw.parkship.dtos;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 
-import ch.zhaw.parkship.parking.entity.ReservationEntity;
-import ch.zhaw.parkship.user.User;
+import ch.zhaw.parkship.entities.ReservationEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +12,7 @@ import lombok.Setter;
 public class ReservationDto implements Serializable {
 	private Long id;
 	private ParkingLotDto parkingLot;
-	private User tenant;
+	private String tenant;
 	private LocalDate from;
 	private LocalDate to;
 
@@ -24,4 +23,6 @@ public class ReservationDto implements Serializable {
 		this.to = reservationEntity.getTo();
 		this.parkingLot = new ParkingLotDto(reservationEntity.getParkingLot());
 	}
+	
+	public ReservationDto() {}
 }

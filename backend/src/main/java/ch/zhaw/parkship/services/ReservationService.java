@@ -1,17 +1,19 @@
-package ch.zhaw.parkship.parking.service;
+package ch.zhaw.parkship.services;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 
-import ch.zhaw.parkship.parking.dto.ReservationDto;
-import ch.zhaw.parkship.parking.entity.ParkingLotEntity;
-import ch.zhaw.parkship.parking.entity.ReservationEntity;
-import ch.zhaw.parkship.parking.repository.ParkingLotRepository;
-import ch.zhaw.parkship.parking.repository.ReservationRepository;
+import ch.zhaw.parkship.dtos.ReservationDto;
+import ch.zhaw.parkship.entities.ParkingLotEntity;
+import ch.zhaw.parkship.entities.ReservationEntity;
+import ch.zhaw.parkship.repositories.ParkingLotRepository;
+import ch.zhaw.parkship.repositories.ReservationRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ReservationService implements CRUDServiceInterface<ReservationDto, Long>{
 	private final ReservationRepository reservationRepository;
 	private final ParkingLotRepository parkingLotRepository;

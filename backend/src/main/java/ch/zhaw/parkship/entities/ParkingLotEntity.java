@@ -1,10 +1,7 @@
-package ch.zhaw.parkship.parking.entity;
+package ch.zhaw.parkship.entities;
 
-import java.sql.Blob;
 import java.util.Set;
 
-import ch.zhaw.parkship.tags.Tag;
-import ch.zhaw.parkship.user.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -28,12 +25,12 @@ public class ParkingLotEntity {
 	private Long id;
 
 	@Column(nullable = false)
-	private User owner;
+	private String owner;
 
 	private String description;
 
 	@ElementCollection
-	private Set<Tag> tags;
+	private Set<String> tags;
 
 	@Column(nullable = false)
 	private Double longitude;
@@ -50,7 +47,7 @@ public class ParkingLotEntity {
 	@Column(nullable = false)
 	private String nr;
 
-	private Blob picture;
+	private byte[] picture;
 
 	@Column(nullable = false)
 	private Double price;

@@ -1,4 +1,4 @@
-package ch.zhaw.parkship.parking;
+package ch.zhaw.parkship.controllers;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.zhaw.parkship.parking.dto.ParkingLotDto;
-import ch.zhaw.parkship.parking.service.ParkingLotService;
+import ch.zhaw.parkship.dtos.ParkingLotDto;
+import ch.zhaw.parkship.services.ParkingLotService;
 import jakarta.persistence.EntityNotFoundException;
 
 @RestController

@@ -1,4 +1,4 @@
-package ch.zhaw.parkship.parking.service;
+package ch.zhaw.parkship.services;
 
 import java.io.Serializable;
 import java.util.List;
