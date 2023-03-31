@@ -1,7 +1,10 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": ["unicorn", "@typescript-eslint"],
+  "plugins": [
+    "unicorn",
+    "@typescript-eslint"
+  ],
   "extends": [
     "prettier",
     "plugin:@next/next/recommended",
@@ -13,15 +16,24 @@
       "warn",
       "IfStatement > ExpressionStatement > AssignmentExpression"
     ],
-    "linebreak-style": ["error", "unix"],
-    "semi": [2, "always"],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "semi": [
+      2,
+      "always"
+    ],
     "@typescript-eslint/no-unused-vars": "warn",
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/no-explicit-any": "warn",
     "no-restricted-imports": [
       "error",
       {
-        "patterns": ["@mui/*/*/*", "!@mui/material/test-utils/*"]
+        "patterns": [
+          "@mui/*/*/*",
+          "!@mui/material/test-utils/*"
+        ]
       }
     ],
     "unicorn/filename-case": [

@@ -2,7 +2,6 @@ import React, { ReactNode } from 'react';
 import { Toolbar } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
-
 export type LayoutProps = {
   children: ReactNode;
 };
@@ -12,12 +11,9 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <>
-      <Toolbar className={classes.topBarBottom}>
-      </Toolbar>
+      <Toolbar className={classes.topBarBottom}></Toolbar>
       <main>
-        <div className={classes.root}>
-          {children}
-        </div>
+        <div className={classes.root}>{children}</div>
       </main>
       <div className={classes.toggleBtn}>Bottom Bar</div>
     </>

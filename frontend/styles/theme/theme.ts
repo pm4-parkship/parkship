@@ -2,31 +2,31 @@ const palette = {
   light: {
     primary: {
       main: '#8bccd6',
-      light: '#A2D6DE',
+      light: '#A2D6DE'
     },
     secondary: {
-      main: '#AED9E0',
+      main: '#AED9E0'
     },
     error: {
-      main: '#FF7C70',
+      main: '#FF7C70'
     },
     warning: {
-      main: '#f0da94',
+      main: '#f0da94'
     },
     success: {
-      main: '#70a288',
+      main: '#70a288'
     },
     text: {
       primary: '#494E5A',
       secondary: 'rgba(73,78,90,0.5)',
       disabled: 'rgba(73,78,90,0.38)',
-      hint: 'rgba(73,78,90,0.38)',
+      hint: 'rgba(73,78,90,0.38)'
     },
     divider: 'rgba(73,78,90,0.12)',
     background: {
       paper: '#e0f0ff',
       default: '#ffffff'
-    },
+    }
   },
   dark: {
     primary: {
