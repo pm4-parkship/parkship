@@ -2,6 +2,7 @@ package ch.zhaw.parkship.parking;
 
 import java.util.List;
 
+import ch.zhaw.parkship.parking.dto.ParkingLotSearchDto;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,8 +39,8 @@ public class ParkingLotController {
 		return parkingLotService.create(parkingLot);
 	}
 
-	@PostMapping("/searchTerm")
-	public List<ParkingLotDto> searchParkingLot(@RequestBody String searchString){
+	@GetMapping ("/searchTerm")
+	public List<ParkingLotDto> searchParkingLot(@RequestBody ParkingLotSearchDto parkingLotSearchDto){
 		return parkingLotService.readAll();
 	}
 }
