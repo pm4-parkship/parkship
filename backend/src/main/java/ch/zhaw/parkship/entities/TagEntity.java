@@ -1,39 +1,37 @@
 package ch.zhaw.parkship.entities;
 
-import java.time.LocalDate;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "Reservation")
-public class ReservationEntity {
+@Table(name = "Tags")
+public class TagEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(nullable = false)
 	private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "parking_lot_id", nullable = false)
-	private ParkingLotEntity parkingLot;
-
-	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
-	private UserEntity tenant;
+	@Column(nullable = false)
+	@NotBlank
+	private String name;
 
 	@Column(nullable = false)
-	private LocalDate from;
-
-	@Column(nullable = false)
-	private LocalDate to;
+	@NotBlank
+	private String category;
+	
+	@ManyToMany(mappedBy = "tags")
+    private Set<ParkingLotEntity> parkingLots;
+	
 }
