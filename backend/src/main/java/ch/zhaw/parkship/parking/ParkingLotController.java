@@ -37,4 +37,9 @@ public class ParkingLotController {
 	public ParkingLotDto createParkingLot(@RequestBody ParkingLotDto parkingLot) {
 		return parkingLotService.create(parkingLot);
 	}
+
+	@PostMapping("/searchTerm")
+	public List<ParkingLotDto> searchParkingLot(@RequestBody String searchString){
+		return parkingLotService.readAll();
+	}
 }
