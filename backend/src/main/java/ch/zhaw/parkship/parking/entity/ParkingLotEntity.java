@@ -4,7 +4,7 @@ import java.sql.Blob;
 import java.util.Set;
 
 import ch.zhaw.parkship.tags.Tag;
-import ch.zhaw.parkship.user.User;
+//import ch.zhaw.parkship.user.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -27,13 +27,13 @@ public class ParkingLotEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
-	private User owner;
+	//@Column(nullable = false)
+	//private User owner;
 
 	private String description;
 
-	@ElementCollection
-	private Set<Tag> tags;
+	//@ElementCollection
+	//private Set<Tag> tags;
 
 	@Column(nullable = false)
 	private Double longitude;

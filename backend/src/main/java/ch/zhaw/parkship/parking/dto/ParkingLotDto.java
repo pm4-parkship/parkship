@@ -30,7 +30,7 @@ public class ParkingLotDto implements Serializable {
         this.id = parkingLotEntity.getId();
         //this.owner = parkingLotEntity.getOwner();
         this.description = parkingLotEntity.getDescription();
-        this.tags = parkingLotEntity.getTags();
+        //this.tags = parkingLotEntity.getTags();
         this.longitude = parkingLotEntity.getLongitude();
         this.latitude = parkingLotEntity.getLatitude();
         this.address = parkingLotEntity.getAddress();

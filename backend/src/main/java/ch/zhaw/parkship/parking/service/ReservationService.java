@@ -11,7 +11,9 @@ import ch.zhaw.parkship.parking.entity.ReservationEntity;
 import ch.zhaw.parkship.parking.repository.ParkingLotRepository;
 import ch.zhaw.parkship.parking.repository.ReservationRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ReservationService implements CRUDServiceInterface<ReservationDto, Long>{
 	private final ReservationRepository reservationRepository;
 	private final ParkingLotRepository parkingLotRepository;
