@@ -63,7 +63,7 @@ public class ParkingLotController {
 		}
 	}
 
-	@GetMapping ("/searchTerm")
+	@PostMapping("/searchTerm")
 	public List<ParkingLotDto> searchParkingLot(@RequestBody ParkingLotSearchDto parkingLotSearchDto){
 		return parkingLotService.getBySearchTerm(parkingLotSearchDto);
 	}

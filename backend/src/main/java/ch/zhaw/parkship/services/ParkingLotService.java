@@ -70,6 +70,11 @@ public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Lo
 	}
 
 	public List<ParkingLotDto> getBySearchTerm(ParkingLotSearchDto parkingLotSearchDto){
-		return parkingLotRepository.findAll().stream().map(ParkingLotDto::new).toList();
+		var parkingLotEntities = parkingLotRepository.findParkingLotsByDescription(parkingLotSearchDto.getSearchTerm());
+		List<ParkingLotDto> parkingLotDtos = new ArrayList<>();
+		for (ParkingLotEntity entity : parkingLotEntities) {
+			parkingLotDtos.add(new ParkingLotDto(entity));
+		}
+		return parkingLotDtos;
 	}
 }
