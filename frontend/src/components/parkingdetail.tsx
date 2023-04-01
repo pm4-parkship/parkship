@@ -1,4 +1,4 @@
-import { Box, Button, Modal, Typography } from '@mui/material';
+import { Box, Button, Modal } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -6,10 +6,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import ImageList from '@mui/material/ImageList';
-import ImageListItem from '@mui/material/ImageListItem';
 import React from 'react';
-import ImageCustom from './image/image-custom';
+import { styled } from '@mui/styles';
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+    padding: 4
+  }
+}));
 
 const style = {
   position: 'absolute' as const,
@@ -51,78 +56,62 @@ const ParkingDetailModal = () => {
               aria-label="custom pagination table"
             >
               <TableHead>
-                <TableRow>Parkplatztitel</TableRow>
+                <TableRow component="th">Parkplatztitel</TableRow>
               </TableHead>
               <TableBody>
                 <TableRow>
-                  <TableCell
-                    component="th"
-                    style={{ width: '10%' }}
-                    scope="row"
-                  >
+                  <StyledTableCell style={{ width: '10%' }} scope="row">
                     {'Besitzer:'}
-                  </TableCell>
-                  <TableCell style={{ width: '40%' }} align="left">
+                  </StyledTableCell>
+                  <StyledTableCell style={{ width: '40%' }} align="left">
                     {'TODO: Benjamin Blümchen'}
-                  </TableCell>
-                  <TableCell style={{ width: '10%' }} align="left">
+                  </StyledTableCell>
+                  <StyledTableCell style={{ width: '10%' }} align="left">
                     {'Frei:'}
-                  </TableCell>
-                  <TableCell style={{ width: '40%' }} align="left">
+                  </StyledTableCell>
+                  <StyledTableCell style={{ width: '40%' }} align="left">
                     {'TODO Wochentaganzeige'}
-                  </TableCell>
+                  </StyledTableCell>
                 </TableRow>
 
                 <TableRow>
-                  <TableCell
-                    component="th"
-                    style={{ width: '10%' }}
-                    scope="row"
-                  >
+                  <StyledTableCell style={{ width: '10%' }} scope="row">
                     {'Kontakt:'}
-                  </TableCell>
-                  <TableCell style={{ width: '40%' }} align="left">
+                  </StyledTableCell>
+                  <StyledTableCell style={{ width: '40%' }} align="left">
                     {'todo +41 79 123 45 67'}
-                  </TableCell>
-                  <TableCell style={{ width: '10%' }} align="left">
+                  </StyledTableCell>
+                  <StyledTableCell style={{ width: '10%' }} align="left">
                     {'Kosten:'}
-                  </TableCell>
-                  <TableCell style={{ width: '40%' }} align="left">
+                  </StyledTableCell>
+                  <StyledTableCell style={{ width: '40%' }} align="left">
                     {'TODO Costs'}
-                  </TableCell>
+                  </StyledTableCell>
                 </TableRow>
 
                 <TableRow>
-                  <TableCell
-                    component="th"
-                    style={{ width: '10%' }}
-                    scope="row"
-                  >
+                  <StyledTableCell style={{ width: '10%' }} scope="row">
                     {/* placeholder */}
-                  </TableCell>
-                  <TableCell style={{ width: '40%' }} align="left">
+                  </StyledTableCell>
+                  <StyledTableCell style={{ width: '40%' }} align="left">
                     {'todo emailadresse'}
-                  </TableCell>
+                  </StyledTableCell>
                 </TableRow>
 
                 <TableRow>
-                  <TableCell
-                    component="th"
-                    style={{ width: '10%' }}
-                    scope="row"
-                  >
+                  <StyledTableCell style={{ width: '10%' }} scope="row">
                     {'Wo:'}
-                  </TableCell>
-                  <TableCell style={{ width: '40%' }} align="left">
+                  </StyledTableCell>
+                  <StyledTableCell style={{ width: '40%' }} align="left">
                     {'todo adresse #2'}
-                  </TableCell>
+                  </StyledTableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </TableContainer>
 
           <Paper elevation={0}>
-            haldsfjöalskjdf ölsjdf ölasd fölkasd fölas dfölasjdfölfsd{' '}
+            Parkplatz ist direkt neben der Säule. Also aufpassen!
           </Paper>
 
           <Box
@@ -149,14 +138,12 @@ const ParkingDetailModal = () => {
           />
 
           <Box width={'100%'}>
-          <Button
-            onClick={() => {
-              //Todo reservation
-            }}
-            style={{ float: 'right' }}
-          >
-            reservieren
-          </Button>
+            <Button onClick={() => {
+                //Todo reservation
+              }}
+              style={{ float: 'right' }} variant={'contained'} color={'primary'}>
+              reservieren
+            </Button>
           </Box>
         </Box>
       </Modal>
