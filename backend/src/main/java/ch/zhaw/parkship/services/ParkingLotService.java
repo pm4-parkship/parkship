@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import ch.zhaw.parkship.dtos.ParkingLotSearchDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,5 +67,9 @@ public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Lo
 			return Optional.of(new ParkingLotDto(parkingLotEntity));
 		}
 		return Optional.empty();
+	}
+
+	public List<ParkingLotDto> getBySearchTerm(ParkingLotSearchDto parkingLotSearchDto){
+		return parkingLotRepository.findAll().stream().map(ParkingLotDto::new).toList();
 	}
 }

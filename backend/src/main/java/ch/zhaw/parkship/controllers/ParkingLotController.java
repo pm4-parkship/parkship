@@ -2,6 +2,7 @@ package ch.zhaw.parkship.controllers;
 
 import java.util.List;
 
+import ch.zhaw.parkship.dtos.ParkingLotSearchDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -60,6 +61,11 @@ public class ParkingLotController {
 		if (deleted.isEmpty()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Parking lot not found");
 		}
+	}
+
+	@GetMapping ("/searchTerm")
+	public List<ParkingLotDto> searchParkingLot(@RequestBody ParkingLotSearchDto parkingLotSearchDto){
+		return parkingLotService.getBySearchTerm(parkingLotSearchDto);
 	}
 
 }

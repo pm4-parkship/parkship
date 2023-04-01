@@ -1,4 +1,4 @@
-package ch.zhaw.parkship.parking.dto;
+package ch.zhaw.parkship.dtos;
 
 
 import lombok.Getter;
