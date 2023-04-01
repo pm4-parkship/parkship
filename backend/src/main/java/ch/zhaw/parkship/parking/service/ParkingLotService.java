@@ -1,8 +1,10 @@
 package ch.zhaw.parkship.parking.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import ch.zhaw.parkship.parking.dto.ParkingLotSearchDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
@@ -49,4 +51,10 @@ public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Lo
 		var parkingLotEntity = parkingLotRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 		parkingLotRepository.delete(parkingLotEntity);
 	}
+
+	public List<ParkingLotDto> getBySearchTerm(ParkingLotSearchDto parkingLotSearchDto){
+		return parkingLotRepository.findAll().stream().map(ParkingLotDto::new).toList();
+	}
+
+
 }

@@ -2,7 +2,7 @@ package ch.zhaw.parkship.parking.entity;
 
 import java.time.LocalDate;
 
-//import ch.zhaw.parkship.user.User;
+import ch.zhaw.parkship.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,8 +28,8 @@ public class ReservationEntity {
 	@JoinColumn(name = "parking_lot_id", nullable = false)
 	private ParkingLotEntity parkingLot;
 
-	//@Column(nullable = false)
-	//private User tenant;
+	@Column(nullable = false)
+	private User tenant;
 
 	@Column(nullable = false)
 	private LocalDate from;

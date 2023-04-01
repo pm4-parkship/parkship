@@ -41,6 +41,6 @@ public class ParkingLotController {
 
 	@GetMapping ("/searchTerm")
 	public List<ParkingLotDto> searchParkingLot(@RequestBody ParkingLotSearchDto parkingLotSearchDto){
-		return parkingLotService.readAll();
+		return parkingLotService.getBySearchTerm(parkingLotSearchDto);
 	}
 }
