@@ -28,15 +28,13 @@ const TagMenu = ({ options, selected, addTag }: TagMenuProps) => {
   };
   return (
     <div>
-      <li>
-        <IconButton
-          aria-label="delete"
-          onClick={handleClickListItem}
-          size="small"
-        >
-          <AddIcon />
-        </IconButton>
-      </li>
+      <IconButton
+        aria-label="delete"
+        onClick={handleClickListItem}
+        size="small"
+      >
+        <AddIcon />
+      </IconButton>
       <Menu
         id="lock-menu"
         anchorEl={anchorEl}

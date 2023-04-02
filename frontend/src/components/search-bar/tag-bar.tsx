@@ -39,7 +39,7 @@ const TagBar = ({ options, selected, addTag, handleDelete }: TagbarProps) => {
           ></TagItem>
         );
       })}
-      <TagMenu key={-1} options={options} selected={selected} addTag={addTag} />
+      <TagMenu options={options} selected={selected} addTag={addTag} />
     </Stack>
   );
 };

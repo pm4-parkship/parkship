@@ -1,7 +1,6 @@
 import { Button, Grid, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import { DatePicker } from '@mui/x-date-pickers';
-import dayjs, { Dayjs } from 'dayjs';
 import TagBar, { TagData } from './tag-bar';
 import { SearchParameters } from '../../../pages/search';
 
@@ -16,8 +15,8 @@ const dummyTags: TagData[] = [
 const SearchBar = (props: {
   fetchParkingSpots: (arg: SearchParameters) => void;
 }) => {
-  const [fromDate, setFromDate] = useState<Dayjs | null>(dayjs(Date.now()));
-  const [toDate, setToDate] = useState<Dayjs | null>(dayjs(Date.now()));
+  const [fromDate, setFromDate] = useState<Date>(new Date());
+  const [toDate, setToDate] = useState<Date>(new Date());
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedTags, setSelectedTag] = React.useState<TagData[]>([]);
 
@@ -59,18 +58,18 @@ const SearchBar = (props: {
       <Grid item md={2} sm={5}>
         <DatePicker
           label="von"
-          onChange={(newValue) => setFromDate(newValue)}
+          onChange={(newDate) => newDate && setFromDate(newDate)}
           value={fromDate}
-          disablePast={true}
+          disablePast
           renderInput={(props) => <TextField {...props} required={true} />}
         />
       </Grid>
       <Grid item md={2} sm={5}>
         <DatePicker
           label="bis"
-          onChange={(newValue) => setToDate(newValue)}
+          onChange={(newValue) => newValue && setToDate(newValue)}
           value={toDate}
-          disablePast={true}
+          disablePast
           minDate={fromDate}
           renderInput={(props) => <TextField {...props} required={true} />}
         />

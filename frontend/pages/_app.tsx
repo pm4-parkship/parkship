@@ -10,7 +10,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { createTheme, Theme, ThemeProvider } from '@mui/material/styles';
-import { CssBaseline, responsiveFontSizes } from '@mui/material';
+import { Button, CssBaseline, responsiveFontSizes } from '@mui/material';
 import { AppProps } from 'next/app';
 
 // When using TypeScript 4.x and above
@@ -32,7 +32,7 @@ const App = ({
   pageProps,
   emotionCache = clientSideEmotionCache
 }: AppPropsWithApm) => {
-  const [mode, setMode] = useState<string>('light');
+  const [mode, setMode] = useState<string>('dark');
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -83,9 +83,15 @@ const App = ({
                   dateAdapter={AdapterDateFns}
                   adapterLocale={enGB}
                 >
-                  {/*<LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={dayjs.locale(navigator.language)}>*/}
                   <Layout>
                     <Component {...pageProps} />
+                    <Button //temporary button to change layouts on the page
+                      onClick={() => {
+                        colorMode.toggleColorMode();
+                      }}
+                    >
+                      Change Color
+                    </Button>
                   </Layout>
                 </LocalizationProvider>
               </CssBaseline>

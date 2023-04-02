@@ -30,8 +30,8 @@ const palette = {
   },
   dark: {
     primary: {
-      main: '#3C62DF',
-      light: '#061121'
+      main: '#8bccd6',
+      light: '#A2D6DE'
     },
     background: {
       paper: '#1a1e27',
@@ -271,8 +271,11 @@ export const getDesignTokens = (mode: any) => ({
     MuiChip: {
       styleOverrides: {
         root: {
-          color: mode === 'dark' ? '#FFFFFF' : '#000000',
-          backgroundColor: mode === 'dark' ? '#0d131d' : '#FFFFFF'
+          color:
+            mode === 'dark'
+              ? palette.dark.text.secondary
+              : palette.light.text.primary,
+          backgroundColor: mode === 'dark' ? '#0d131d' : '#e0e0e0'
         }
       }
     },

@@ -16,8 +16,8 @@ const TagItem = ({ data, handleDelete }: TagItemProps) => {
   return (
     <ListItem>
       <Chip
-        style={{ backgroundColor: '#e0e0e0' }}
         color={'default'}
+        variant={'filled'}
         label={data.label}
         onDelete={({ key = data.key }) => handleDelete(key)}
       />
