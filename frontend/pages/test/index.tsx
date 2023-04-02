@@ -20,8 +20,6 @@ const Index = () => {
     owner: 'My name',
     pictures: [
       'https://placehold.co/600x400.png',
-      'https://placehold.co/600x400.png',
-      'https://placehold.co/600x400.png',
       'https://placehold.co/600x400.png'
     ],
     price: 1200,

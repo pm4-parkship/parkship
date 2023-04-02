@@ -2,6 +2,7 @@ import {
   Divider,
   Grid,
   Modal,
+  Paper,
   Stack,
   Table,
   TableBody,
@@ -41,8 +42,8 @@ const ParkingDetailModal = ({
       >
         <div className={classes.boxRoot}>
           <div className={classes.header}>
-            <Typography component={'span'} variant="h4">
-              Manage your Reservation
+            <Typography component={'span'} variant="h3">
+              Parkplatz {parkingLotModel.nr}
             </Typography>
             <div className={classes.closeIconOnHeader}>
               <Icon
@@ -58,14 +59,14 @@ const ParkingDetailModal = ({
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
-                    <TableCell>
-                      <Typography component={'span'} variant="body2">
-                        {parkingLotModel.address}
+                    <TableCell className={classes.tableCell}>
+                      <Typography component={'span'} variant="body1">
+                        Besitzer:
                       </Typography>
                     </TableCell>
-                    <TableCell>
-                      <Typography component={'span'} variant="body2">
-                        {parkingLotModel.description}
+                    <TableCell className={classes.tableCell}>
+                      <Typography component={'span'} variant="body1">
+                        {parkingLotModel.owner}
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -76,14 +77,94 @@ const ParkingDetailModal = ({
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
-                    <TableCell>
-                      <Typography component={'span'} variant="body2">
-                        {parkingLotModel.address}
+                    <TableCell className={classes.tableCell}>
+                      <Typography component={'span'} variant="body1">
+                        Frei:
                       </Typography>
                     </TableCell>
-                    <TableCell>
-                      <Typography component={'span'} variant="body2">
+                    <TableCell className={classes.tableCell}>
+                      <Typography component={'span'} variant="body1">
                         {parkingLotModel.description}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <Table className={classes.tableRoot}>
+                <TableBody className={classes.tableBody}>
+                  <TableRow className={classes.tableRow} key={nanoid()}>
+                    <TableCell className={classes.tableCell}>
+                      <Typography component={'span'} variant="body1">
+                        Kontakt:
+                      </Typography>
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      <Typography component={'span'} variant="body1">
+                        +41 79 123 45 67
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <Table className={classes.tableRoot}>
+                <TableBody className={classes.tableBody}>
+                  <TableRow className={classes.tableRow} key={nanoid()}>
+                    <TableCell className={classes.tableCell}>
+                      <Typography component={'span'} variant="body1">
+                        Kosten:
+                      </Typography>
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      <Typography component={'span'} variant="body1">
+                        5.- / Tag <Icon icon="ph:money-fill" />{' '}
+                        <Icon icon="material-symbols:phone-android-rounded" />{' '}
+                        <Icon icon="majesticons:creditcard" />
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <Table className={classes.tableRoot}>
+                <TableBody className={classes.tableBody}>
+                  <TableRow className={classes.tableRow} key={nanoid()}>
+                    <TableCell className={classes.tableCell}>
+                      <Typography component={'span'} variant="body1">
+                        {/* placeholder */}
+                      </Typography>
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      <Typography component={'span'} variant="body1">
+                        example@email.com
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </Grid>
+
+            <Grid item xs={0} sm={6}></Grid>
+
+            <Grid item xs={12} sm={6}>
+              <Table className={classes.tableRoot}>
+                <TableBody className={classes.tableBody}>
+                  <TableRow className={classes.tableRow} key={nanoid()}>
+                    <TableCell className={classes.tableCell}>
+                      <Typography component={'span'} variant="body1">
+                        Wo:
+                      </Typography>
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      <Typography component={'span'} variant="body1">
+                        {parkingLotModel.address}
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -92,7 +173,10 @@ const ParkingDetailModal = ({
             </Grid>
           </Grid>
           <Divider variant="middle" />
-          This is my component
+
+          <Paper elevation={0}>{parkingLotModel.description}</Paper>
+
+          <Divider variant="middle" />
           <Stack direction="row" spacing={2}>
             {parkingLotModel.pictures.map((picture) => (
               <div>
@@ -127,11 +211,17 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-evenly',
     display: 'flex'
   },
+  tableCell: {
+    align: 'left'
+  },
+  typoText: {
+    align: 'left'
+  },
   boxRoot: {
     position: 'absolute',
     display: 'block',
     borderRadius: '5%',
-    textAlign: 'center',
+    textAlign: 'left',
     overflow: 'scroll',
     padding: '20px',
     top: '50%',
