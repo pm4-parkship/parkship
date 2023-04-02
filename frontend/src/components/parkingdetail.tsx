@@ -31,7 +31,20 @@ const style = {
   pb: 3
 };
 
-const ParkingDetailModal = () => {
+type ParkingProp = {
+    Owne?: string,
+    // todo weekdays
+    PhoneNumber?: string,
+    Email?: string,
+    Costs?: number,
+    Location?: string,
+    Description?: string,
+    //todo maps location
+    // todo picture
+    reserve: () => void,
+}
+
+const ParkingDetailModal = (props : ParkingProp) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     setOpen(true);
@@ -64,7 +77,7 @@ const ParkingDetailModal = () => {
                     {'Besitzer:'}
                   </StyledTableCell>
                   <StyledTableCell style={{ width: '40%' }} align="left">
-                    {'TODO: Benjamin Blümchen'}
+                    {props.Owner}
                   </StyledTableCell>
                   <StyledTableCell style={{ width: '10%' }} align="left">
                     {'Frei:'}
@@ -79,13 +92,13 @@ const ParkingDetailModal = () => {
                     {'Kontakt:'}
                   </StyledTableCell>
                   <StyledTableCell style={{ width: '40%' }} align="left">
-                    {'todo +41 79 123 45 67'}
+                    {props.PhoneNumber}
                   </StyledTableCell>
                   <StyledTableCell style={{ width: '10%' }} align="left">
                     {'Kosten:'}
                   </StyledTableCell>
                   <StyledTableCell style={{ width: '40%' }} align="left">
-                    {'TODO Costs'}
+                    {'CHF ' + props.Costs + '.- Tag'}
                   </StyledTableCell>
                 </TableRow>
 
@@ -94,7 +107,7 @@ const ParkingDetailModal = () => {
                     {/* placeholder */}
                   </StyledTableCell>
                   <StyledTableCell style={{ width: '40%' }} align="left">
-                    {'todo emailadresse'}
+                    {props.Email}
                   </StyledTableCell>
                 </TableRow>
 
@@ -103,7 +116,7 @@ const ParkingDetailModal = () => {
                     {'Wo:'}
                   </StyledTableCell>
                   <StyledTableCell style={{ width: '40%' }} align="left">
-                    {'todo adresse #2'}
+                    {props.Location}
                   </StyledTableCell>
                 </TableRow>
               </TableBody>
@@ -111,7 +124,7 @@ const ParkingDetailModal = () => {
           </TableContainer>
 
           <Paper elevation={0}>
-            Parkplatz ist direkt neben der Säule. Also aufpassen!
+            {props.Description}
           </Paper>
 
           <Box
@@ -138,9 +151,7 @@ const ParkingDetailModal = () => {
           />
 
           <Box width={'100%'}>
-            <Button onClick={() => {
-                //Todo reservation
-              }}
+            <Button onClick={props.reserve}
               style={{ float: 'right' }} variant={'contained'} color={'primary'}>
               reservieren
             </Button>
