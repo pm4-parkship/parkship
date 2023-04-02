@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
-import { Toolbar } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import Navbar from '../navbar/navbar';
+import { Typography } from '@mui/material';
 
 export type LayoutProps = {
   children: ReactNode;
@@ -11,11 +12,19 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <>
-      <Toolbar className={classes.topBarBottom}></Toolbar>
+      <Navbar />
       <main>
         <div className={classes.root}>{children}</div>
       </main>
-      <div className={classes.toggleBtn}>Bottom Bar</div>
+      <div className={classes.bottomBar}>
+        <Typography variant="body2" color="textSecondary" align="center">
+          Created by Parkship
+        </Typography>
+        <Typography variant="body2" color="textSecondary" align="center">
+          {'© '}
+          {new Date().getFullYear()}
+        </Typography>
+      </div>
     </>
   );
 }
@@ -23,6 +32,7 @@ export function Layout({ children }: LayoutProps) {
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: '1600px',
+    minHeight: '100vh',
     margin: '0 auto',
     background: theme.palette.background.default
   },
@@ -32,12 +42,8 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     overflow: 'hidden'
   },
-  toggleBtn: {
-    marginRight: 20,
-    display: 'block',
-    [theme.breakpoints.down('md')]: {
-      marginRight: 5,
-      display: 'none'
-    }
+  bottomBar: {
+    display: 'flex',
+    justifyContent: 'center'
   }
 }));
