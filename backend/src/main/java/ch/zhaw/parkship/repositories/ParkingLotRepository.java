@@ -1,6 +1,8 @@
 package ch.zhaw.parkship.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import ch.zhaw.parkship.entities.ParkingLotEntity;
@@ -15,6 +17,7 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLotEntity, Lo
     )
     List<ParkingLotEntity> filterParkingLotsBySearchTerm(String searchTerm);
 
+    List<ParkingLotEntity> findAllByAddressLikeIgnoreCaseOrDescriptionLikeIgnoreCaseOrAddressNrLikeIgnoreCase(String addressTerm, String descriptionTerm, String addressNrTerm);
 
 }
 
