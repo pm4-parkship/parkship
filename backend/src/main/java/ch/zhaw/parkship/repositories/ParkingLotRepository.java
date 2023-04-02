@@ -11,8 +11,9 @@ import java.util.List;
 @Repository
 public interface ParkingLotRepository extends JpaRepository<ParkingLotEntity, Long> {
     @Query(
-        value = "SELECT * FROM \"parking_lot\" WHERE \"description\" LIKE %?1%",
+        value = "SELECT * FROM \"parking_lot\" WHERE LOWER(\"description\") LIKE %?1%",
         nativeQuery = true
     )
     List<ParkingLotEntity> findParkingLotsByDescription(String searchTerm);
 }
+

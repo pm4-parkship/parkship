@@ -1,8 +1,6 @@
 package ch.zhaw.parkship.services;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import ch.zhaw.parkship.dtos.ParkingLotSearchDto;
 import org.springframework.beans.BeanUtils;
@@ -70,9 +68,14 @@ public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Lo
 	}
 
 	public List<ParkingLotDto> getBySearchTerm(ParkingLotSearchDto parkingLotSearchDto){
-		var parkingLotEntities = parkingLotRepository.findParkingLotsByDescription(parkingLotSearchDto.getSearchTerm());
+		Set<ParkingLotEntity> parkingLots = new HashSet<>();
+		String[] searchTerms = parkingLotSearchDto.getSearchTerm().toLowerCase().split("\\s+");
+		for(String term : searchTerms){
+			parkingLots.addAll(parkingLotRepository.findParkingLotsByDescription(term));
+		}
+
 		List<ParkingLotDto> parkingLotDtos = new ArrayList<>();
-		for (ParkingLotEntity entity : parkingLotEntities) {
+		for (ParkingLotEntity entity : parkingLots) {
 			parkingLotDtos.add(new ParkingLotDto(entity));
 		}
 		return parkingLotDtos;
