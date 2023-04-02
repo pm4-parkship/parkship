@@ -30,7 +30,8 @@ Development for all PM4 Branded Apps
 
 Make sure you have installed all of the following prerequisites on your development machine:
 
-- [VsCode](https://code.visualstudio.com/download) (Can also use any other IDE, but you gotta know how to work with it :))
+- [VsCode](https://code.visualstudio.com/download) (Can also use any other IDE, but you gotta know how to work with
+  it :))
 - [Git](https://git-scm.com/)
 - [Node.js with NVM](https://github.com/nvm-sh/nvm]) (Check in the .nvmrc file for the correct version)
 
@@ -44,7 +45,8 @@ Run `npm run dev` to start the development server.
 
 ### General Advice
 
-When working on our repository make sure to memorizes this README.md, since it contains all the information you need to know about the project.
+When working on our repository make sure to memorizes this README.md, since it contains all the information you need to
+know about the project.
 
 #### 1. Branching
 
@@ -74,7 +76,8 @@ More informations to that can be found [here](#commit-msg-guidelines)
 
 ## Frontend Libraries
 
-Make sure to use the following libraries for the frontend, to keep the code consistent. Get familiar with the documentation of the libraries, to make sure you're using them correctly.
+Make sure to use the following libraries for the frontend, to keep the code consistent. Get familiar with the
+documentation of the libraries, to make sure you're using them correctly.
 
 - [React](https://beta.reactjs.org/learn)
 - [Next.js](https://nextjs.org/)
@@ -88,7 +91,8 @@ Make sure to use the following libraries for the frontend, to keep the code cons
 
 ## Console.Log Alternative
 
-As you may already recognized, console.log is banned in our project, since it's not a good practice to use it in production code.
+As you may already recognized, console.log is banned in our project, since it's not a good practice to use it in
+production code.
 
 Instead of using console.log, we recommend to use the following commands:
 
@@ -104,7 +108,8 @@ Instead of using console.log, we recommend to use the following commands:
 
 For software Development we recommend the following tools, totally up to you if you want to use them or not.
 
-The total costs are together around 15$ per month (without GPT premium), which is not that much, and it helps you a lot to improve your Code Quality.
+The total costs are together around 15$ per month (without GPT premium), which is not that much, and it helps you a lot
+to improve your Code Quality.
 
 - [Webstorm](https://www.jetbrains.com/de-de/webstorm/)
 - [Github Copilot](https://copilot.github.com/)
@@ -285,7 +290,8 @@ Example: `feat/PM4-123/add-primary-button`
 
 Available types are:
 
-- feat → Changes about addition or removal of a feature. Ex: `feat: add table on landing page`, `feat: remove table from landing page`
+- feat → Changes about addition or removal of a feature.
+  Ex: `feat: add table on landing page`, `feat: remove table from landing page`
 - fix → Bug fixing, followed by the bug. Ex: `fix: illustration overflows in mobile view`
 - docs → Update documentation (README.md)
 - style → Updating style, and not changing any logic in the code (reorder imports, fix whitespace, remove comments)
@@ -311,7 +317,8 @@ Example: `feat: [PM4-123] add primary button`
 
 Available types are:
 
-- feat → Changes about addition or removal of a feature. Ex: `feat: add table on landing page`, `feat: remove table from landing page`
+- feat → Changes about addition or removal of a feature.
+  Ex: `feat: add table on landing page`, `feat: remove table from landing page`
 - fix → Bug fixing, followed by the bug. Ex: `fix: illustration overflows in mobile view`
 - docs → Update documentation (README.md)
 - style → Updating style, and not changing any logic in the code (reorder imports, fix whitespace, remove comments)
@@ -335,7 +342,7 @@ Description must fully explain what is being done.
 (There might be some exceptions, but try to avoid it)
 
 | Pixel | REM      |
-| ----- | -------- |
+|-------|----------|
 | 4 px  | 0.25 rem |
 | 8 px  | 0.5 rem  |
 | 12 px | 0.75 rem |
