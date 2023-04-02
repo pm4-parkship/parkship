@@ -47,12 +47,9 @@ const App = ({
     []
   );
 
-
   const theme: Theme = React.useMemo(() => {
     return responsiveFontSizes(createTheme(getDesignTokens(mode)));
   }, [mode]);
-
-
 
   return (
     <React.Fragment>
@@ -83,8 +80,9 @@ const App = ({
                 />
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <Layout>
-                  <Component {...pageProps} />
-                </Layout></LocalizationProvider>
+                    <Component {...pageProps} />
+                  </Layout>
+                </LocalizationProvider>
               </CssBaseline>
             </ThemeProvider>
           </ColorModeContext.Provider>
