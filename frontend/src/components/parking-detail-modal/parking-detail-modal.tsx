@@ -149,7 +149,7 @@ const ParkingDetailModal = ({
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       <Typography component={'span'} variant="body1">
-                        example@email.com
+                        mail@email.com
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -170,7 +170,7 @@ const ParkingDetailModal = ({
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       <Typography component={'span'} variant="body1">
-                        {parkingLotModel.address}
+                        {parkingLotModel.address} {parkingLotModel.addressNr}
                       </Typography>
                     </TableCell>
                   </TableRow>

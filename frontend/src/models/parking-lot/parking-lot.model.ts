@@ -7,7 +7,7 @@ export interface ParkingLotModel {
   address: string;
   addressNr: string;
   floor: number;
-  nr: number;
+  nr: string;
   pictures: string[];
   price: number;
   state: string;
