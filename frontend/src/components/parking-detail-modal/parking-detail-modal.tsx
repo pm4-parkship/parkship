@@ -1,6 +1,7 @@
 import {
   Divider,
   Grid,
+  Grow,
   Modal,
   Paper,
   Stack,
@@ -138,7 +139,7 @@ const ParkingDetailModal = ({
               </Table>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12}  md={6}>
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
@@ -157,9 +158,7 @@ const ParkingDetailModal = ({
               </Table>
             </Grid>
 
-            <div style={{ margin: '10px' }} />
-
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12}  md={6}>
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
@@ -204,14 +203,18 @@ const useStyles = makeStyles((theme) => ({
     display: 'inline-table',
     width: '100%',
     [theme.breakpoints.down('md')]: {
-      display: 'inline-grid'
+      display: 'grid-inline'
     }
   },
   tableRow: {
     [theme.breakpoints.down('md')]: {
       borderBottom: '0pt solid black'
     },
-    display: 'flex',
+    [theme.breakpoints.down('sm')]: {
+      display: 'grid',
+      gap: '0',
+      marginBottom: '5px', 
+    },
     gap: '20px'
   },
   tableCell: {
