@@ -10,6 +10,7 @@ import { TextFieldElement } from 'react-hook-form-mui';
 import { logger } from '../../logger';
 import ImageCustom from '../image/image-custom';
 import TableComponent from '../table/table';
+import SignIn from  '../login/SignIn';
 
 export type LayoutProps = {
   children: ReactNode;
@@ -110,6 +111,7 @@ export function Layout({ children }: LayoutProps) {
               required
             />
             <TableComponent></TableComponent>
+            <SignIn></SignIn>
             <Button type={'submit'} variant={'contained'} color={'primary'}>
               Submit
             </Button>
