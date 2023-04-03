@@ -40,9 +40,18 @@ public class ParkshipApplication {
             roleRepository.saveAll(Set.of(userRole, adminRole));
 
             ApplicationUser user = userService.signUp("user", "user@parkship.ch", "user");
+            ApplicationUser secondUser = userService.signUp("second", "second@parkship.ch", "second");
+            ApplicationUser thirdUser = userService.signUp("thirdUser", "thirdUser@parkship.ch", "thirdUser");
+
             ApplicationUser admin = userService.signUp("admin", "admin@parkship.ch", "admin");
 
+            user.getRoles().add(userRole);
+            secondUser.getRoles().add(userRole);
+            thirdUser.getRoles().add(userRole);
             admin.getRoles().add(adminRole);
+            userService.save(user);
+            userService.save(secondUser);
+            userService.save(thirdUser);
             userService.save(admin);
 
             if (todoRepository.count() == 0) {
