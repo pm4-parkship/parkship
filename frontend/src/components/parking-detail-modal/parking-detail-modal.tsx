@@ -18,6 +18,10 @@ import { logger } from '../../logger';
 import { Icon } from '@iconify/react';
 import ImageCustom from '../image/image-custom';
 import { nanoid } from 'nanoid';
+import Checkbox from '@mui/material/Checkbox';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+
 
 const ParkingDetailModal = ({
   showModal = true,
@@ -29,8 +33,6 @@ const ParkingDetailModal = ({
   parkingLotModel: ParkingLotModel;
 }) => {
   const classes = useStyles();
-
-  logger.error(parkingLotModel, 'parkingLotModel');
 
   return (
     <>
@@ -85,13 +87,13 @@ const ParkingDetailModal = ({
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       <Typography component={'span'} variant="body1">
-                        <Icon icon="mdi:checkbox-blank-outline" /> Mo
-                        <Icon icon="mdi:checkbox-marked" /> Di
-                        <Icon icon="mdi:checkbox-blank-outline" /> Mi
-                        <Icon icon="mdi:checkbox-marked" /> Do
-                        <Icon icon="mdi:checkbox-marked" /> Fr
-                        <Icon icon="mdi:checkbox-blank-outline" /> Sa
-                        <Icon icon="mdi:checkbox-blank-outline" /> So
+                        <Checkbox checked />Mo
+                        <Checkbox checked />Di
+                        <Checkbox checked />Mi
+                        <Checkbox checked />Do
+                        <Checkbox checked />Fr
+                        <Checkbox checked />Sa
+                        <Checkbox checked />So
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -158,6 +160,8 @@ const ParkingDetailModal = ({
               </Table>
             </Grid>
 
+            <Grid item xs={0} sm={0}  md={6}></Grid>
+
             <Grid item xs={12} sm={12}  md={6}>
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
@@ -220,8 +224,8 @@ const useStyles = makeStyles((theme) => ({
   tableCell: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    minWidth: '280px',
-    maxWidth: '280px',
+    minWidth: '250px',
+    maxWidth: '250px',
     [theme.breakpoints.down('sm')]: {
       minWidth: '300px',
       maxWidth: '300px'
@@ -248,7 +252,7 @@ const useStyles = makeStyles((theme) => ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '75%',
+    width: '80%',
     maxHeight: '90%',
     [theme.breakpoints.down('sm')]: {
       width: '90%',
