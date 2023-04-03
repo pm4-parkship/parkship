@@ -55,7 +55,7 @@ const ParkingDetailModal = ({
           </div>
           <Divider variant="middle" />
           <Grid container>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
@@ -73,7 +73,7 @@ const ParkingDetailModal = ({
                 </TableBody>
               </Table>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
@@ -92,13 +92,13 @@ const ParkingDetailModal = ({
               </Table>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
                     <TableCell className={classes.tableCell}>
                       <Typography component={'span'} variant="body1">
-                        Kontakt:
+                        Kontakt:Kontakt:Kontakt:Kontakt:
                       </Typography>
                     </TableCell>
                     <TableCell className={classes.tableCell}>
@@ -111,7 +111,7 @@ const ParkingDetailModal = ({
               </Table>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
@@ -151,7 +151,7 @@ const ParkingDetailModal = ({
               </Table>
             </Grid>
 
-            <Grid item xs={0} sm={6}></Grid>
+            <div style={{ margin: '10px' }} />
 
             <Grid item xs={12} sm={6}>
               <Table className={classes.tableRoot}>
@@ -192,9 +192,7 @@ const ParkingDetailModal = ({
 
 const useStyles = makeStyles((theme) => ({
   tableRoot: {
-    display: 'block',
-    overflow: 'scroll',
-    maxWidth: '100%'
+    overflow: 'scroll'
   },
   tableBody: {
     display: 'inline-table',
@@ -207,15 +205,18 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('md')]: {
       borderBottom: '0pt solid black'
     },
-    alignItems: 'left',
-    justifyContent: 'space-evenly',
-    display: 'flex'
+    display: 'flex',
+    gap: '20px'
   },
   tableCell: {
-    align: 'left'
-  },
-  typoText: {
-    align: 'left'
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    minWidth: '150px',
+    maxWidth: '150px',
+    [theme.breakpoints.down('sm')]: {
+      minWidth: '100px',
+      maxWidth: '100px'
+    }
   },
   boxRoot: {
     position: 'absolute',
@@ -227,7 +228,7 @@ const useStyles = makeStyles((theme) => ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '650px',
+    width: '850px',
     maxHeight: '90%',
     [theme.breakpoints.down('sm')]: {
       width: '90%',
