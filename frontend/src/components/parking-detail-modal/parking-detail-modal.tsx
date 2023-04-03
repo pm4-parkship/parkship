@@ -59,7 +59,7 @@ const ParkingDetailModal = ({
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
-                    <TableCell className={classes.tableCell}>
+                    <TableCell className={classes.tableCellLabel}>
                       <Typography component={'span'} variant="body1">
                         Besitzer:
                       </Typography>
@@ -77,14 +77,20 @@ const ParkingDetailModal = ({
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
-                    <TableCell className={classes.tableCell}>
+                    <TableCell className={classes.tableCellLabel}>
                       <Typography component={'span'} variant="body1">
                         Frei:
                       </Typography>
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       <Typography component={'span'} variant="body1">
-                        {parkingLotModel.description}
+                        <Icon icon="mdi:checkbox-blank-outline" /> Mo
+                        <Icon icon="mdi:checkbox-marked" /> Di
+                        <Icon icon="mdi:checkbox-blank-outline" /> Mi
+                        <Icon icon="mdi:checkbox-marked" /> Do
+                        <Icon icon="mdi:checkbox-marked" /> Fr
+                        <Icon icon="mdi:checkbox-blank-outline" /> Sa
+                        <Icon icon="mdi:checkbox-blank-outline" /> So
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -96,9 +102,9 @@ const ParkingDetailModal = ({
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
-                    <TableCell className={classes.tableCell}>
+                    <TableCell className={classes.tableCellLabel}>
                       <Typography component={'span'} variant="body1">
-                        Kontakt:Kontakt:Kontakt:Kontakt:
+                        Kontakt:
                       </Typography>
                     </TableCell>
                     <TableCell className={classes.tableCell}>
@@ -115,7 +121,7 @@ const ParkingDetailModal = ({
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
-                    <TableCell className={classes.tableCell}>
+                    <TableCell className={classes.tableCellLabel}>
                       <Typography component={'span'} variant="body1">
                         Kosten:
                       </Typography>
@@ -136,7 +142,7 @@ const ParkingDetailModal = ({
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
-                    <TableCell className={classes.tableCell}>
+                    <TableCell className={classes.tableCellLabel}>
                       <Typography component={'span'} variant="body1">
                         {/* placeholder */}
                       </Typography>
@@ -157,7 +163,7 @@ const ParkingDetailModal = ({
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
-                    <TableCell className={classes.tableCell}>
+                    <TableCell className={classes.tableCellLabel}>
                       <Typography component={'span'} variant="body1">
                         Wo:
                       </Typography>
@@ -211,8 +217,18 @@ const useStyles = makeStyles((theme) => ({
   tableCell: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    minWidth: '150px',
-    maxWidth: '150px',
+    minWidth: '280px',
+    maxWidth: '280px',
+    [theme.breakpoints.down('sm')]: {
+      minWidth: '300px',
+      maxWidth: '300px'
+    }
+  },
+  tableCellLabel: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    minWidth: '70px',
+    maxWidth: '70px',
     [theme.breakpoints.down('sm')]: {
       minWidth: '100px',
       maxWidth: '100px'
@@ -221,14 +237,15 @@ const useStyles = makeStyles((theme) => ({
   boxRoot: {
     position: 'absolute',
     display: 'block',
-    borderRadius: '5%',
+    borderRadius: '0%',
     textAlign: 'left',
-    overflow: 'scroll',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
     padding: '20px',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '850px',
+    width: '75%',
     maxHeight: '90%',
     [theme.breakpoints.down('sm')]: {
       width: '90%',
@@ -244,12 +261,11 @@ const useStyles = makeStyles((theme) => ({
   header: {
     display: 'flex',
     marginBottom: '20px',
-    justifyContent: 'space-around',
     alignItems: 'center'
   },
   closeIconOnHeader: {
     position: 'absolute',
-    right: '5%',
+    right: '2%',
     float: 'right'
   },
   closeIcon: {
