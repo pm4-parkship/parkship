@@ -49,3 +49,94 @@ public interface UserRepository extends Repository<User, Long> {
 ## Supported keywords inside method names
 ![img.png](readme/img.png) 
 Image Source (https://docs.spring.io/spring-data/jpa/docs/1.5.0.RELEASE/reference/html/jpa.repositories.html)
+
+# Security
+You can use postman and import the file backend/parkship-backend.postman-collection.json or use http client of your choice.
+## Classes
+User class: ch.zhaw.parkship.authentication.ApplicationUser
+
+Role class: ch.zhaw.parkship.authentication.Role
+
+Currently we have the roles admin and user.
+
+
+### Endpoints
+
+#### Login
+```http request
+POST /api/auth/signup
+```
+Request:
+```json
+{
+    "email": "test@parkship.ch",
+    "password": "test",
+    "username": "test"
+}
+```
+
+Response:
+```json
+{
+    "id": 3,
+    "username": "test",
+    "roles": [
+        "USER"
+    ]
+}
+```
+#### Register
+```http request
+POST /api/auth/signin
+```
+Request:
+```json
+{
+    "password": "user",
+    "email": "user@parkship.ch"
+}
+```
+
+Response:
+```json
+{
+    "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNjgwODkyODYwLCJyb2xlcyI6WyJVU0VSIl0sInVzZXJuYW1lIjoidXNlciJ9.s-Cwm9rl6NCZf7Be04Wk5FfOsBj45_p8LCZ9I9Rbbt0",
+    "username": "user",
+    "roles": [
+        "USER"
+    ]
+}
+```
+
+The jwt token must be sent with every http request in the authorization header:
+```http
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNjgwODkyODYwLCJyb2xlcyI6WyJVU0VSIl0sInVzZXJuYW1lIjoidXNlciJ9.s-Cwm9rl6NCZf7Be04Wk5FfOsBj45_p8LCZ9I9Rbbt0
+```
+
+The duration of the token can be set in application.properties. Roles can be used likes this:
+
+```java
+@RestController
+@RequestMapping("/test")
+@SecurityRequirement(name = "Bearer Authentication") // Need for auth to work in swagger
+public class AuthTestController {
+    @GetMapping("/user")
+    //@PreAuthorize("hasRole('ROLE_USER')") // doesn't work?
+    //@PreAuthorize("hasRole('USER')") // doesn't work?
+    //@PreAuthorize("authentication.principal.id == 1") // works
+    //@PreAuthorize("hasAuthority('USER')") // works
+    //@PreAuthorize("hasAnyAuthority('USER', 'ADMIN')") // works
+    @Secured("USER") // works
+    //@Secured({ "USER", "ADMIN" }) // works
+    public ApplicationUser allowUser(@AuthenticationPrincipal ApplicationUser user) {
+        return user;
+    }
+
+    @GetMapping("/admin")
+    @Secured("ADMIN")
+    public ApplicationUser allowAdmin(@AuthenticationPrincipal ApplicationUser user) {
+        return user;
+    }
+}
+
+```

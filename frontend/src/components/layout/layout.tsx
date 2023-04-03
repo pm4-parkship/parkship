@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
+import { Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Navbar from '../navbar/navbar';
-import { Typography } from '@mui/material';
 
 export type LayoutProps = {
   children: ReactNode;

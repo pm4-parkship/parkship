@@ -1,29 +1,17 @@
 import React from 'react';
-import { Button, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import Link from 'src/components/link/link';
+import SearchPage from './search';
 
 const Index = () => {
   const classes = useStyles();
 
   return (
     <div className={classes.superRoot}>
-      <Grid container justifyContent="center" display="flex">
-        <Link
-          href={'https://github.com/pm4-parkship/parkship/tree/main/frontend'}
-          skipLocaleHandling
-        >
-          <Button variant="contained">Click Me</Button>
-        </Link>
-
-        <Link
-          href={{
-            pathname: '/info/test',
-            query: { locale: 'en' }
-          }}
-        >
-          <Button variant="contained">Click Me Inside</Button>
-        </Link>
+      <Grid container justifyContent="center" display="flex" spacing={2}>
+        <Grid item xs={12}>
+          <SearchPage />
+        </Grid>
       </Grid>
     </div>
   );

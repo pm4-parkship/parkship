@@ -7,7 +7,10 @@
     "strict": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["node", "jest"],
+    "types": [
+      "node",
+      "jest"
+    ],
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "resolveJsonModule": true,
@@ -21,13 +24,22 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "esnext",
-    "lib": ["ES2021", "dom"],
+    "lib": [
+      "ES2021",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "isolatedModules": true
   },
-
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "public/**", "jest.config.ts"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "public/**",
+    "jest.config.ts"
+  ]
 }
