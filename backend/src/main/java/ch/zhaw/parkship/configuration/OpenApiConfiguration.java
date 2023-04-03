@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition(
-        info = @Info(title = "The API Backend built @ Bbc", version = "1.0.0"),
+        info = @Info(title = "The Parkship API Backend", version = "1.0.0"),
         security = @SecurityRequirement(name = "authorization")
 )
 @SecurityScheme(
