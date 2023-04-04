@@ -24,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -31,13 +32,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import ch.zhaw.parkship.ParkshipApplication;
-import ch.zhaw.parkship.controllers.ReservationController;
-import ch.zhaw.parkship.dtos.ParkingLotDto;
-import ch.zhaw.parkship.dtos.ReservationDto;
-import ch.zhaw.parkship.dtos.UserDto;
-import ch.zhaw.parkship.services.ReservationService;
+import ch.zhaw.parkship.parkinglot.ParkingLotDto;
+import ch.zhaw.parkship.reservation.ReservationController;
+import ch.zhaw.parkship.reservation.ReservationDto;
+import ch.zhaw.parkship.reservation.ReservationService;
+import ch.zhaw.parkship.user.UserDto;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
+@SpringBootTest(classes = ParkshipApplication.class)
 public class ReservationControllerTest {
 	private MockMvc mockMvc;
 

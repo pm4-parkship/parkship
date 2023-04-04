@@ -19,19 +19,23 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-import ch.zhaw.parkship.dtos.ParkingLotDto;
-import ch.zhaw.parkship.dtos.ReservationDto;
-import ch.zhaw.parkship.dtos.UserDto;
-import ch.zhaw.parkship.entities.ParkingLotEntity;
-import ch.zhaw.parkship.entities.ReservationEntity;
-import ch.zhaw.parkship.entities.UserEntity;
-import ch.zhaw.parkship.repositories.ParkingLotRepository;
-import ch.zhaw.parkship.repositories.ReservationRepository;
-import ch.zhaw.parkship.repositories.UserRepository;
+import ch.zhaw.parkship.ParkshipApplication;
+import ch.zhaw.parkship.parkinglot.ParkingLotDto;
+import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
+import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
+import ch.zhaw.parkship.reservation.ReservationDto;
+import ch.zhaw.parkship.reservation.ReservationEntity;
+import ch.zhaw.parkship.reservation.ReservationRepository;
+import ch.zhaw.parkship.reservation.ReservationService;
+import ch.zhaw.parkship.user.UserDto;
+import ch.zhaw.parkship.user.UserEntity;
+import ch.zhaw.parkship.user.UserRepository;
 
-@SpringBootTest
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
+@SpringBootTest(classes = ParkshipApplication.class)
 class ReservationServiceTest {
 	@Mock
 	private ReservationRepository reservationRepository;

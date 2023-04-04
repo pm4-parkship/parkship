@@ -1,4 +1,4 @@
-package ch.zhaw.parkship.services;
+package ch.zhaw.parkship.reservation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,14 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ch.zhaw.parkship.dtos.ReservationDto;
-import ch.zhaw.parkship.entities.ReservationEntity;
-import ch.zhaw.parkship.repositories.ParkingLotRepository;
-import ch.zhaw.parkship.repositories.ReservationRepository;
-import ch.zhaw.parkship.repositories.UserRepository;
+import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
+import ch.zhaw.parkship.user.UserRepository;
 
 @Service
-public class ReservationService implements CRUDServiceInterface<ReservationDto, Long> {
+public class ReservationService {
 
 	@Autowired
 	private ReservationRepository reservationRepository;
@@ -27,7 +24,6 @@ public class ReservationService implements CRUDServiceInterface<ReservationDto, 
 	@Autowired
 	private UserRepository userRepository;
 
-	@Override
 	public Optional<ReservationDto> create(ReservationDto data) {
 		var parkingLot = parkingLotRepository.findById(data.getParkingLot().getId());
 		var tenant = userRepository.findById(data.getTenant().getId());
@@ -47,7 +43,6 @@ public class ReservationService implements CRUDServiceInterface<ReservationDto, 
 		return create(data);
 	}
 
-	@Override
 	public Optional<ReservationDto> getById(Long id) {
 		var reservationEntity = reservationRepository.findById(id);
 		if (reservationEntity.isPresent()) {
@@ -56,7 +51,6 @@ public class ReservationService implements CRUDServiceInterface<ReservationDto, 
 		return Optional.empty();
 	}
 
-	@Override
 	public List<ReservationDto> getAll() {
 		var reservationEntities = reservationRepository.findAll();
 		List<ReservationDto> reservationDtos = new ArrayList<>();
@@ -66,7 +60,6 @@ public class ReservationService implements CRUDServiceInterface<ReservationDto, 
 		return reservationDtos;
 	}
 
-	@Override
 	public Optional<ReservationDto> update(ReservationDto data) {
 		var optionalEntity = reservationRepository.findById(data.getId());
 		if (optionalEntity.isPresent()) {
@@ -78,7 +71,6 @@ public class ReservationService implements CRUDServiceInterface<ReservationDto, 
 		return Optional.empty();
 	}
 
-	@Override
 	@Transactional
 	public Optional<ReservationDto> deleteById(Long id) {
 		var optionalEntity = reservationRepository.findById(id);

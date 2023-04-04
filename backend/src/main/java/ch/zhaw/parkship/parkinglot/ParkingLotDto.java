@@ -1,11 +1,12 @@
-package ch.zhaw.parkship.dtos;
+package ch.zhaw.parkship.parkinglot;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import ch.zhaw.parkship.entities.ParkingLotEntity;
+import ch.zhaw.parkship.tag.TagDto;
+import ch.zhaw.parkship.user.UserDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

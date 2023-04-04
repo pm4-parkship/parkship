@@ -1,10 +1,11 @@
-package ch.zhaw.parkship.entities;
+package ch.zhaw.parkship.reservation;
 
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import ch.zhaw.parkship.dtos.ReservationDto;
+import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
+import ch.zhaw.parkship.user.UserEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

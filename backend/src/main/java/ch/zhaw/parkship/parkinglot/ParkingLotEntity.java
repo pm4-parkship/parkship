@@ -1,11 +1,13 @@
-package ch.zhaw.parkship.entities;
+package ch.zhaw.parkship.parkinglot;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import ch.zhaw.parkship.dtos.ParkingLotDto;
+import ch.zhaw.parkship.reservation.ReservationEntity;
+import ch.zhaw.parkship.tag.TagEntity;
+import ch.zhaw.parkship.user.UserEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

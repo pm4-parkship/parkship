@@ -1,8 +1,7 @@
-package ch.zhaw.parkship.dtos;
+package ch.zhaw.parkship.user;
 
 import java.io.Serializable;
 
-import ch.zhaw.parkship.entities.UserEntity;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

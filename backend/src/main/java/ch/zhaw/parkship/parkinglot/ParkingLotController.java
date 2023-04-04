@@ -1,4 +1,4 @@
-package ch.zhaw.parkship.controllers;
+package ch.zhaw.parkship.parkinglot;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.zhaw.parkship.dtos.ParkingLotDto;
-import ch.zhaw.parkship.services.ParkingLotService;
 import jakarta.validation.Valid;
 
 @RestController

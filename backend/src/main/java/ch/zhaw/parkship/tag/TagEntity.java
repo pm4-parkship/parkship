@@ -1,9 +1,9 @@
-package ch.zhaw.parkship.entities;
+package ch.zhaw.parkship.tag;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import ch.zhaw.parkship.dtos.TagDto;
+import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

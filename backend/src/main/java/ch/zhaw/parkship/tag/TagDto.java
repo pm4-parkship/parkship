@@ -1,8 +1,7 @@
-package ch.zhaw.parkship.dtos;
+package ch.zhaw.parkship.tag;
 
 import java.io.Serializable;
 
-import ch.zhaw.parkship.entities.TagEntity;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;

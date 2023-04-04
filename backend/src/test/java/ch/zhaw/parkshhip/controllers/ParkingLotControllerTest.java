@@ -23,18 +23,23 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ch.zhaw.parkship.controllers.ParkingLotController;
-import ch.zhaw.parkship.dtos.ParkingLotDto;
-import ch.zhaw.parkship.dtos.UserDto;
-import ch.zhaw.parkship.services.ParkingLotService;
+import ch.zhaw.parkship.ParkshipApplication;
+import ch.zhaw.parkship.parkinglot.ParkingLotController;
+import ch.zhaw.parkship.parkinglot.ParkingLotDto;
+import ch.zhaw.parkship.parkinglot.ParkingLotService;
+import ch.zhaw.parkship.user.UserDto;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
+@SpringBootTest(classes = ParkshipApplication.class)
 public class ParkingLotControllerTest {
 	private MockMvc mockMvc;
 

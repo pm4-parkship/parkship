@@ -1,4 +1,4 @@
-package ch.zhaw.parkship.services;
+package ch.zhaw.parkship.parkinglot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,14 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ch.zhaw.parkship.dtos.ParkingLotDto;
-import ch.zhaw.parkship.entities.ParkingLotEntity;
-import ch.zhaw.parkship.repositories.ParkingLotRepository;
-import ch.zhaw.parkship.repositories.UserRepository;
+import ch.zhaw.parkship.user.UserRepository;
 
 @Service
 @Transactional
-public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Long> {
+public class ParkingLotService {
 
 	@Autowired
 	private ParkingLotRepository parkingLotRepository;
@@ -24,7 +21,6 @@ public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Lo
 	@Autowired
 	private UserRepository userRepository;
 
-	@Override
 	public Optional<ParkingLotDto> create(ParkingLotDto data) {
 		var owner = userRepository.findById(data.getOwner().getId());
 		if (owner.isPresent()) {
@@ -38,7 +34,6 @@ public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Lo
 		return Optional.empty();
 	}
 
-	@Override
 	public Optional<ParkingLotDto> getById(Long id) {
 		var parkingLotEntity = parkingLotRepository.findById(id);
 		if (parkingLotEntity.isPresent()) {
@@ -47,7 +42,6 @@ public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Lo
 		return Optional.empty();
 	}
 
-	@Override
 	public List<ParkingLotDto> getAll() {
 		var parkingLotEntities = parkingLotRepository.findAll();
 		List<ParkingLotDto> parkingLotDtos = new ArrayList<>();
@@ -57,7 +51,6 @@ public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Lo
 		return parkingLotDtos;
 	}
 
-	@Override
 	public Optional<ParkingLotDto> update(ParkingLotDto data) {
 		var optionalEntity = parkingLotRepository.findById(data.getId());
 		if (optionalEntity.isPresent()) {
@@ -69,7 +62,6 @@ public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Lo
 		return Optional.empty();
 	}
 
-	@Override
 	public Optional<ParkingLotDto> deleteById(Long id) {
 		var optionalEntity = parkingLotRepository.findById(id);
 		if (optionalEntity.isPresent()) {

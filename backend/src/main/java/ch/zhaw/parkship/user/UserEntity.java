@@ -1,9 +1,10 @@
-package ch.zhaw.parkship.entities;
+package ch.zhaw.parkship.user;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import ch.zhaw.parkship.dtos.UserDto;
+import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
+import ch.zhaw.parkship.reservation.ReservationEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
