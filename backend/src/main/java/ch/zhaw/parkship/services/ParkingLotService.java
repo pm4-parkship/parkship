@@ -71,7 +71,7 @@ public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Lo
 		Set<ParkingLotEntity> parkingLots = new HashSet<>();
 		String[] searchTerms = parkingLotSearchDto.getSearchTerm().toLowerCase().replaceAll("\\W"," ").split("\\s+");
 		for(String term : searchTerms){
-			parkingLots.addAll(parkingLotRepository.filterParkingLotsBySearchTerm(term));
+			parkingLots.addAll(parkingLotRepository.findAllByDescriptionContainsIgnoreCase(term));
 		}
 
 		List<ParkingLotDto> parkingLotDtos = new ArrayList<>();

@@ -17,7 +17,9 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLotEntity, Lo
     )
     List<ParkingLotEntity> filterParkingLotsBySearchTerm(String searchTerm);
 
-    List<ParkingLotEntity> findAllByAddressLikeIgnoreCaseOrDescriptionLikeIgnoreCaseOrAddressNrLikeIgnoreCase(String addressTerm, String descriptionTerm, String addressNrTerm);
-
+    List<ParkingLotEntity> findAllByDescriptionContainsIgnoreCase(String description);
+    List<ParkingLotEntity> findAllByAddressContainsIgnoreCase(String address);
+    List<ParkingLotEntity> findAllByAddressNrContainsIgnoreCase(String address);
+    List<ParkingLotEntity> findAllByOwner_NameOrOrOwner_Surname(String name, String surname);
 }
 
