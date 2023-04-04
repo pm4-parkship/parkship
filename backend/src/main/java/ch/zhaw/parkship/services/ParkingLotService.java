@@ -72,6 +72,9 @@ public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Lo
 		String[] searchTerms = parkingLotSearchDto.getSearchTerm().toLowerCase().replaceAll("\\W"," ").split("\\s+");
 		for(String term : searchTerms){
 			parkingLots.addAll(parkingLotRepository.findAllByDescriptionContainsIgnoreCase(term));
+			parkingLots.addAll(parkingLotRepository.findAllByAddressContainsIgnoreCase(term));
+			parkingLots.addAll(parkingLotRepository.findAllByAddressNrContainsIgnoreCase(term));
+			parkingLots.addAll(parkingLotRepository.findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase(term,term));
 		}
 
 		List<ParkingLotDto> parkingLotDtos = new ArrayList<>();

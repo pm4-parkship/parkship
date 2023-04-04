@@ -11,15 +11,9 @@ import java.util.List;
 
 @Repository
 public interface ParkingLotRepository extends JpaRepository<ParkingLotEntity, Long> {
-    @Query(
-        value = "SELECT * FROM \"parking_lot\" WHERE LOWER(\"description\") LIKE %?1% OR LOWER(\"address\") LIKE %?1%",
-        nativeQuery = true
-    )
-    List<ParkingLotEntity> filterParkingLotsBySearchTerm(String searchTerm);
-
     List<ParkingLotEntity> findAllByDescriptionContainsIgnoreCase(String description);
     List<ParkingLotEntity> findAllByAddressContainsIgnoreCase(String address);
     List<ParkingLotEntity> findAllByAddressNrContainsIgnoreCase(String address);
-    List<ParkingLotEntity> findAllByOwner_NameOrOrOwner_Surname(String name, String surname);
+    List<ParkingLotEntity> findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase(String name, String surname);
 }
 
