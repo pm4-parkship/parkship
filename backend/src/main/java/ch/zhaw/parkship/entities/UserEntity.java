@@ -1,14 +1,12 @@
 package ch.zhaw.parkship.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.management.relation.Role;
-
+import ch.zhaw.parkship.dtos.UserDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "Users")
+@Table(name = "\"User\"")
 public class UserEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,16 +36,20 @@ public class UserEntity {
 	private String password;
 
 	@ElementCollection(fetch = FetchType.EAGER)
-	@Enumerated(EnumType.STRING)
-	private Set<Role> roles;
+	private Set<String> roles;
 
 	@Column(nullable = false, unique = true)
 	private String email;
 
 	@OneToMany(mappedBy = "tenant")
 	private Set<ReservationEntity> reservations;
-	
+
 	@OneToMany(mappedBy = "owner")
-    private Set<ParkingLotEntity> parkingLots;
+	private Set<ParkingLotEntity> parkingLots;
+
+	public UserEntity() {
+		this.reservations = new HashSet<>();
+		this.parkingLots = new HashSet<>();
+	}
 
 }

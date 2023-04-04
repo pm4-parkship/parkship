@@ -1,7 +1,9 @@
 package ch.zhaw.parkship.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import ch.zhaw.parkship.dtos.TagDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,8 +29,11 @@ public class TagEntity {
 
 	@Column(nullable = false)
 	private String category;
-	
+
 	@ManyToMany(mappedBy = "tags")
-    private Set<ParkingLotEntity> parkingLots;
-	
+	private Set<ParkingLotEntity> parkingLots;
+
+	public TagEntity() {
+		this.parkingLots = new HashSet<>();
+	}
 }

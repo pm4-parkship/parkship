@@ -7,10 +7,13 @@ import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import ch.zhaw.parkship.dtos.ReservationDto;
 import ch.zhaw.parkship.entities.ReservationEntity;
+import ch.zhaw.parkship.repositories.ParkingLotRepository;
 import ch.zhaw.parkship.repositories.ReservationRepository;
+import ch.zhaw.parkship.repositories.UserRepository;
 
 @Service
 public class ReservationService implements CRUDServiceInterface<ReservationDto, Long> {
@@ -18,12 +21,30 @@ public class ReservationService implements CRUDServiceInterface<ReservationDto, 
 	@Autowired
 	private ReservationRepository reservationRepository;
 
+	@Autowired
+	private ParkingLotRepository parkingLotRepository;
+
+	@Autowired
+	private UserRepository userRepository;
+
 	@Override
 	public Optional<ReservationDto> create(ReservationDto data) {
-		var reservationEntity = new ReservationEntity();
-		BeanUtils.copyProperties(data, reservationEntity);
-		var savedEntity = reservationRepository.save(reservationEntity);
-		return Optional.of(new ReservationDto(savedEntity));
+		var parkingLot = parkingLotRepository.findById(data.getParkingLot().getId());
+		var tenant = userRepository.findById(data.getTenant().getId());
+		if (parkingLot.isPresent() && tenant.isPresent()) {
+			var reservationEntity = new ReservationEntity();
+			BeanUtils.copyProperties(data, reservationEntity);
+			reservationEntity.setParkingLot(parkingLot.get());
+			reservationEntity.setTenant(tenant.get());
+			var savedEntity = reservationRepository.save(reservationEntity);
+			return Optional.of(new ReservationDto(savedEntity));
+		}
+		return Optional.empty();
+	}
+
+	public Optional<ReservationDto> create(Long parkingLotId, ReservationDto data) {
+		data.getParkingLot().setId(parkingLotId);
+		return create(data);
 	}
 
 	@Override
@@ -58,13 +79,16 @@ public class ReservationService implements CRUDServiceInterface<ReservationDto, 
 	}
 
 	@Override
+	@Transactional
 	public Optional<ReservationDto> deleteById(Long id) {
 		var optionalEntity = reservationRepository.findById(id);
 		if (optionalEntity.isPresent()) {
 			var reservationEntity = optionalEntity.get();
-			reservationRepository.deleteById(id);
-			return Optional.of(new ReservationDto(reservationEntity));
+			var ret = new ReservationDto(reservationEntity);
+			reservationRepository.delete(reservationEntity);
+			return Optional.of(ret);
 		}
 		return Optional.empty();
 	}
+
 }

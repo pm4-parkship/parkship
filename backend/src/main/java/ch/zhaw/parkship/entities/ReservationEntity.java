@@ -2,6 +2,9 @@ package ch.zhaw.parkship.entities;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import ch.zhaw.parkship.dtos.ReservationDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,15 +28,17 @@ public class ReservationEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "parking_lot_id", nullable = false)
+	@JsonBackReference
 	private ParkingLotEntity parkingLot;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private UserEntity tenant;
 
-	@Column(nullable = false)
+	@Column(nullable = false, name="\"from\"")
 	private LocalDate from;
 
 	@Column(nullable = false)
 	private LocalDate to;
+
 }

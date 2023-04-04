@@ -3,6 +3,9 @@ package ch.zhaw.parkship.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import ch.zhaw.parkship.dtos.ParkingLotDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,6 +35,7 @@ public class ParkingLotEntity {
 	@JoinColumn(name = "user_id", nullable = false)
 	private UserEntity owner;
 
+	@Column(nullable = true)
 	private String description;
 
 	@ManyToMany
@@ -46,15 +50,19 @@ public class ParkingLotEntity {
 	@Column(nullable = false)
 	private Double latitude;
 
+	@Column(nullable = true)
 	private String address;
-
+	
+	@Column(nullable = true)
 	private String addressNr;
 
+	@Column(nullable = true)
 	private Integer floor;
 
 	@Column(nullable = false)
 	private String nr;
 
+	@Column(nullable = true)
 	private byte[] picture;
 
 	@Column(nullable = false)
@@ -63,8 +71,9 @@ public class ParkingLotEntity {
 	@Column(nullable = false)
 	private String state;
 
-	@OneToMany(mappedBy = "parkingLot", fetch = FetchType.EAGER, cascade = {
+	@OneToMany(mappedBy = "parkingLot", fetch = FetchType.LAZY, cascade = {
 			CascadeType.ALL }, orphanRemoval = true)
+	@JsonManagedReference
 	private Set<ReservationEntity> reservationEntitySet;
 	
 	public ParkingLotEntity() {
