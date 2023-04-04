@@ -1,8 +1,8 @@
 package ch.zhaw.parkshhip;
 
 import ch.zhaw.parkship.ParkshipApplication;
-import ch.zhaw.parkship.todos.Todo;
-import ch.zhaw.parkship.todos.TodoRepository;
+import ch.zhaw.parkship.examples.todos.Todo;
+import ch.zhaw.parkship.examples.todos.TodoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +21,7 @@ public class ContextTest {
     @Test
     public void hallo(){
         List<Todo> list = todoRepository.findAll();
-        Optional<Todo> first = todoRepository.findTodoByTitle("Learn spring boot");
+        Optional<Todo> first = todoRepository.findTodoByTitleContaining("Learn spring boot");
         Optional<Todo> second = todoRepository.findTodoByTitleJpgl("Learn spring boot");
         List<Todo> third = todoRepository.findTodoByTitleNative("Learn spring boot");
     }

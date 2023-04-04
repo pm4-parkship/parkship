@@ -1,4 +1,4 @@
-package ch.zhaw.parkship.todos;
+package ch.zhaw.parkship.examples.todos;
 
 import jakarta.transaction.Transactional;
 import org.springframework.dao.EmptyResultDataAccessException;
