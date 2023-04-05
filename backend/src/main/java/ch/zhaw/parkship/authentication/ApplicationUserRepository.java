@@ -7,7 +7,8 @@ import org.springframework.stereotype.Repository;
  * Reporsitory for managing user data from the database.
  */
 @Repository
-public interface UserRepository extends JpaRepository<ApplicationUser, Integer> {
+public interface ApplicationUserRepository extends JpaRepository<ApplicationUser, Integer> {
     ApplicationUser findByEmail(String email);
+
     boolean existsByEmailOrUsername(String email, String username);
 }

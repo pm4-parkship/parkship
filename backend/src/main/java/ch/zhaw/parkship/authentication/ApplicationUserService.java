@@ -1,11 +1,5 @@
 package ch.zhaw.parkship.authentication;
 
-import jakarta.transaction.Transactional;
-import jdk.jfr.Label;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,20 +7,23 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
- * Manages the user data for request over the controller for
- * signing up and signing in.
+ * Manages the user data for request over the controller for signing up and
+ * signing in.
  */
 @Service
 @Getter
 @Setter
-public class UserService implements UserDetailsService {
+public class ApplicationUserService implements UserDetailsService {
     /**
-     * The default role is USER as this role has the
-     * lowest access level.
+     * The default role is USER as this role has the lowest access level.
      */
     private static final String DEFAULT_ROLE = "USER";
-    private UserRepository userRepository;
+    private ApplicationUserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -34,13 +31,14 @@ public class UserService implements UserDetailsService {
         return passwordEncoder;
     }
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public ApplicationUserService(ApplicationUserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
 
     /**
      * Save a ApplicationUser in the database.
+     *
      * @param applicationUser
      * @return Saved applicationUser
      */
@@ -51,6 +49,7 @@ public class UserService implements UserDetailsService {
 
     /**
      * Get a user from the database by username.
+     *
      * @param username
      * @return The user where username is the email address.
      * @throws UsernameNotFoundException
@@ -61,10 +60,11 @@ public class UserService implements UserDetailsService {
     }
 
     /**
-     * Signs up a new user and saves it in the database. The
-     * password is encoded and the user gets the default role.
+     * Signs up a new user and saves it in the database. The password is encoded and
+     * the user gets the default role.
+     *
      * @param username of the new user
-     * @param email of the new user
+     * @param email    of the new user
      * @param password of the new user
      * @return The saved new user.
      */
