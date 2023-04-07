@@ -10,7 +10,7 @@ const octokit = new Octokit();
 async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { username, password } = req.body as { username: string, password: string };
-    const response = await fetch('/api/auth/signin', {
+    const response = await fetch('http://localhost:8080/api/auth/signin', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
