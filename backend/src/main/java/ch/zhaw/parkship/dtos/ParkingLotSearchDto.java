@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 @Getter
@@ -12,10 +13,10 @@ import java.time.ZonedDateTime;
 public class ParkingLotSearchDto implements Serializable {
 
     private String searchTerm;
-    private ZonedDateTime startDate;
-    private ZonedDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
-    public ParkingLotSearchDto (String searchTerm, ZonedDateTime startDate, ZonedDateTime endDate){
+    public ParkingLotSearchDto (String searchTerm, LocalDate startDate, LocalDate endDate){
 
         this.searchTerm = searchTerm;
         this.startDate = startDate;

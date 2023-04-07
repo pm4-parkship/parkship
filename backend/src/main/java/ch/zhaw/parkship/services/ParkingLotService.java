@@ -16,6 +16,8 @@ public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Lo
 
 	@Autowired
 	private ParkingLotRepository parkingLotRepository;
+	@Autowired
+	private ReservationService reservationService;
 
 	@Override
 	public Optional<ParkingLotDto> create(ParkingLotDto data) {
@@ -75,6 +77,12 @@ public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Lo
 			parkingLots.addAll(parkingLotRepository.findAllByAddressContainsIgnoreCase(term));
 			parkingLots.addAll(parkingLotRepository.findAllByAddressNrContainsIgnoreCase(term));
 			parkingLots.addAll(parkingLotRepository.findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase(term,term));
+		}
+
+		for(ParkingLotEntity lot : parkingLots){
+			if(!reservationService.isFreeInDateRange(lot.getId(), parkingLotSearchDto.getStartDate(), parkingLotSearchDto.getEndDate())){
+				parkingLots.remove(lot);
+			}
 		}
 
 		List<ParkingLotDto> parkingLotDtos = new ArrayList<>();

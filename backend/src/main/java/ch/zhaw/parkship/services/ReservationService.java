@@ -1,5 +1,7 @@
 package ch.zhaw.parkship.services;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -66,5 +68,10 @@ public class ReservationService implements CRUDServiceInterface<ReservationDto, 
 			return Optional.of(new ReservationDto(reservationEntity));
 		}
 		return Optional.empty();
+	}
+
+
+	public boolean isFreeInDateRange(Long id, LocalDate startDate, LocalDate endDate){
+		return reservationRepository.findAllWithOverlappingDates(id,startDate,endDate).isEmpty();
 	}
 }
