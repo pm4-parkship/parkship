@@ -1,10 +1,10 @@
 package ch.zhaw.parkship.examples.todos;
 
-import jakarta.transaction.Transactional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
+import jakarta.transaction.Transactional;
 
 @Component
 public class SpecialTodoService {

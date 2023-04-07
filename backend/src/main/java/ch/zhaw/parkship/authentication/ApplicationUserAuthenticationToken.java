@@ -1,10 +1,9 @@
 package ch.zhaw.parkship.authentication;
 
+import java.util.Collection;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
-
-import java.util.Collection;
 
 /**
  * Class for a JWT token that is associated with a user and his authorities.

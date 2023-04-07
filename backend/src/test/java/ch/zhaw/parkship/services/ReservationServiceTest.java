@@ -2,16 +2,14 @@ package ch.zhaw.parkship.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
 import ch.zhaw.parkship.ParkshipApplication;
 import ch.zhaw.parkship.authentication.ApplicationUser;
 import ch.zhaw.parkship.parkinglot.ParkingLotDto;
@@ -38,57 +35,58 @@ import ch.zhaw.parkship.user.UserRepository;
 @ActiveProfiles("test")
 @SpringBootTest(classes = ParkshipApplication.class)
 class ReservationServiceTest {
-    @Mock
-    private ReservationRepository reservationRepository;
+  @Mock
+  private ReservationRepository reservationRepository;
 
-    @Mock
-    private UserRepository userRepository;
+  @Mock
+  private UserRepository userRepository;
 
-    @Mock
-    private ParkingLotRepository parkingLotRepository;
+  @Mock
+  private ParkingLotRepository parkingLotRepository;
 
-    @InjectMocks
-    private ReservationService reservationService;
+  @InjectMocks
+  private ReservationService reservationService;
 
-    // Sample data for testing
-    private ReservationEntity reservationEntity;
-    private ParkingLotEntity parkingLotEntity;
+  // Sample data for testing
+  private ReservationEntity reservationEntity;
+  private ParkingLotEntity parkingLotEntity;
 
-    @BeforeEach
-    public void setUp() {
-        var userEntity = new UserEntity();
-        parkingLotEntity = new ParkingLotEntity();
-        parkingLotEntity.setId(1);
-        parkingLotEntity.setOwner(userEntity);
-        userEntity.setId(1);
-        userEntity.setApplicationUser(new ApplicationUser("Fritz@mail.com", "fridolin123", "verysecure"));
+  @BeforeEach
+  public void setUp() {
+    var userEntity = new UserEntity();
+    parkingLotEntity = new ParkingLotEntity();
+    parkingLotEntity.setId(1L);
+    parkingLotEntity.setOwner(userEntity);
+    userEntity.setId(1L);
+    userEntity
+        .setApplicationUser(new ApplicationUser("Fritz@mail.com", "fridolin123", "verysecure"));
 
-        reservationEntity = new ReservationEntity();
-        reservationEntity.setId(1);
-        reservationEntity.setTenant(userEntity);
-        reservationEntity.setParkingLot(parkingLotEntity);
-    }
+    reservationEntity = new ReservationEntity();
+    reservationEntity.setId(1L);
+    reservationEntity.setTenant(userEntity);
+    reservationEntity.setParkingLot(parkingLotEntity);
+  }
 
-    private ReservationDto createReservationDto() {
-        ReservationDto data = new ReservationDto();
-        var parkingLot = new ParkingLotDto();
-        var tenant = new UserDto();
-        tenant.setId(1);
-        parkingLot.setId(1);
-        parkingLot.setOwner(tenant);
-        data.setId(1);
-        data.setParkingLot(parkingLot);
-        data.setTenant(tenant);
-        data.setFrom(LocalDate.of(2023, 6, 10));
-        data.setTo(LocalDate.of(2023, 6, 11));
-        return data;
-    }
+  private ReservationDto createReservationDto() {
+    ReservationDto data = new ReservationDto();
+    var parkingLot = new ParkingLotDto();
+    var tenant = new UserDto();
+    tenant.setId(1L);
+    parkingLot.setId(1L);
+    parkingLot.setOwner(tenant);
+    data.setId(1L);
+    data.setParkingLot(parkingLot);
+    data.setTenant(tenant);
+    data.setFrom(LocalDate.of(2023, 6, 10));
+    data.setTo(LocalDate.of(2023, 6, 11));
+    return data;
+  }
 
-    @Test
+  @Test
     public void testCreate() {
-		when(userRepository.findById(anyInt())).thenReturn(Optional.of(reservationEntity.getTenant()));
+		when(userRepository.findById(anyLong())).thenReturn(Optional.of(reservationEntity.getTenant()));
         when(reservationRepository.save(any(ReservationEntity.class))).thenReturn(reservationEntity);
-        when(parkingLotRepository.findById(anyInt())).thenReturn(Optional.of(parkingLotEntity));
+        when(parkingLotRepository.findById(anyLong())).thenReturn(Optional.of(parkingLotEntity));
 
         var data = createReservationDto();
 
@@ -96,39 +94,39 @@ class ReservationServiceTest {
 
         assertEquals(1, result.get().getId());
 
-        verify(parkingLotRepository, times(1)).findById(anyInt());
-        verify(userRepository, times(1)).findById(anyInt());
+        verify(parkingLotRepository, times(1)).findById(anyLong());
+        verify(userRepository, times(1)).findById(anyLong());
         verify(reservationRepository, times(1)).save(any(ReservationEntity.class));
     }
 
-    @Test
+  @Test
     public void testGetById() {
-        when(reservationRepository.findById(anyInt())).thenReturn(Optional.of(reservationEntity));
+        when(reservationRepository.findById(anyLong())).thenReturn(Optional.of(reservationEntity));
 
-        var result = reservationService.getById(1);
+        var result = reservationService.getById(1L);
 
         assertEquals(1, result.get().getId());
-        verify(reservationRepository, times(1)).findById(1);
+        verify(reservationRepository, times(1)).findById(1L);
     }
 
-    @Test
-    public void testGetAll() {
-        List<ReservationEntity> reservationEntities = new ArrayList<>();
-        reservationEntities.add(reservationEntity);
+  @Test
+  public void testGetAll() {
+    List<ReservationEntity> reservationEntities = new ArrayList<>();
+    reservationEntities.add(reservationEntity);
 
-        when(reservationRepository.findAll()).thenReturn(reservationEntities);
+    when(reservationRepository.findAll()).thenReturn(reservationEntities);
 
-        var result = reservationService.getAll();
+    var result = reservationService.getAll();
 
-        assertEquals(1, result.size());
-        assertEquals(1, result.get(0).getId());
+    assertEquals(1, result.size());
+    assertEquals(1, result.get(0).getId());
 
-        verify(reservationRepository, times(1)).findAll();
-    }
+    verify(reservationRepository, times(1)).findAll();
+  }
 
-    @Test
+  @Test
     public void testUpdate() {
-        when(reservationRepository.findById(anyInt())).thenReturn(Optional.of(reservationEntity));
+        when(reservationRepository.findById(anyLong())).thenReturn(Optional.of(reservationEntity));
         when(reservationRepository.save(any(ReservationEntity.class))).thenReturn(reservationEntity);
 
         var data = createReservationDto();
@@ -136,20 +134,20 @@ class ReservationServiceTest {
         var result = reservationService.update(data);
 
         assertEquals(1, result.get().getId());
-        verify(reservationRepository, times(1)).findById(anyInt());
+        verify(reservationRepository, times(1)).findById(anyLong());
         verify(reservationRepository, times(1)).save(any(ReservationEntity.class));
 	}
 
-    @Test
+  @Test
     public void testDeleteById() {
         // Mock the necessary ReservationRepository behavior
-        when(reservationRepository.findById(anyInt())).thenReturn(Optional.of(reservationEntity));
+        when(reservationRepository.findById(anyLong())).thenReturn(Optional.of(reservationEntity));
 
-        var result = reservationService.deleteById(1);
+        var result = reservationService.deleteById(1L);
 
         assertEquals(1, result.get().getId());
         // Add assertions for other properties
-        verify(reservationRepository, times(1)).findById(1);
+        verify(reservationRepository, times(1)).findById(1L);
         verify(reservationRepository, times(1)).delete(reservationEntity);
     }
 }
