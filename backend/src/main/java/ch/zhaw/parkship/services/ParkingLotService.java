@@ -1,6 +1,7 @@
 package ch.zhaw.parkship.services;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import ch.zhaw.parkship.dtos.ParkingLotSearchDto;
 import org.springframework.beans.BeanUtils;
@@ -79,11 +80,9 @@ public class ParkingLotService implements CRUDServiceInterface<ParkingLotDto, Lo
 			parkingLots.addAll(parkingLotRepository.findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase(term,term));
 		}
 
-		for(ParkingLotEntity lot : parkingLots){
-			if(!reservationService.isFreeInDateRange(lot.getId(), parkingLotSearchDto.getStartDate(), parkingLotSearchDto.getEndDate())){
-				parkingLots.remove(lot);
-			}
-		}
+		parkingLots = parkingLots.stream()
+				.filter(lot -> reservationService.isFreeInDateRange(lot.getId(), parkingLotSearchDto.getStartDate(), parkingLotSearchDto.getEndDate()))
+				.collect(Collectors.toSet());
 
 		List<ParkingLotDto> parkingLotDtos = new ArrayList<>();
 		for (ParkingLotEntity entity : parkingLots) {
