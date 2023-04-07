@@ -1,8 +1,11 @@
 package ch.zhaw.parkshhip;
 
-import ch.zhaw.parkship.ParkshipApplication;
-import ch.zhaw.parkship.authentication.AuthenticationController;
-import ch.zhaw.parkship.authentication.UserService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,8 +14,9 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import ch.zhaw.parkship.ParkshipApplication;
+import ch.zhaw.parkship.authentication.ApplicationUserService;
+import ch.zhaw.parkship.authentication.AuthenticationController;
 
 
 /**
@@ -25,7 +29,7 @@ public class AuthenticationControllerContextTest {
 
 
     @Autowired
-    UserService userService;
+    ApplicationUserService userService;
 
     @Autowired
     AuthenticationController authenticationController;

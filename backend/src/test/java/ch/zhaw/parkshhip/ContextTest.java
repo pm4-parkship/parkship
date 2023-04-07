@@ -1,15 +1,14 @@
 package ch.zhaw.parkshhip;
 
-import ch.zhaw.parkship.ParkshipApplication;
-import ch.zhaw.parkship.examples.todos.Todo;
-import ch.zhaw.parkship.examples.todos.TodoRepository;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.List;
-import java.util.Optional;
+import ch.zhaw.parkship.ParkshipApplication;
+import ch.zhaw.parkship.examples.todos.Todo;
+import ch.zhaw.parkship.examples.todos.TodoRepository;
 
 @ActiveProfiles("test")
 @SpringBootTest(classes = ParkshipApplication.class)

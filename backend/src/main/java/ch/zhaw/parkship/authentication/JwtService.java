@@ -1,6 +1,11 @@
 package ch.zhaw.parkship.authentication;
 
-import ch.zhaw.parkship.configuration.JwtConfiguration;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Service;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
@@ -8,14 +13,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import ch.zhaw.parkship.configuration.JwtConfiguration;
 
 /**
  * Service for generating and verifying JWTs.
