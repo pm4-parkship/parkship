@@ -27,7 +27,7 @@ public class ParkshipApplication {
     public static void main(String[] args) {
         SpringApplication springApp = new SpringApplication(ParkshipApplication.class);
 
-        if (args.length == 1) {
+        if (args.length == 0) {
             springApp.setAdditionalProfiles("dev");
         }
 
