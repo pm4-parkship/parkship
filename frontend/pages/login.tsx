@@ -28,7 +28,7 @@ export default function Login() {
 
             try {
               await mutateUser(
-                await fetchJson('http://localhost:8080/api/auth/signin', {
+                await fetchJson('/api/auth/signin', {
                   method: 'POST',
                     credentials: 'include',
                   headers: { 'Content-Type': 'application/json' },
