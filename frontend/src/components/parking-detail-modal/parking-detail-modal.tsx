@@ -1,4 +1,5 @@
 import {
+  Button,
   Divider,
   Grid,
   Grow,
@@ -14,14 +15,10 @@ import {
 import React from 'react';
 import { makeStyles } from '@mui/styles';
 import { ParkingLotModel } from '../../models';
-import { logger } from '../../logger';
 import { Icon } from '@iconify/react';
 import ImageCustom from '../image/image-custom';
 import { nanoid } from 'nanoid';
 import Checkbox from '@mui/material/Checkbox';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-
 
 const ParkingDetailModal = ({
   showModal = true,
@@ -87,13 +84,20 @@ const ParkingDetailModal = ({
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       <Typography component={'span'} variant="body1">
-                        <Checkbox checked />Mo
-                        <Checkbox checked />Di
-                        <Checkbox checked />Mi
-                        <Checkbox checked />Do
-                        <Checkbox checked />Fr
-                        <Checkbox checked />Sa
-                        <Checkbox checked />So
+                        <Checkbox checked />
+                        Mo
+                        <Checkbox checked />
+                        Di
+                        <Checkbox checked />
+                        Mi
+                        <Checkbox checked />
+                        Do
+                        <Checkbox checked />
+                        Fr
+                        <Checkbox checked />
+                        Sa
+                        <Checkbox checked />
+                        So
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -141,7 +145,7 @@ const ParkingDetailModal = ({
               </Table>
             </Grid>
 
-            <Grid item xs={12} sm={12}  md={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
@@ -160,9 +164,9 @@ const ParkingDetailModal = ({
               </Table>
             </Grid>
 
-            <Grid item xs={0} sm={0}  md={6}></Grid>
+            <Grid item xs={0} sm={0} md={6}></Grid>
 
-            <Grid item xs={12} sm={12}  md={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
@@ -193,6 +197,9 @@ const ParkingDetailModal = ({
               </div>
             ))}
           </Stack>
+          <Button className={classes.button} variant="outlined">
+            reservieren
+          </Button>
         </div>
       </Modal>
     </>
@@ -200,6 +207,9 @@ const ParkingDetailModal = ({
 };
 
 const useStyles = makeStyles((theme) => ({
+  button: {
+    float: 'right'
+  },
   tableRoot: {
     overflow: 'scroll'
   },
@@ -217,7 +227,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       display: 'grid',
       gap: '0',
-      marginBottom: '5px', 
+      marginBottom: '5px'
     },
     gap: '20px'
   },
