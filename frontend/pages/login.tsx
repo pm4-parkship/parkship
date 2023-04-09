@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import fetchJson, { FetchError } from '../src/auth/fetch-json';
+import fetchJson, { FetchError } from '../src/fetch-json/fetch-json';
 import { logger } from '../src/logger';
 import Form from '../src/auth/form';
 import useUser from '../src/auth/use-user';
@@ -7,7 +7,7 @@ import useUser from '../src/auth/use-user';
 export default function Login() {
   // here we just check if user is already logged in and redirect to profile
   const { mutateUser } = useUser({
-    redirectTo: '/profile/',
+    redirectTo: '/search/',
     redirectIfFound: true
   });
 
@@ -22,19 +22,24 @@ export default function Login() {
             event.preventDefault();
 
             const body = {
-              email: event.currentTarget.email.value,
-              password: event.currentTarget.password.value,
+              email: 'admin@parkship.ch',
+              password: 'admin'
             };
 
             try {
-              await mutateUser(
-                await fetchJson('/backend/auth/signin', {
-                  method: 'POST',
-                  credentials: 'include',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(body),
-                })
-              );
+              await fetchJson('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+              }).then((res: any) => {
+                logger.log('response of the call', res);
+                mutateUser({
+                  roles: res.roles,
+                  token: res.token,
+                  username: res.username,
+                  isLoggedIn: true
+                });
+              });
             } catch (error) {
               if (error instanceof FetchError) {
                 setErrorMsg(error.data.message);
