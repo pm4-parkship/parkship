@@ -114,7 +114,7 @@ export const getDesignTokens = (mode: any) => ({
       fontWeight: 700
     },
     body2: {
-      fontSize: '0.75rem'
+      fontSize: '1rem'
     },
     subtitle2: {
       fontWeight: 1000,
@@ -167,15 +167,21 @@ export const getDesignTokens = (mode: any) => ({
     MuiTableRow: {
       styleOverrides: {
         root: {
-          border: 0
+          borderBottom: '1px solid rgb(224, 224, 224)',
+          '&:last-child': {
+            borderBottom: 0
+          },
+          '&:first-of-type': {
+            borderBottom: '1px solid rgb(224, 224, 224)'
+          }
         }
       }
     },
     MuiTableCell: {
       styleOverrides: {
         root: {
-          border: 0,
-          padding: '0 0 0 0'
+          padding: 16,
+          border: 0
         }
       }
     },

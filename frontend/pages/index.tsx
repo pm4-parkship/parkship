@@ -8,7 +8,7 @@ const Index = () => {
 
   return (
     <div className={classes.superRoot}>
-      <Grid container justifyContent="center" display="flex" spacing={2}>
+      <Grid container justifyContent="center" display="flex">
         <Grid item xs={12}>
           <SearchPage />
         </Grid>
