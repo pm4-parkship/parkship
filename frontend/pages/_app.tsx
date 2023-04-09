@@ -78,6 +78,7 @@ const App = ({
                   draggable
                   pauseOnHover
                   limit={5}
+                  theme={mode}
                 />
                 <LocalizationProvider
                   dateAdapter={AdapterDateFns}

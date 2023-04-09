@@ -3,6 +3,7 @@ import TableRow from '@mui/material/TableRow';
 import Link from '@mui/material/Link';
 import React from 'react';
 import { Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 interface CustomTableRowProps {
   rowKey: number;
@@ -29,6 +30,7 @@ const CustomTableRow = ({
       event.stopPropagation();
     }
   };
+  const classes = useStyles();
 
   return (
     <TableRow key={rowKey} onClick={() => onRowClick(data)}>
@@ -39,7 +41,11 @@ const CustomTableRow = ({
           key={`${cell}-${index}`}
         >
           {onCellClick.has(cell) ? (
-            <Link href="#" onClick={(event) => handleLink(event, cell, data)}>
+            <Link
+              className={classes.link}
+              href="#"
+              onClick={(event) => handleLink(event, cell, data)}
+            >
               <Typography variant={'body2'}>{cell}</Typography>
             </Link>
           ) : (
@@ -52,3 +58,9 @@ const CustomTableRow = ({
 };
 
 export default CustomTableRow;
+
+const useStyles = makeStyles((theme) => ({
+  link: {
+    display: 'inline-block'
+  }
+}));
