@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: '1600px',
     minHeight: '100vh',
-    margin: '0 auto',
+    margin: '1rem auto',
     background: theme.palette.background.default
   },
   topBarBottom: {

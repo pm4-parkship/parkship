@@ -32,7 +32,7 @@ const App = ({
   pageProps,
   emotionCache = clientSideEmotionCache
 }: AppPropsWithApm) => {
-  const [mode, setMode] = useState<string>('dark');
+  const [mode, setMode] = useState<string>('light');
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
