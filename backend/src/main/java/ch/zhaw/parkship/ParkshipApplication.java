@@ -77,6 +77,7 @@ public class ParkshipApplication {
             userRepository.save(thirdUserEntity);
             userRepository.save(adminEntity);
 
+
             if (todoRepository.count() == 0) {
                 List<Todo> todos = Arrays.asList(new Todo("Learn spring boot", "A must!"),
                         new Todo("Learn react.js", "next.js rocks!"), new Todo("Learn docker", "containerize this!"),

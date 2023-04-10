@@ -1,8 +1,8 @@
 package ch.zhaw.parkship.parkinglot;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -119,5 +119,26 @@ public class ParkingLotService {
       return ret;
     }
     return Optional.empty();
+  }
+
+  public List<ParkingLotDto> getBySearchTerm(ParkingLotSearchDto parkingLotSearchDto){
+    Set<ParkingLotEntity> parkingLots = new HashSet<>();
+    String[] searchTerms = parkingLotSearchDto.getSearchTerm().toLowerCase().replaceAll("\\W"," ").split("\\s+");
+    for(String term : searchTerms){
+      parkingLots.addAll(parkingLotRepository.findAllByDescriptionContainsIgnoreCase(term));
+      parkingLots.addAll(parkingLotRepository.findAllByAddressContainsIgnoreCase(term));
+      parkingLots.addAll(parkingLotRepository.findAllByAddressNrContainsIgnoreCase(term));
+      parkingLots.addAll(parkingLotRepository.findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase(term,term));
+    }
+
+//    parkingLots = parkingLots.stream()
+//            .filter(lot -> reservationService.isFreeInDateRange(lot.getId(), parkingLotSearchDto.getStartDate(), parkingLotSearchDto.getEndDate()))
+//            .collect(Collectors.toSet());
+
+    List<ParkingLotDto> parkingLotDtos = new ArrayList<>();
+    for (ParkingLotEntity entity : parkingLots) {
+      parkingLotDtos.add(new ParkingLotDto(entity));
+    }
+    return parkingLotDtos;
   }
 }
