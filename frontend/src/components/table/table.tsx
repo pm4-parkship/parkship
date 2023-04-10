@@ -7,8 +7,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { format } from 'date-fns';
-import Link from '@mui/material/Link';
 import { styled } from '@mui/styles';
+import ParkingReservationConfirmationModal, {
+  ParkplatzAction
+} from '../parking-reservation-confirmation-modal/parking-reservation-confirmation-modal';
+import fetchJson from 'src/auth/fetch-json';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -72,7 +75,20 @@ function getFormattedAvailabilitySpan(startDatum: Date, endDatum: Date) {
   );
 }
 
-const TableComponent = () => {
+async function makeReservation(parkplatzAction: ParkplatzAction) {
+  const body = {
+    parkplatzAction
+  };
+
+  //Todo Backend API definieren
+  await fetchJson('/api/' + parkplatzAction, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+}
+
+const TableComponent = ({ status }: { status: ParkplatzAction }) => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -99,14 +115,15 @@ const TableComponent = () => {
                 {getFormattedAvailabilitySpan(row.startDatum, row.endDatum)}
               </StyledTableCell>
               <StyledTableCell align="center">
-                <Link
-                  href="#"
-                  onClick={() => {
-                    //Todo Reservation
-                  }}
-                >
-                  Reservieren
-                </Link>
+                <ParkingReservationConfirmationModal
+                  bezeichnung={row.bezeichnung}
+                  requestType={status}
+                  von={row.startDatum}
+                  bis={row.endDatum}
+                  makeReservation={(parkplatzAction) =>
+                    makeReservation(parkplatzAction)
+                  }
+                ></ParkingReservationConfirmationModal>
               </StyledTableCell>
             </StyledTableRow>
           ))}
