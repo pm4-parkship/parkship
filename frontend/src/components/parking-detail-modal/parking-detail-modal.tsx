@@ -256,7 +256,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
     borderRadius: '0%',
     textAlign: 'left',
-    overflow: 'hidden',
+    overflow: 'scroll',
     textOverflow: 'ellipsis',
     padding: '20px',
     top: '50%',
