@@ -61,6 +61,329 @@ const Index = () => {
     price: 1200,
     state: 'busy',
     tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  } ,
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
+  },
+  {
+    address: 'Dorfstrasse',
+    addressNr: '8',
+    description: 'Prakplatz ist ein kleiner Parkplatz, nicht für alle Autos geignet.',
+    floor: 123,
+    latitude: 0,
+    longitude: 0,
+    nr: 'A2',
+    owner: 'Benjamin Blümchen',
+    pictures: [
+      'https://placehold.co/600x600.png',
+      'https://placehold.co/600x600.png'
+    ],
+    price: 1200,
+    state: 'busy',
+    tags: ['nice view', 'nice view', 'nice view', 'nice view']
   }
 ];
 
