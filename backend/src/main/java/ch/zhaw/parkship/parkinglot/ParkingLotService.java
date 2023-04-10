@@ -3,6 +3,7 @@ package ch.zhaw.parkship.parkinglot;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import ch.zhaw.parkship.reservation.ReservationService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,9 +23,10 @@ public class ParkingLotService {
 
   @Autowired
   private ParkingLotRepository parkingLotRepository;
-
   @Autowired
   private UserRepository userRepository;
+  @Autowired
+  private ReservationService reservationService;
 
   /**
    *
@@ -131,9 +133,9 @@ public class ParkingLotService {
       parkingLots.addAll(parkingLotRepository.findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase(term,term));
     }
 
-//    parkingLots = parkingLots.stream()
-//            .filter(lot -> reservationService.isFreeInDateRange(lot.getId(), parkingLotSearchDto.getStartDate(), parkingLotSearchDto.getEndDate()))
-//            .collect(Collectors.toSet());
+    parkingLots = parkingLots.stream()
+            .filter(lot -> reservationService.isFreeInDateRange(lot.getId(), parkingLotSearchDto.getStartDate(), parkingLotSearchDto.getEndDate()))
+            .collect(Collectors.toSet());
 
     List<ParkingLotDto> parkingLotDtos = new ArrayList<>();
     for (ParkingLotEntity entity : parkingLots) {
