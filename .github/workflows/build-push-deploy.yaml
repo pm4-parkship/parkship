@@ -26,6 +26,10 @@ jobs:
         working-directory: ./backend
         run: mvn clean install
 
+      - name: Run tests with maven
+        working-directory: ./backend
+        run: mvn test
+
       - name: Setup node.js
         uses: actions/setup-node@v3
         with:
