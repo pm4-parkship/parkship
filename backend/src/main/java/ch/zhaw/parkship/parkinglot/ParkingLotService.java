@@ -8,6 +8,8 @@ import ch.zhaw.parkship.reservation.ReservationService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ch.zhaw.parkship.user.UserRepository;
@@ -190,5 +192,9 @@ public class ParkingLotService {
     if(maxIndex > numOfResults) maxIndex -= size - (numOfResults % size);
 
     return parkingLotDtos.subList(lowestIndex, maxIndex);
+  }
+
+  public Page<ParkingLotEntity> search(String query, LocalDate startDate, LocalDate endDate, int pageSize) {
+    return parkingLotRepository.search(query, startDate, endDate, Pageable.ofSize(pageSize));
   }
 }

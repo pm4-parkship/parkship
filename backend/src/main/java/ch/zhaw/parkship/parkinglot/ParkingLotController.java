@@ -122,4 +122,16 @@ public class ParkingLotController {
                                               @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size){
     return parkingLotService.getBySearchTerm(searchTerm, startDate, endDate, page, size);
   }
+
+  @GetMapping("/search")
+  public List<ParkingLotDto> search(@RequestParam(defaultValue = "") String searchTerm,
+                                              @RequestParam(defaultValue = "") LocalDate startDate,
+                                              @RequestParam(defaultValue = "") LocalDate endDate,
+                                              @RequestParam(defaultValue = DEFAULT_PAGE_NUM) int page,
+                                              @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size){
+    return parkingLotService.search(searchTerm, startDate, endDate, size)
+            .stream()
+            .map(ParkingLotDto::new)
+            .toList();
+  }
 }
