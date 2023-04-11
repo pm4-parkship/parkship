@@ -34,7 +34,7 @@ The application will be available under http://localhost:3000
 
 Hint: 
 
-fetch requests can be sent to http://localhost/api/...
+fetch requests can be sent to http://localhost/backend/...
 
 The requests will be proxied to the backend on Port 8080.
 
