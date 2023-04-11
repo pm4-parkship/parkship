@@ -1,28 +1,5 @@
 import { ParkingLotModel } from '../../src/models';
 
-export const searchDummy = [
-  [
-    'Parkplatz A1',
-    'in der Ecke',
-    'Toni Balloni',
-    '01.02.2023 - 01.02.2023',
-    'reservieren'
-  ],
-  [
-    'Parkplatz A2',
-    'im Schnee',
-    'Eisbär Knut',
-    '01.02.2023 - 01.02.2023',
-    'reservieren'
-  ],
-  [
-    'Parkplatz A3',
-    'im Büro',
-    'Stanley Parabel',
-    '01.02.2023 - 01.02.2023',
-    'reservieren'
-  ]
-];
 export const parkingDummyData: ParkingLotModel[] = [
   {
     id: 'Parkplatz A1',

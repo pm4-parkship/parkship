@@ -5,7 +5,9 @@ import { TagData } from '../../src/components/search-bar/tag-bar';
 import SearchParkingLotTable from '../../src/components/search-parking-lot/search-parking-lot-table';
 import ParkingDetailModal from '../../src/components/parking-detail-modal/parking-detail-modal';
 import { ParkingLotModel } from '../../src/models';
-import { searchDummy, parkingDummyData } from './dummy';
+import { parkingDummyData } from './dummy';
+import fetchJson from '../../src/auth/fetch-json';
+import { formatDate } from '../../src/date/date-formatter';
 
 export interface SearchParameters {
   searchTerm: string;
@@ -15,35 +17,48 @@ export interface SearchParameters {
 }
 
 const SearchPage = () => {
-  const [searchResult, setSearchResult] = useState<SearchParameters | null>(
-    null
-  );
+  const [searchResult, setSearchResult] = useState<ParkingLotModel[]>([]);
+
   const [showDetails, setShowDetails] = useState(false);
   const [selectedParkingLot, setSelectedParkingLot] =
     useState<ParkingLotModel>();
-  const fetchParkingSpots = (searchParameters: SearchParameters) => {
-    setSearchResult(() => searchParameters);
-  };
+
   const onSelectParkingLot = (data: string[]) => {
     const id = data[0];
-    setSelectedParkingLot(() =>
-      parkingDummyData.find((value) => value.id == id)
-    );
+    setSelectedParkingLot(() => searchResult.find((value) => value.id == id));
     setShowDetails(true);
   };
+
+  const makeOnSearch = (searchParameters: SearchParameters) => {
+    fetchParkingSpots(searchParameters, false)
+      .then((result) => {
+        setSearchResult(result);
+      })
+      .catch();
+  };
+
+  const mappedResult: Array<string[]> = searchResult.map((item) => {
+    return [
+      `${item.id}`,
+      `${item.address} ${item.addressNr}`,
+      `${item.owner}`,
+      `${formatDate(new Date())} - ${formatDate(new Date())}`,
+      `reservieren`
+    ];
+  });
+
   return (
     <Grid padding={2}>
       <Grid item xs={12}>
-        <SearchBar fetchParkingSpots={fetchParkingSpots}></SearchBar>
+        <SearchBar makeOnSearch={makeOnSearch}></SearchBar>
       </Grid>
 
       <Grid item xs={12}>
         {/*todo add result and loading*/}
         {searchResult ? (
           <div>
-            <Typography>{JSON.stringify(searchResult)}</Typography>
             <SearchParkingLotTable
-              parkingLots={searchDummy}
+              parkingLots={mappedResult}
               onRowClick={onSelectParkingLot}
             ></SearchParkingLotTable>
           </div>
@@ -62,4 +77,24 @@ const SearchPage = () => {
   );
 };
 
+const fetchParkingSpots = (
+  searchParameters: SearchParameters,
+  useApi = false
+): Promise<ParkingLotModel[]> => {
+  if (useApi) {
+    const body = {};
+    return fetchJson('/api/search', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+  } else {
+    return new Promise((resolve, reject) => {
+      resolve(parkingDummyData);
+      reject('epic fail');
+    });
+  }
+};
 export default SearchPage;

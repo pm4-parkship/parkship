@@ -5,19 +5,16 @@ import {
   ReservationModel,
   ReservationState
 } from '../../src/models/reservation/reservation.model';
-import { format } from 'date-fns';
-import { de } from 'date-fns/locale';
 import { dummy } from './dummy';
 import { logger } from '../../src/logger';
 import { Typography } from '@mui/material';
+import fetchJson from '../../src/auth/fetch-json';
+import { formatDate } from '../../src/date/date-formatter';
 
 export interface ReservationFilterData {
   states: Set<ReservationState>;
 }
 
-const formatDate = (date: Date): string => {
-  return format(date, 'P', { locale: de });
-};
 const MyReservationPage = () => {
   const initFilter: ReservationFilterData = { states: new Set() };
 
@@ -82,9 +79,12 @@ const noData = (
 
 const fetchReservations = (useApi: boolean): Promise<ReservationModel[]> => {
   if (useApi) {
-    return new Promise((resolve, reject) => {
-      return;
-    }); // todo
+    return fetchJson('/api/reservations', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   } else {
     return new Promise((resolve, reject) => {
       resolve(dummy);
