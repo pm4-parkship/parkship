@@ -24,6 +24,8 @@ public class ParkingLotController {
 
   @Autowired
   private ParkingLotService parkingLotService;
+  private final String DEFAULT_PAGE_NUM = "0";
+  private final String DEFAULT_PAGE_SIZE = "100";
 
   /**
    * This end-point creates a new parking lot with the provided parking lot data.
@@ -113,7 +115,11 @@ public class ParkingLotController {
   }
 
   @GetMapping("/searchTerm")
-  public List<ParkingLotDto> searchParkingLot(@RequestParam String searchTerm, @RequestParam LocalDate startDate, @RequestParam LocalDate endDate){
-    return parkingLotService.getBySearchTerm(searchTerm, startDate, endDate);
+  public List<ParkingLotDto> searchParkingLot(@RequestParam(defaultValue = "") String searchTerm,
+                                              @RequestParam LocalDate startDate,
+                                              @RequestParam LocalDate endDate,
+                                              @RequestParam(defaultValue = DEFAULT_PAGE_NUM) int page,
+                                              @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size){
+    return parkingLotService.getBySearchTerm(searchTerm, startDate, endDate, page, size);
   }
 }

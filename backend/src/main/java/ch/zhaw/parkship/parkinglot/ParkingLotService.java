@@ -125,7 +125,7 @@ public class ParkingLotService {
     return Optional.empty();
   }
 
-  public List<ParkingLotDto> getBySearchTerm(String searchTerm, LocalDate startDate, LocalDate endDate){
+  public List<ParkingLotDto> getBySearchTerm(String searchTerm, LocalDate startDate, LocalDate endDate, int page, int size){
     Set<ParkingLotEntity> parkingLots = new HashSet<>();
     String[] searchTerms = searchTerm.toLowerCase().replaceAll("\\W"," ").split("\\s+");
     for(String term : searchTerms){
@@ -143,6 +143,22 @@ public class ParkingLotService {
     for (ParkingLotEntity entity : parkingLots) {
       parkingLotDtos.add(new ParkingLotDto(entity));
     }
-    return parkingLotDtos;
+
+    return getParkingLotDtosPage(page, size, parkingLotDtos);
+  }
+
+  private static List<ParkingLotDto> getParkingLotDtosPage(int page, int size, List<ParkingLotDto> parkingLotDtos) {
+    int maxIndex = (page +1)* size;
+    int lowestIndex = maxIndex- size;
+    int numOfResults = parkingLotDtos.size();
+
+    if(lowestIndex > numOfResults-1) {
+     parkingLotDtos.clear();
+     return parkingLotDtos;
+    }
+
+    if(maxIndex > numOfResults) maxIndex -= size - (numOfResults % size);
+
+    return parkingLotDtos.subList(lowestIndex, maxIndex);
   }
 }
