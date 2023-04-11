@@ -142,10 +142,12 @@ public class ParkingLotService {
       parkingLots.addAll(parkingLotRepository.findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase(term,term));
     }
 
-    parkingLots = parkingLots.stream()
-            .filter(lot -> reservationService.isFreeInDateRange(lot.getId(), startDate, endDate))
-            .collect(Collectors.toSet());
-
+    if(startDate != null && endDate != null) {
+      parkingLots = parkingLots.stream()
+              .filter(lot -> reservationService.isFreeInDateRange(lot.getId(), startDate, endDate))
+              .collect(Collectors.toSet());
+    }
+    
     List<ParkingLotDto> parkingLotDtos = new ArrayList<>();
     for (ParkingLotEntity entity : parkingLots) {
       parkingLotDtos.add(new ParkingLotDto(entity));
