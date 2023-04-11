@@ -8,6 +8,8 @@ import { ParkingLotModel } from '../../src/models';
 import { parkingDummyData } from './dummy';
 import fetchJson from '../../src/auth/fetch-json';
 import { formatDate } from '../../src/date/date-formatter';
+import { logger } from '../../src/logger';
+import { format } from 'date-fns';
 
 export interface SearchParameters {
   searchTerm: string;
@@ -82,13 +84,14 @@ const fetchParkingSpots = (
   useApi = false
 ): Promise<ParkingLotModel[]> => {
   if (useApi) {
-    const body = {};
-    return fetchJson('/api/search', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
+    const query = new URLSearchParams({
+      searchTerm: searchParameters.searchTerm,
+      startDate: format(new Date(searchParameters.fromDate), 'yyy-MM-dd'),
+      endDate: format(new Date(searchParameters.toDate), 'yyy-MM-dd')
+    });
+
+    return fetchJson('/api/parking-lot/searchTerm?' + query, {
+      method: 'GET'
     });
   } else {
     return new Promise((resolve, reject) => {
