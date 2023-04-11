@@ -1,5 +1,6 @@
 package ch.zhaw.parkship.parkinglot;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ch.zhaw.parkship.user.UserRepository;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -123,9 +125,9 @@ public class ParkingLotService {
     return Optional.empty();
   }
 
-  public List<ParkingLotDto> getBySearchTerm(ParkingLotSearchDto parkingLotSearchDto){
+  public List<ParkingLotDto> getBySearchTerm(String searchTerm, LocalDate startDate, LocalDate endDate){
     Set<ParkingLotEntity> parkingLots = new HashSet<>();
-    String[] searchTerms = parkingLotSearchDto.getSearchTerm().toLowerCase().replaceAll("\\W"," ").split("\\s+");
+    String[] searchTerms = searchTerm.toLowerCase().replaceAll("\\W"," ").split("\\s+");
     for(String term : searchTerms){
       parkingLots.addAll(parkingLotRepository.findAllByDescriptionContainsIgnoreCase(term));
       parkingLots.addAll(parkingLotRepository.findAllByAddressContainsIgnoreCase(term));
@@ -134,7 +136,7 @@ public class ParkingLotService {
     }
 
     parkingLots = parkingLots.stream()
-            .filter(lot -> reservationService.isFreeInDateRange(lot.getId(), parkingLotSearchDto.getStartDate(), parkingLotSearchDto.getEndDate()))
+            .filter(lot -> reservationService.isFreeInDateRange(lot.getId(), startDate, endDate))
             .collect(Collectors.toSet());
 
     List<ParkingLotDto> parkingLotDtos = new ArrayList<>();
