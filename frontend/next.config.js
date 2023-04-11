@@ -6,8 +6,8 @@ module.exports = {
       ? []
       : [
           {
-            source: '/api/:path*',
-            destination: 'http://localhost:8080/:path*'
+            source: '/backend/:path*',
+            destination: 'http://localhost:8080/backend/:path*'
           }
         ];
   }
