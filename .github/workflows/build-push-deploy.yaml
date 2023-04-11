@@ -20,6 +20,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: maven
 
       - name: Build backend with Maven
         working-directory: ./backend
@@ -29,6 +30,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18"
+          cache: node
       
       - name: Install npm packages
         working-directory: ./frontend

@@ -1,4 +1,4 @@
-name: Java CI
+name: Backend CI
 
 on:
   push:
@@ -20,7 +20,12 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: maven
 
       - name: Build backend with Maven
         working-directory: ./backend
         run: mvn clean install
+
+      - name: Run tests
+        working-directory: ./backend
+        run: mvn test
