@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import ch.zhaw.parkship.reservation.ReservationService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ch.zhaw.parkship.user.UserRepository;
@@ -29,6 +30,9 @@ public class ParkingLotService {
   private UserRepository userRepository;
   @Autowired
   private ReservationService reservationService;
+
+  @Value( "${search.blacklist}")
+  private Set<String> blackList;
 
   /**
    *
@@ -125,9 +129,12 @@ public class ParkingLotService {
     return Optional.empty();
   }
 
+
   public List<ParkingLotDto> getBySearchTerm(String searchTerm, LocalDate startDate, LocalDate endDate, int page, int size){
     Set<ParkingLotEntity> parkingLots = new HashSet<>();
-    String[] searchTerms = searchTerm.toLowerCase().replaceAll("\\W"," ").split("\\s+");
+    Set <String> searchTerms = new HashSet<String>(Arrays.asList(searchTerm.toLowerCase().replaceAll("\\W"," ").split("\\s+")));
+    searchTerms.removeAll(blackList);
+
     for(String term : searchTerms){
       parkingLots.addAll(parkingLotRepository.findAllByDescriptionContainsIgnoreCase(term));
       parkingLots.addAll(parkingLotRepository.findAllByAddressContainsIgnoreCase(term));
@@ -147,7 +154,8 @@ public class ParkingLotService {
     return getParkingLotDtosPage(page, size, parkingLotDtos);
   }
 
-  private static List<ParkingLotDto> getParkingLotDtosPage(int page, int size, List<ParkingLotDto> parkingLotDtos) {
+
+  private List<ParkingLotDto> getParkingLotDtosPage(int page, int size, List<ParkingLotDto> parkingLotDtos) {
     int maxIndex = (page +1)* size;
     int lowestIndex = maxIndex- size;
     int numOfResults = parkingLotDtos.size();
