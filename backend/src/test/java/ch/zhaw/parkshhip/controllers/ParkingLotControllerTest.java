@@ -9,7 +9,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,11 +64,16 @@ public class ParkingLotControllerTest {
     parkingLotDto.setId(1L);
     parkingLotDto.setOwner(new UserDto());
     parkingLotDto.getOwner().setId(2L);
+    parkingLotDto.getOwner().setName("Max");
+    parkingLotDto.getOwner().setSurname("Muster");
     parkingLotDto.setLongitude(15.2);
     parkingLotDto.setLatitude(11.22);
     parkingLotDto.setNr("11A");
     parkingLotDto.setPrice(444.4);
     parkingLotDto.setState("State");
+    parkingLotDto.setAddress("Muster Street");
+    parkingLotDto.setAddressNr("44");
+    parkingLotDto.setDescription("next to the entrance");
     return parkingLotDto;
   }
 
@@ -173,4 +181,19 @@ public class ParkingLotControllerTest {
 
 	    verify(parkingLotService, times(1)).deleteById(1L);
 	}
+
+  @Test
+  public void searchParkingLotTest() throws Exception {
+    ParkingLotDto parkingLotDto = createBasicParkingLotDto();
+    List<ParkingLotDto> expectedReturnValue = new ArrayList<ParkingLotDto>();
+    expectedReturnValue.add(parkingLotDto);
+    when(parkingLotService.getBySearchTerm("entrance",null,null,0,100)).thenReturn(expectedReturnValue);
+
+    mockMvc.perform(get("/parking-lot/searchTerm")
+            .param("searchTerm","entrance"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.[0].id").value(1));
+
+    verify(parkingLotService, times(1)).getBySearchTerm("entrance",null,null,0,100);
+  }
 }
