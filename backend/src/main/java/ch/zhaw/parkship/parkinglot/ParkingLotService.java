@@ -129,8 +129,32 @@ public class ParkingLotService {
     return Optional.empty();
   }
 
-
+  /**
+   *
+   * This method retrieves all parking lots which match a search term and are free in a given time frame.
+   *
+   * @param searchTerm the string, with the words to search the lots by
+   * @param startDate first day on which the lot needs to be free, null if irrelevant
+   * @param endDate last day on which the lot needs to be free, null if irrelevant
+   *
+   * @return List<ParkingLotDto> Returns a list of parking lot data in the ParkingLotDto format in
+   *         the HTTP response body with a status code of 200 if found, otherwise returns a no
+   *         content status code.
+   */
   public List<ParkingLotDto> getBySearchTerm(String searchTerm, LocalDate startDate, LocalDate endDate, int page, int size){
+
+    Set<ParkingLotEntity> parkingLots = getParkingLotsFromDatabase(searchTerm);
+    parkingLots = FilterParkingLotsByDate(startDate, endDate, parkingLots);
+
+    List<ParkingLotDto> parkingLotDtos = new ArrayList<>();
+    for (ParkingLotEntity entity : parkingLots) {
+      parkingLotDtos.add(new ParkingLotDto(entity));
+    }
+
+    return getParkingLotDtosPage(page, size, parkingLotDtos);
+  }
+
+  private Set<ParkingLotEntity> getParkingLotsFromDatabase(String searchTerm) {
     Set<ParkingLotEntity> parkingLots = new HashSet<>();
     Set <String> searchTerms = new HashSet<String>(Arrays.asList(searchTerm.toLowerCase().replaceAll("\\W"," ").split("\\s+")));
     searchTerms.removeAll(blackList);
@@ -141,21 +165,17 @@ public class ParkingLotService {
       parkingLots.addAll(parkingLotRepository.findAllByAddressNrContainsIgnoreCase(term));
       parkingLots.addAll(parkingLotRepository.findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase(term,term));
     }
+    return parkingLots;
+  }
 
+  private Set<ParkingLotEntity> FilterParkingLotsByDate(LocalDate startDate, LocalDate endDate, Set<ParkingLotEntity> parkingLots) {
     if(startDate != null && endDate != null) {
       parkingLots = parkingLots.stream()
               .filter(lot -> reservationService.isFreeInDateRange(lot.getId(), startDate, endDate))
               .collect(Collectors.toSet());
     }
-    
-    List<ParkingLotDto> parkingLotDtos = new ArrayList<>();
-    for (ParkingLotEntity entity : parkingLots) {
-      parkingLotDtos.add(new ParkingLotDto(entity));
-    }
-
-    return getParkingLotDtosPage(page, size, parkingLotDtos);
+    return parkingLots;
   }
-
 
   private List<ParkingLotDto> getParkingLotDtosPage(int page, int size, List<ParkingLotDto> parkingLotDtos) {
     int maxIndex = (page +1)* size;
