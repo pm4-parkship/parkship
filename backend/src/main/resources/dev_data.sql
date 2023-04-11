@@ -1,3 +1,4 @@
+--password is user for all--
 INSERT INTO  "application_user"("email","password","username") VALUES('robin.meier@parkship.ch','$2a$10$KGtgqhpSiEpyyX/bO8VQTuKusrfyF7L7.dy4gLs0ehor3NaxUyl4e','robin');
 INSERT INTO "application_user"("email","password","username") VALUES('john.doe@parkship.ch','$2a$10$KGtgqhpSiEpyyX/bO8VQTuKusrfyF7L7.dy4gLs0ehor3NaxUyl4e','johndoe');
 INSERT INTO "application_user"("email","password","username") VALUES('jane.smith@parkship.ch','$2a$10$KGtgqhpSiEpyyX/bO8VQTuKusrfyF7L7.dy4gLs0ehor3NaxUyl4e','janesmith');
