@@ -8,20 +8,29 @@ import { sessionOptions } from '../../src/auth/session';
 const octokit = new Octokit();
 
 async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
-  const { username } = await req.body;
-
   try {
-    const {
-      data: { login, avatar_url }
-    } = await octokit.rest.users.getByUsername({ username });
+    const { username, password } = req.body as { username: string, password: string };
+    const response = await fetch('/api/auth/signin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
 
-    const user = { isLoggedIn: true, login, avatarUrl: avatar_url } as User;
-    req.session.user = user;
-    await req.session.save();
-    res.json(user);
+    if (response.ok) {
+      const user = await response.json() as User;
+      req.session.user = user;
+      await req.session.save();
+      res.json(user);
+    } else {
+      const error = await response.json();
+      res.status(response.status).json({ message: error.message });
+    }
   } catch (error) {
     res.status(500).json({ message: (error as Error).message });
   }
 }
+
 
 export default withIronSessionApiRoute(loginRoute, sessionOptions);

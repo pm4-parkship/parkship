@@ -32,7 +32,7 @@ Hier kann man den Port sehen, auf welchem die Backend Services angeboten werden:
 
 
 ## Zugriff Swagger UI
-- http://localhost:8080/swagger-ui/index.html
+- http://localhost:8080/backend/swagger-ui/index.html
 
 
 
@@ -64,7 +64,7 @@ Currently we have the roles admin and user.
 
 #### Login
 ```http request
-POST /api/auth/signup
+POST /backend/auth/signup
 ```
 Request:
 ```json
@@ -87,7 +87,7 @@ Response:
 ```
 #### Register
 ```http request
-POST /api/auth/signin
+POST /backend/auth/signin
 ```
 Request:
 ```json
