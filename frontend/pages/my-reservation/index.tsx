@@ -8,7 +8,7 @@ import {
 import { dummy } from './dummy';
 import { logger } from '../../src/logger';
 import { Typography } from '@mui/material';
-import fetchJson from '../../src/auth/fetch-json';
+import fetchJson from '../../src/fetch-json/fetch-json';
 import { formatDate } from '../../src/date/date-formatter';
 
 export interface ReservationFilterData {
