@@ -1,13 +1,15 @@
 package ch.zhaw.parkship.parkinglot;
 
+import ch.zhaw.parkship.authentication.ApplicationUserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ch.zhaw.parkship.user.UserRepository;
+
 
 /**
  *
@@ -18,13 +20,15 @@ import ch.zhaw.parkship.user.UserRepository;
  */
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ParkingLotService {
 
-  @Autowired
-  private ParkingLotRepository parkingLotRepository;
 
-  @Autowired
-  private UserRepository userRepository;
+  private final ParkingLotRepository parkingLotRepository;
+
+  private final ApplicationUserRepository applicationUserRepository;
+
+
 
   /**
    *
@@ -36,7 +40,8 @@ public class ParkingLotService {
    *         Optional object.
    */
   public Optional<ParkingLotDto> create(ParkingLotDto data) {
-    var owner = userRepository.findById(data.getOwner().getId());
+
+    var owner = applicationUserRepository.findById(data.getOwner().id());
     if (owner.isPresent()) {
       var parkingLotEntity = new ParkingLotEntity();
       parkingLotEntity.setOwner(owner.get());

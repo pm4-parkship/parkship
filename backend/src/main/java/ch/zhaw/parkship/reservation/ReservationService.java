@@ -1,14 +1,16 @@
 package ch.zhaw.parkship.reservation;
 
+import ch.zhaw.parkship.authentication.ApplicationUserRepository;
+import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
-import ch.zhaw.parkship.user.UserRepository;
+
 
 /**
  * This class provides services for managing ReservationDto objects.
@@ -18,16 +20,17 @@ import ch.zhaw.parkship.user.UserRepository;
  * through ReservationRepository, ParkingLotRepository, and UserRepository.
  */
 @Service
+@RequiredArgsConstructor
 public class ReservationService {
 
-  @Autowired
-  private ReservationRepository reservationRepository;
 
-  @Autowired
-  private ParkingLotRepository parkingLotRepository;
+  private final ReservationRepository reservationRepository;
+  private final ParkingLotRepository parkingLotRepository;
+  private final ApplicationUserRepository userRepository;
 
-  @Autowired
-  private UserRepository userRepository;
+
+
+
 
   /**
    *
@@ -39,7 +42,7 @@ public class ReservationService {
    */
   public Optional<ReservationDto> create(ReservationDto data) {
     var parkingLot = parkingLotRepository.findById(data.getParkingLot().getId());
-    var tenant = userRepository.findById(data.getTenant().getId());
+    var tenant = userRepository.findById(data.getTenant().id());
     if (parkingLot.isPresent() && tenant.isPresent()) {
       var reservationEntity = new ReservationEntity();
       BeanUtils.copyProperties(data, reservationEntity);

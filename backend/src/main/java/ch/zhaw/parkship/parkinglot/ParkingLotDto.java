@@ -5,8 +5,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import ch.zhaw.parkship.authentication.ApplicationUserDto;
 import ch.zhaw.parkship.tag.TagDto;
-import ch.zhaw.parkship.user.UserDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -19,7 +20,7 @@ public class ParkingLotDto implements Serializable {
   private Long id;
 
   @NotNull
-  private UserDto owner;
+  private ApplicationUserDto owner;
 
   private String description;
 
@@ -50,7 +51,7 @@ public class ParkingLotDto implements Serializable {
 
   public ParkingLotDto(ParkingLotEntity parkingLotEntity) {
     this.id = parkingLotEntity.getId();
-    this.owner = new UserDto(parkingLotEntity.getOwner());
+    this.owner = new ApplicationUserDto(parkingLotEntity.getOwner());
     this.description = parkingLotEntity.getDescription();
     this.tags = parkingLotEntity.getTags().stream().map(TagDto::new).collect(Collectors.toSet());
     this.longitude = parkingLotEntity.getLongitude();

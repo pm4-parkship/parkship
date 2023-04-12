@@ -1,17 +1,13 @@
 package ch.zhaw.parkshhip.controllers;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Optional;
+import ch.zhaw.parkship.ParkshipApplication;
+import ch.zhaw.parkship.authentication.ApplicationUserDto;
+import ch.zhaw.parkship.parkinglot.ParkingLotDto;
+import ch.zhaw.parkship.reservation.ReservationController;
+import ch.zhaw.parkship.reservation.ReservationDto;
+import ch.zhaw.parkship.reservation.ReservationService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,14 +21,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import ch.zhaw.parkship.ParkshipApplication;
-import ch.zhaw.parkship.parkinglot.ParkingLotDto;
-import ch.zhaw.parkship.reservation.ReservationController;
-import ch.zhaw.parkship.reservation.ReservationDto;
-import ch.zhaw.parkship.reservation.ReservationService;
-import ch.zhaw.parkship.user.UserDto;
+
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Optional;
+
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -63,8 +60,7 @@ public class ReservationControllerTest {
     reservationDto.setId(1L);
     reservationDto.setParkingLot(new ParkingLotDto());
     reservationDto.getParkingLot().setId(1L);
-    reservationDto.setTenant(new UserDto());
-    reservationDto.getTenant().setId(1L);
+    reservationDto.setTenant(new ApplicationUserDto(1L, null, null, null, null, null));
     reservationDto.setFrom(LocalDate.of(2023, 4, 14));
     reservationDto.setTo(LocalDate.of(2023, 4, 15));
     return reservationDto;
@@ -140,14 +136,14 @@ public class ReservationControllerTest {
   }
 
   @Test
-	public void getReservationNotFoundTest() throws Exception {
-	    when(reservationService.getById(1L)).thenReturn(Optional.empty());
+  public void getReservationNotFoundTest() throws Exception {
+    when(reservationService.getById(1L)).thenReturn(Optional.empty());
 
-	    mockMvc.perform(get("/reservation/{id}", 1))
-	            .andExpect(status().isNotFound());
+    mockMvc.perform(get("/reservation/{id}", 1))
+            .andExpect(status().isNotFound());
 
-	    verify(reservationService, times(1)).getById(1L);
-	}
+    verify(reservationService, times(1)).getById(1L);
+  }
 
   @Test
   public void updateReservationNotFoundTest() throws Exception {
@@ -165,12 +161,12 @@ public class ReservationControllerTest {
   }
 
   @Test
-	public void deleteReservationNotFoundTest() throws Exception {
-	    when(reservationService.deleteById(1L)).thenReturn(Optional.empty());
+  public void deleteReservationNotFoundTest() throws Exception {
+    when(reservationService.deleteById(1L)).thenReturn(Optional.empty());
 
-	    mockMvc.perform(delete("/reservation/{id}", 1))
-	            .andExpect(status().isNotFound());
+    mockMvc.perform(delete("/reservation/{id}", 1))
+            .andExpect(status().isNotFound());
 
-	    verify(reservationService, times(1)).deleteById(1L);
-	}
+    verify(reservationService, times(1)).deleteById(1L);
+  }
 }
