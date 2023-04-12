@@ -1,25 +1,24 @@
 import type { User } from './user';
-
-import { Octokit } from 'octokit';
 import { withIronSessionApiRoute } from 'iron-session/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sessionOptions } from '../../src/auth/session';
 
-const octokit = new Octokit();
-
 async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { username, password } = req.body as { username: string, password: string };
-    const response = await fetch('/api/auth/signin', {
+    const { username, password } = req.body as {
+      username: string;
+      password: string;
+    };
+    const response = await fetch('/backend/auth/signin', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username, password })
     });
 
     if (response.ok) {
-      const user = await response.json() as User;
+      const user = (await response.json()) as User;
       req.session.user = user;
       await req.session.save();
       res.json(user);
@@ -31,6 +30,5 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
     res.status(500).json({ message: (error as Error).message });
   }
 }
-
 
 export default withIronSessionApiRoute(loginRoute, sessionOptions);

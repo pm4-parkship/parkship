@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import Head from 'next/head';
 
 import { getDesignTokens } from '../styles/theme/theme';
@@ -39,7 +39,7 @@ const App = ({
     setMounted(true);
   }, [mode]);
 
-  const colorMode = React.useMemo(
+  const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
         setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
@@ -48,7 +48,7 @@ const App = ({
     []
   );
 
-  const theme: Theme = React.useMemo(() => {
+  const theme: Theme = useMemo(() => {
     return responsiveFontSizes(createTheme(getDesignTokens(mode)));
   }, [mode]);
 
@@ -61,7 +61,7 @@ const App = ({
             name="viewport"
             content="minimum-scale=1, initial-scale=1, width=device-width"
           />
-          <meta name="description" content="This is a project." />
+          <meta name="description" content="This is our PM4 Project." />
         </Head>
         {mounted && (
           <ColorModeContext.Provider value={colorMode}>
@@ -78,7 +78,6 @@ const App = ({
                   draggable
                   pauseOnHover
                   limit={5}
-                  theme={mode}
                 />
                 <LocalizationProvider
                   dateAdapter={AdapterDateFns}
@@ -86,13 +85,6 @@ const App = ({
                 >
                   <Layout>
                     <Component {...pageProps} />
-                    <Button //temporary button to change layouts on the page
-                      onClick={() => {
-                        colorMode.toggleColorMode();
-                      }}
-                    >
-                      Change Color
-                    </Button>
                   </Layout>
                 </LocalizationProvider>
               </CssBaseline>

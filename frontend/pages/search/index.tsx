@@ -6,9 +6,8 @@ import SearchParkingLotTable from '../../src/components/search-parking-lot/searc
 import ParkingDetailModal from '../../src/components/parking-detail-modal/parking-detail-modal';
 import { ParkingLotModel } from '../../src/models';
 import { parkingDummyData } from './dummy';
-import fetchJson from '../../src/auth/fetch-json';
+import fetchJson from '../../src/fetch-json/fetch-json';
 import { formatDate } from '../../src/date/date-formatter';
-import { logger } from '../../src/logger';
 import { format } from 'date-fns';
 
 export interface SearchParameters {
@@ -90,7 +89,7 @@ const fetchParkingSpots = (
       endDate: format(new Date(searchParameters.toDate), 'yyy-MM-dd')
     });
 
-    return fetchJson('/api/parking-lot/searchTerm?' + query, {
+    return fetchJson('/backend/parking-lot/searchTerm?' + query, {
       method: 'GET'
     });
   } else {
