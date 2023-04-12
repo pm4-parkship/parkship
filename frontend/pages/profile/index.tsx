@@ -4,36 +4,26 @@ import { User } from 'pages/api/user';
 
 import { InferGetServerSidePropsType } from 'next';
 import { sessionOptions } from '../../src/auth/session';
+import {logger} from "../../src/logger";
 
 export default function SsrProfile({
   user
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  logger.log('user in the profile page', user);
   return (
-    <div>
-      <h1>Your GitHub profile</h1>
-      <h2>
-        This page uses{' '}
-        <a href="https://nextjs.org/docs/basic-features/pages#server-side-rendering">
-          Server-side Rendering (SSR)
-        </a>{' '}
-        and{' '}
-        <a href="https://nextjs.org/docs/basic-features/data-fetching/get-server-side-props">
-          getServerSideProps
-        </a>
-      </h2>
-
-      {user?.isLoggedIn && (
-        <>
-          <p style={{ fontStyle: 'italic' }}>
-            Public data, from{' '}
-            <a href={`https://github.com/${user.login}`}>
-              https://github.com/{user.login}
-            </a>
-            , reduced to `login` and `avatar_url`.
-          </p>
-          <pre>{JSON.stringify(user, null, 2)}</pre>
-        </>
-      )}
+<div>
+  {user?.isLoggedIn && (
+      <>
+        <p style={{ fontStyle: 'italic' }}>
+          Public data, from{' '}
+          <a href={`https://github.com/${user.username}`}>
+            https://github.com/{user.username}
+          </a>
+          , reduced to `login` and `avatar_url`.
+        </p>
+        <pre>{JSON.stringify(user, null, 2)}</pre>
+      </>
+  )}
     </div>
   );
 }
@@ -50,7 +40,7 @@ export const getServerSideProps = withIronSessionSsr(async function ({
     res.end();
     return {
       props: {
-        user: { isLoggedIn: false, login: '', avatarUrl: '' } as User
+        user: { isLoggedIn: false, token: '', username: '' } as User
       }
     };
   }

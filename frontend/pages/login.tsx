@@ -22,19 +22,24 @@ export default function Login() {
             event.preventDefault();
 
             const body = {
-              email: event.currentTarget.email.value,
-              password: event.currentTarget.password.value,
+              email: 'admin@parkship.ch',
+              password: 'admin'
             };
 
             try {
-              await mutateUser(
-                await fetchJson('/backend/auth/signin', {
-                  method: 'POST',
-                  credentials: 'include',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(body),
-                })
-              );
+              await fetchJson('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+              }).then((res: any) => {
+                logger.log('response of the call', res);
+                mutateUser({
+                  roles: res.roles,
+                  token: res.token,
+                  username: res.username,
+                  isLoggedIn: true
+                });
+              });
             } catch (error) {
               if (error instanceof FetchError) {
                 setErrorMsg(error.data.message);
