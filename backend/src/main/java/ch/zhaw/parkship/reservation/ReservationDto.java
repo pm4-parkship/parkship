@@ -3,8 +3,11 @@ package ch.zhaw.parkship.reservation;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
+
+
+import ch.zhaw.parkship.authentication.ApplicationUserDto;
 import ch.zhaw.parkship.parkinglot.ParkingLotDto;
-import ch.zhaw.parkship.user.UserDto;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +22,7 @@ public class ReservationDto implements Serializable {
   private ParkingLotDto parkingLot;
 
   @NotNull
-  private UserDto tenant;
+  private ApplicationUserDto tenant;
 
   @NotNull
   private LocalDate from;
@@ -29,7 +32,7 @@ public class ReservationDto implements Serializable {
 
   public ReservationDto(ReservationEntity reservationEntity) {
     this.id = reservationEntity.getId();
-    this.tenant = new UserDto(reservationEntity.getTenant());
+    this.tenant = new ApplicationUserDto(reservationEntity.getTenant());
     this.from = reservationEntity.getFrom();
     this.to = reservationEntity.getTo();
     this.parkingLot = new ParkingLotDto(reservationEntity.getParkingLot());

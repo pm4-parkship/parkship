@@ -1,16 +1,11 @@
 package ch.zhaw.parkshhip.controllers;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import java.util.Arrays;
-import java.util.Optional;
+import ch.zhaw.parkship.ParkshipApplication;
+import ch.zhaw.parkship.authentication.ApplicationUserDto;
+import ch.zhaw.parkship.parkinglot.ParkingLotController;
+import ch.zhaw.parkship.parkinglot.ParkingLotDto;
+import ch.zhaw.parkship.parkinglot.ParkingLotService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,12 +21,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import ch.zhaw.parkship.ParkshipApplication;
-import ch.zhaw.parkship.parkinglot.ParkingLotController;
-import ch.zhaw.parkship.parkinglot.ParkingLotDto;
-import ch.zhaw.parkship.parkinglot.ParkingLotService;
-import ch.zhaw.parkship.user.UserDto;
+
+import java.util.Arrays;
+import java.util.Optional;
+
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -59,8 +56,9 @@ public class ParkingLotControllerTest {
   private ParkingLotDto createBasicParkingLotDto() {
     ParkingLotDto parkingLotDto = new ParkingLotDto();
     parkingLotDto.setId(1L);
-    parkingLotDto.setOwner(new UserDto());
-    parkingLotDto.getOwner().setId(2L);
+    parkingLotDto.setOwner(new ApplicationUserDto(2L, null, null, null, null, null));
+
+
     parkingLotDto.setLongitude(15.2);
     parkingLotDto.setLatitude(11.22);
     parkingLotDto.setNr("11A");
@@ -140,14 +138,14 @@ public class ParkingLotControllerTest {
   }
 
   @Test
-	public void getParkingLotNotFoundTest() throws Exception {
-	    when(parkingLotService.getById(1L)).thenReturn(Optional.empty());
+  public void getParkingLotNotFoundTest() throws Exception {
+    when(parkingLotService.getById(1L)).thenReturn(Optional.empty());
 
-	    mockMvc.perform(get("/parking-lot/{id}", 1))
-	            .andExpect(status().isNotFound());
+    mockMvc.perform(get("/parking-lot/{id}", 1))
+            .andExpect(status().isNotFound());
 
-	    verify(parkingLotService, times(1)).getById(1L);
-	}
+    verify(parkingLotService, times(1)).getById(1L);
+  }
 
   @Test
   public void updateParkingLotNotFoundTest() throws Exception {
@@ -165,12 +163,12 @@ public class ParkingLotControllerTest {
   }
 
   @Test
-	public void deleteParkingLotNotFoundTest() throws Exception {
-	    when(parkingLotService.deleteById(1L)).thenReturn(Optional.empty());
+  public void deleteParkingLotNotFoundTest() throws Exception {
+    when(parkingLotService.deleteById(1L)).thenReturn(Optional.empty());
 
-	    mockMvc.perform(delete("/parking-lot/{id}", 1))
-	            .andExpect(status().isNotFound());
+    mockMvc.perform(delete("/parking-lot/{id}", 1))
+            .andExpect(status().isNotFound());
 
-	    verify(parkingLotService, times(1)).deleteById(1L);
-	}
+    verify(parkingLotService, times(1)).deleteById(1L);
+  }
 }

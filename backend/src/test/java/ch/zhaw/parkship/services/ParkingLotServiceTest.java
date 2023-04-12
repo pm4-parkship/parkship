@@ -1,53 +1,52 @@
 package ch.zhaw.parkship.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import ch.zhaw.parkship.authentication.ApplicationUser;
+import ch.zhaw.parkship.authentication.ApplicationUserDto;
+import ch.zhaw.parkship.authentication.ApplicationUserRepository;
+import ch.zhaw.parkship.parkinglot.ParkingLotDto;
+import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
+import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
+import ch.zhaw.parkship.parkinglot.ParkingLotService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import ch.zhaw.parkship.ParkshipApplication;
-import ch.zhaw.parkship.authentication.ApplicationUser;
-import ch.zhaw.parkship.parkinglot.ParkingLotDto;
-import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
-import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
-import ch.zhaw.parkship.parkinglot.ParkingLotService;
-import ch.zhaw.parkship.user.UserDto;
-import ch.zhaw.parkship.user.UserEntity;
-import ch.zhaw.parkship.user.UserRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@ActiveProfiles("test")
-@SpringBootTest(classes = ParkshipApplication.class)
 class ParkingLotServiceTest {
   @Mock
   private ParkingLotRepository parkingLotRepository;
 
   @Mock
-  private UserRepository userRepository;
+  private ApplicationUserRepository userRepository;
 
   @InjectMocks
   private ParkingLotService parkingLotService;
+
+
+  ApplicationUser userEntity = new ApplicationUser();
+
 
   // Sample data for testing
   private ParkingLotEntity parkingLotEntity;
 
   @BeforeEach
   public void setUp() {
-    var userEntity = new UserEntity();
     userEntity.setId(1L);
-    userEntity.setApplicationUser(new ApplicationUser("fritz@mail.com", "fritz123", "verysecure"));
+    userEntity.setEmail("fritz@mail.com");
+    userEntity.setUsername("fritz123");
+    userEntity.setPassword("verysecure");
 
     parkingLotEntity = new ParkingLotEntity();
     parkingLotEntity.setId(1L);
@@ -56,8 +55,7 @@ class ParkingLotServiceTest {
 
   private ParkingLotDto createParkingLotDto() {
     ParkingLotDto data = new ParkingLotDto();
-    var owner = new UserDto();
-    owner.setId(1L);
+    var owner = new ApplicationUserDto(userEntity);
     data.setOwner(owner);
     data.setId(1L);
     data.setLongitude(15.5);
