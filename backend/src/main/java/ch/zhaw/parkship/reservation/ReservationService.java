@@ -7,6 +7,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -131,6 +132,10 @@ public class ReservationService {
             return Optional.of(ret);
         }
         return Optional.empty();
+    }
+
+    public boolean isFreeInDateRange(Long id, LocalDate startDate, LocalDate endDate) {
+        return reservationRepository.findAllWithOverlappingDates(id, startDate, endDate).isEmpty();
     }
 
 }

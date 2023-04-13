@@ -1,11 +1,13 @@
 package ch.zhaw.parkship.parkinglot;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,10 +18,13 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/parking-lot")
+@SecurityRequirement(name = "Bearer Authentication")
 public class ParkingLotController {
 
     @Autowired
     private ParkingLotService parkingLotService;
+    private final String DEFAULT_PAGE_NUM = "0";
+    private final String DEFAULT_PAGE_SIZE = "100";
 
     /**
      * This end-point creates a new parking lot with the provided parking lot data.
@@ -79,8 +84,7 @@ public class ParkingLotController {
      * status code.
      */
     @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<ParkingLotDto> updateParkingLot(@PathVariable Long id,
-                                                          @Valid @RequestBody ParkingLotDto parkingLotDto) {
+    public ResponseEntity<ParkingLotDto> updateParkingLot(@PathVariable Long id, @Valid @RequestBody ParkingLotDto parkingLotDto) {
         parkingLotDto.setId(id);
         Optional<ParkingLotDto> updatedParkingLot = parkingLotService.update(parkingLotDto);
         return updatedParkingLot.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -100,5 +104,14 @@ public class ParkingLotController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/searchTerm")
+    public List<ParkingLotDto> searchParkingLot(@RequestParam(defaultValue = "") String searchTerm,
+                                                @RequestParam(defaultValue = "") LocalDate startDate,
+                                                @RequestParam(defaultValue = "") LocalDate endDate,
+                                                @RequestParam(defaultValue = DEFAULT_PAGE_NUM) int page,
+                                                @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
+        return parkingLotService.getBySearchTerm(searchTerm, startDate, endDate, page, size);
     }
 }
