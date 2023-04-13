@@ -27,9 +27,8 @@ public class ParkingLotService {
     @Value("${search.blacklist}")
     private Set<String> blackList;
 
-    private ParkingLotRepository parkingLotRepository;
-    private ReservationService reservationService;
-
+    private final ParkingLotRepository parkingLotRepository;
+    private final ReservationService reservationService;
     private final ApplicationUserRepository applicationUserRepository;
 
     /**
