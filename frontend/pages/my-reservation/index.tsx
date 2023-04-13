@@ -5,7 +5,7 @@ import {
   ReservationModel,
   ReservationState
 } from '../../src/models/reservation/reservation.model';
-import { dummy } from './dummy';
+import { dummy } from '../../src/data/reservations';
 import { logger } from '../../src/logger';
 import { Typography } from '@mui/material';
 import fetchJson from '../../src/fetch-json/fetch-json';
