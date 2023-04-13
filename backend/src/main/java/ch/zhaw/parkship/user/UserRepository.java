@@ -1,4 +1,4 @@
-package ch.zhaw.parkship.authentication;
+package ch.zhaw.parkship.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
  * Reporsitory for managing user data from the database.
  */
 @Repository
-public interface ApplicationUserRepository extends JpaRepository<ApplicationUser, Long> {
-    ApplicationUser findByEmail(String email);
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
+    UserEntity findByEmail(String email);
 
     boolean existsByEmailOrUsername(String email, String username);
 }

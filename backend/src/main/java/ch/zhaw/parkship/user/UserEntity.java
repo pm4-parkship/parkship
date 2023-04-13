@@ -1,7 +1,8 @@
-package ch.zhaw.parkship.authentication;
+package ch.zhaw.parkship.user;
 
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.reservation.ReservationEntity;
+import ch.zhaw.parkship.role.RoleEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ApplicationUser implements UserDetails {
+public class UserEntity implements UserDetails {
     /**
      * The user gets a generated id.
      */
@@ -48,7 +49,7 @@ public class ApplicationUser implements UserDetails {
     @OneToMany(mappedBy = "owner")
     private Set<ParkingLotEntity> parkingLots;
 
-    public ApplicationUser(String email, String username, String password) {
+    public UserEntity(String email, String username, String password) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -62,7 +63,7 @@ public class ApplicationUser implements UserDetails {
             name = "applicationuser_role",
             joinColumns = @JoinColumn(name = "applicationuser_role_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    private Set<RoleEntity> roleEntities = new HashSet<>();
 
     @Override
     public boolean isAccountNonExpired() {
@@ -86,19 +87,20 @@ public class ApplicationUser implements UserDetails {
 
     /**
      * The authorities that are assigned to the user according to the roles.
+     *
      * @return
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toSet());
+        return roleEntities.stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toSet());
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ApplicationUser user = (ApplicationUser) o;
-        return id == user.id;
+        UserEntity user = (UserEntity) o;
+        return Objects.equals(id, user.id);
     }
 
     @Override
