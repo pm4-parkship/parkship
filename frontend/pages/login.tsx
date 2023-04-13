@@ -7,7 +7,7 @@ import useUser from '../src/auth/use-user';
 export default function Login() {
   // here we just check if user is already logged in and redirect to profile
   const { mutateUser } = useUser({
-    redirectTo: '/profile/',
+    redirectTo: '/search/',
     redirectIfFound: true
   });
 
