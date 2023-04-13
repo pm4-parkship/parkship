@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
 
 import { getDesignTokens } from '../styles/theme/theme';
 import createEmotionCache from '../src/emotion-cache/create-emotion-cache';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import '../styles/globals.css';
-import { ToastContainer } from 'react-toastify';
+import { Theme as ToastTheme, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { createTheme, Theme, ThemeProvider } from '@mui/material/styles';
-import { Button, CssBaseline, responsiveFontSizes } from '@mui/material';
+import { CssBaseline, responsiveFontSizes } from '@mui/material';
 import { AppProps } from 'next/app';
 
 // When using TypeScript 4.x and above
@@ -78,6 +78,7 @@ const App = ({
                   draggable
                   pauseOnHover
                   limit={5}
+                  theme={mode as ToastTheme}
                 />
                 <LocalizationProvider
                   dateAdapter={AdapterDateFns}

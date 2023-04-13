@@ -3,11 +3,13 @@ import Link from '../link/link';
 import DrawerComponent from './drawer/drawer';
 import { makeStyles, useTheme } from '@mui/styles';
 import LogoutIcon from '@mui/icons-material/Logout';
-import React from 'react';
+import React, { useContext } from 'react';
 import useUser from '../../auth/use-user';
+import { ColorModeContext } from '../../../context';
 
 function Navbar() {
   const classes = useStyles();
+  const colorMode = useContext(ColorModeContext);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { user } = useUser({
@@ -16,26 +18,35 @@ function Navbar() {
   });
 
   return (
-    <AppBar position="static" >
+    <AppBar position="static">
       <Toolbar>
         {isMobile ? (
           <DrawerComponent />
         ) : (
-          <div className={classes.navlinks}>
-            <Link href="/search">Parkplatz finden</Link>
-            <Link href="/my-reservation">Meine Reservation</Link>
-            <Link href="/my-parking-lot">Mein Parkplatz</Link>
-          </div>
-        )}
-        {user && (
-          <div className={classes.logout}>
-            <Typography variant="h6" className={classes.user}>
-              Hi {user?.username}
-            </Typography>
-            <Link href="/logout">
-              <LogoutIcon />
-            </Link>
-          </div>
+          user && (
+            <>
+              <div className={classes.navlinks}>
+                <Link href="/search">Parkplatz finden</Link>
+                <Link href="/my-reservation">Meine Reservation</Link>
+                <Link href="/my-parking-lot">Mein Parkplatz</Link>
+              </div>
+              <div className={classes.logout}>
+                <Typography
+                  variant="h6"
+                  className={classes.user}
+                  onClick={() => {
+                    colorMode.toggleColorMode();
+                  }}
+                >
+                  Hi {user?.username}
+                </Typography>
+
+                <Link href="/logout">
+                  <LogoutIcon />
+                </Link>
+              </div>
+            </>
+          )
         )}
       </Toolbar>
     </AppBar>
@@ -48,13 +59,15 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     gap: '20px',
     flexGrow: '1',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   logout: {
     gap: theme.spacing(10),
     display: 'flex',
     flexGrow: '1',
-    justifyContent: 'right'
+    justifyContent: 'right',
+    alignItems: 'center'
   },
   logo: {
     flexGrow: '1',
@@ -72,6 +85,6 @@ const useStyles = makeStyles((theme) => ({
       color: 'yellow',
       borderBottom: '1px solid white'
     }
-  },
+  }
 }));
 export default Navbar;
