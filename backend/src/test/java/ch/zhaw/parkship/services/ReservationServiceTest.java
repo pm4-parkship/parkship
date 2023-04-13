@@ -1,25 +1,8 @@
 package ch.zhaw.parkship.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import ch.zhaw.parkship.ParkshipApplication;
 import ch.zhaw.parkship.authentication.ApplicationUser;
+import ch.zhaw.parkship.authentication.ApplicationUserDto;
+import ch.zhaw.parkship.authentication.ApplicationUserRepository;
 import ch.zhaw.parkship.parkinglot.ParkingLotDto;
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
@@ -27,19 +10,30 @@ import ch.zhaw.parkship.reservation.ReservationDto;
 import ch.zhaw.parkship.reservation.ReservationEntity;
 import ch.zhaw.parkship.reservation.ReservationRepository;
 import ch.zhaw.parkship.reservation.ReservationService;
-import ch.zhaw.parkship.user.UserDto;
-import ch.zhaw.parkship.user.UserEntity;
-import ch.zhaw.parkship.user.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@ActiveProfiles("test")
-@SpringBootTest(classes = ParkshipApplication.class)
 class ReservationServiceTest {
   @Mock
   private ReservationRepository reservationRepository;
 
   @Mock
-  private UserRepository userRepository;
+  private ApplicationUserRepository userRepository;
 
   @Mock
   private ParkingLotRepository parkingLotRepository;
@@ -51,15 +45,15 @@ class ReservationServiceTest {
   private ReservationEntity reservationEntity;
   private ParkingLotEntity parkingLotEntity;
 
+  ApplicationUser userEntity = new ApplicationUser();
+
   @BeforeEach
   public void setUp() {
-    var userEntity = new UserEntity();
+    userEntity = new ApplicationUser();
     parkingLotEntity = new ParkingLotEntity();
     parkingLotEntity.setId(1L);
     parkingLotEntity.setOwner(userEntity);
     userEntity.setId(1L);
-    userEntity
-        .setApplicationUser(new ApplicationUser("Fritz@mail.com", "fridolin123", "verysecure"));
 
     reservationEntity = new ReservationEntity();
     reservationEntity.setId(1L);
@@ -70,8 +64,7 @@ class ReservationServiceTest {
   private ReservationDto createReservationDto() {
     ReservationDto data = new ReservationDto();
     var parkingLot = new ParkingLotDto();
-    var tenant = new UserDto();
-    tenant.setId(1L);
+    var tenant = new ApplicationUserDto(userEntity);
     parkingLot.setId(1L);
     parkingLot.setOwner(tenant);
     data.setId(1L);

@@ -3,10 +3,11 @@ package ch.zhaw.parkship.parkinglot;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import ch.zhaw.parkship.authentication.ApplicationUser;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import ch.zhaw.parkship.reservation.ReservationEntity;
 import ch.zhaw.parkship.tag.TagEntity;
-import ch.zhaw.parkship.user.UserEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,9 +35,9 @@ public class ParkingLotEntity {
 
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
-  private UserEntity owner;
+  private ApplicationUser owner;
 
-  @Column(nullable = true)
+  @Column
   private String description;
 
   @ManyToMany

@@ -3,22 +3,19 @@ package ch.zhaw.parkship;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+
+import ch.zhaw.parkship.authentication.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
-import ch.zhaw.parkship.authentication.ApplicationUser;
-import ch.zhaw.parkship.authentication.ApplicationUserService;
-import ch.zhaw.parkship.authentication.Role;
-import ch.zhaw.parkship.authentication.RoleRepository;
 import ch.zhaw.parkship.examples.todos.Todo;
 import ch.zhaw.parkship.examples.todos.TodoRepository;
 import ch.zhaw.parkship.parkinglot.ParkingLotService;
 import ch.zhaw.parkship.reservation.ReservationService;
-import ch.zhaw.parkship.user.UserEntity;
-import ch.zhaw.parkship.user.UserRepository;
+
 import jakarta.transaction.Transactional;
 
 @SpringBootApplication
@@ -39,7 +36,7 @@ public class ParkshipApplication {
     @Profile({ "dev", "test" })
     @Transactional
     CommandLineRunner initTemplate(@Autowired TodoRepository todoRepository, @Autowired RoleRepository roleRepository,
-            @Autowired UserRepository userRepository, ApplicationUserService userService,
+            ApplicationUserService userService, ApplicationUserRepository applicationUserRepository,
             ParkingLotService parkingLotService, ReservationService reservationService) {
         return args -> {
             Role userRole = new Role("USER");
@@ -52,15 +49,7 @@ public class ParkshipApplication {
             ApplicationUser thirdUser = userService.signUp("thirdUser", "thirdUser@parkship.ch", "thirdUser");
             ApplicationUser admin = userService.signUp("admin", "admin@parkship.ch", "admin");
 
-            UserEntity userEntity = userRepository.save(new UserEntity("Fritz", "Fröhlich"));
-            UserEntity secondUserEntity = userRepository.save(new UserEntity("Sue", "Moe"));
-            UserEntity thirdUserEntity = userRepository.save(new UserEntity("Anne", "Bananne"));
-            UserEntity adminEntity = userRepository.save(new UserEntity("CHuck", "Huck"));
 
-            userEntity.setApplicationUser(user);
-            secondUserEntity.setApplicationUser(secondUser);
-            thirdUserEntity.setApplicationUser(thirdUser);
-            adminEntity.setApplicationUser(admin);
 
             user.getRoles().add(userRole);
             secondUser.getRoles().add(userRole);
@@ -72,10 +61,6 @@ public class ParkshipApplication {
             userService.save(thirdUser);
             userService.save(admin);
 
-            userRepository.save(userEntity);
-            userRepository.save(secondUserEntity);
-            userRepository.save(thirdUserEntity);
-            userRepository.save(adminEntity);
 
 
             if (todoRepository.count() == 0) {
