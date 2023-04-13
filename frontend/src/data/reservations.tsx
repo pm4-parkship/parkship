@@ -1,7 +1,7 @@
 import {
   ReservationModel,
   ReservationState
-} from '../../src/models/reservation/reservation.model';
+} from '../models/reservation/reservation.model';
 
 export const dummy: Array<ReservationModel> = [
   {
