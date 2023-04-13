@@ -1,4 +1,4 @@
-import { ParkingLotModel } from '../../src/models';
+import { ParkingLotModel } from '../models';
 
 export const parkingDummyData: ParkingLotModel[] = [
   {
