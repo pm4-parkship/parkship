@@ -1,5 +1,6 @@
 package ch.zhaw.parkship.reservation;
 
+import java.sql.Array;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,21 @@ public class ReservationController {
     Optional<ReservationDto> createdReservation = reservationService.create(ReservationDto);
     return createdReservation.map(value -> ResponseEntity.status(HttpStatus.CREATED).body(value))
         .orElseGet(() -> ResponseEntity.badRequest().build());
+  }
+
+  /**
+   *
+   */
+  @GetMapping(value = "/user/{id}", consumes = "application/json", produces = "application/json")
+  public ResponseEntity<ReservationDto[]> getUserReservations (
+          @PathVariable Long id){
+    Optional<ReservationDto> reservationDto = reservationService.getById(id);
+    // declares an Array of integers.
+    ReservationDto[] arr;
+
+    // allocating memory for 5 integers.
+    arr = new ReservationDto[4];
+    return ResponseEntity.ok(arr);
   }
 
   /**
