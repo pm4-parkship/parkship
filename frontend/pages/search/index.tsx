@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Grid, Typography } from '@mui/material';
 import { TagData } from '../../src/components/search-bar/tag-bar';
 import TableComponent from '../../src/components/table/table';
-import { ParkplatzAction } from 'src/components/parking-reservation-confirmation-modal/parking-reservation-confirmation-modal';
+import { ParkingLotAction } from 'src/components/parking-reservation-confirmation-modal/parking-reservation-confirmation-modal';
 
 export interface SearchParameters {
   searchTerm: string;
@@ -34,7 +34,7 @@ const SearchPage = () => {
           <div>
             <Typography>{JSON.stringify(searchResult)}</Typography>
             <TableComponent
-              status={ParkplatzAction.RESERVIEREN}
+              status={ParkingLotAction.RESERVIEREN}
             ></TableComponent>
           </div>
         ) : (

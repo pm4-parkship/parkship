@@ -9,7 +9,7 @@ import Paper from '@mui/material/Paper';
 import { format } from 'date-fns';
 import { styled } from '@mui/styles';
 import ParkingReservationConfirmationModal, {
-  ParkplatzAction
+  ParkingLotAction
 } from '../parking-reservation-confirmation-modal/parking-reservation-confirmation-modal';
 import fetchJson from 'src/auth/fetch-json';
 
@@ -35,13 +35,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 // TODO: dummy input data, will be replaced by the incoming data from backend
 function createData(
-  bezeichnung: string,
+  description: string,
   ort: string,
   besitzer_in: string,
   startDatum: Date,
   endDatum: Date
 ) {
-  return { bezeichnung, ort, besitzer_in, startDatum, endDatum };
+  return { description, ort, besitzer_in, startDatum, endDatum };
 }
 
 // TODO: dummy input data, to be replaced by the incoming data from backend
@@ -75,20 +75,20 @@ function getFormattedAvailabilitySpan(startDatum: Date, endDatum: Date) {
   );
 }
 
-async function makeReservation(parkplatzAction: ParkplatzAction) {
+async function makeReservation(parkingLotAction: ParkingLotAction) {
   const body = {
-    parkplatzAction
+    parkingLotAction
   };
 
   //Todo Backend API definieren
-  await fetchJson('/api/' + parkplatzAction, {
+  await fetchJson('/api/backend/' + parkingLotAction, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
 }
 
-const TableComponent = ({ status }: { status: ParkplatzAction }) => {
+const TableComponent = ({ status }: { status: ParkingLotAction }) => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -103,9 +103,9 @@ const TableComponent = ({ status }: { status: ParkplatzAction }) => {
         </TableHead>
         <TableBody>
           {rows.map((row) => (
-            <StyledTableRow key={row.bezeichnung}>
+            <StyledTableRow key={row.description}>
               <StyledTableCell component="th" scope="row" align="center">
-                {row.bezeichnung}
+                {row.description}
               </StyledTableCell>
               <StyledTableCell align="center">{row.ort}</StyledTableCell>
               <StyledTableCell align="center">
@@ -116,12 +116,12 @@ const TableComponent = ({ status }: { status: ParkplatzAction }) => {
               </StyledTableCell>
               <StyledTableCell align="center">
                 <ParkingReservationConfirmationModal
-                  bezeichnung={row.bezeichnung}
+                  description={row.description}
                   requestType={status}
-                  von={row.startDatum}
-                  bis={row.endDatum}
-                  makeReservation={(parkplatzAction) =>
-                    makeReservation(parkplatzAction)
+                  from={row.startDatum}
+                  to={row.endDatum}
+                  makeReservation={(parkingLotAction) =>
+                    makeReservation(parkingLotAction)
                   }
                 ></ParkingReservationConfirmationModal>
               </StyledTableCell>

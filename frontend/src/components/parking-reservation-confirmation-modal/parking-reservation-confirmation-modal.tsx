@@ -8,30 +8,30 @@ import {
   TextField,
   Stack
 } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Icon } from '@iconify/react';
 
-export const enum ParkplatzAction {
+export const enum ParkingLotAction {
   RESERVIEREN = 'reservieren',
   STORNIEREN = 'stornieren'
 }
 
 const ParkingReservationConfirmationModal = ({
-  bezeichnung,
+  description,
   requestType,
-  von,
-  bis,
+  from,
+  to,
   makeReservation
 }: {
-  bezeichnung: string;
-  requestType: ParkplatzAction;
-  von: Date;
-  bis: Date;
-  makeReservation: (parkplatzAction: ParkplatzAction) => void;
+  description: string;
+  requestType: ParkingLotAction;
+  from: Date;
+  to: Date;
+  makeReservation: (parkingLotAction: ParkingLotAction) => void;
 }) => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const classes = useStyles();
@@ -52,7 +52,7 @@ const ParkingReservationConfirmationModal = ({
           </div>
           <Stack spacing={2}>
             <Typography align="center" variant="h4">
-              {bezeichnung}
+              {description}
             </Typography>
             {/* <Typography align="center" variant="h5">
             {requestType}
@@ -61,9 +61,9 @@ const ParkingReservationConfirmationModal = ({
             <Grid container columnSpacing={2}>
               <Grid item xs={6}>
                 <DatePicker
-                  label="von"
+                  label="from"
                   onChange={() => null}
-                  value={von}
+                  value={from}
                   disabled
                   renderInput={(props) => (
                     <TextField {...props} required={true} />
@@ -73,9 +73,9 @@ const ParkingReservationConfirmationModal = ({
 
               <Grid item xs={6}>
                 <DatePicker
-                  label="bis"
+                  label="to"
                   onChange={() => null}
-                  value={bis}
+                  value={to}
                   disabled
                   renderInput={(props) => (
                     <TextField {...props} required={true} />
@@ -89,9 +89,9 @@ const ParkingReservationConfirmationModal = ({
                 style={buttonStyle}
                 onClick={() =>
                   makeReservation(
-                    requestType === ParkplatzAction.RESERVIEREN
-                      ? ParkplatzAction.RESERVIEREN
-                      : ParkplatzAction.STORNIEREN
+                    requestType === ParkingLotAction.RESERVIEREN
+                      ? ParkingLotAction.RESERVIEREN
+                      : ParkingLotAction.STORNIEREN
                   )
                 }
               >
