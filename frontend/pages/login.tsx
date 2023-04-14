@@ -3,6 +3,7 @@ import fetchJson, { FetchError } from '../src/auth/fetch-json';
 import { logger } from '../src/logger';
 import Form from '../src/auth/form';
 import useUser from '../src/auth/use-user';
+import LoginWindow from "../src/components/login/login-window";
 
 export default function Login() {
   // here we just check if user is already logged in and redirect to profile
@@ -45,6 +46,8 @@ export default function Login() {
           }}
         />
       </div>
+        <LoginWindow
+        ></LoginWindow>
       <style jsx>{`
         .login {
           max-width: 21rem;
