@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import fetchJson, { FetchError } from '../src/auth/fetch-json';
+import fetchJson, { FetchError } from '../src/fetch-json/fetch-json';
 import { logger } from '../src/logger';
 import Form from '../src/auth/form';
 import useUser from '../src/auth/use-user';

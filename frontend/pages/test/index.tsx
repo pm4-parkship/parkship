@@ -10,6 +10,7 @@ const Index = () => {
   const [showModal, setShowModal] = useState(true);
 
   const parkingDummyData: ParkingLotModel = {
+    id:"bla,bla",
     address: 'Dorfstrasse',
     addressNr: '8',
     description: 'Der Parkplatz ist direkt neben der Säule. Also aufpassen!',

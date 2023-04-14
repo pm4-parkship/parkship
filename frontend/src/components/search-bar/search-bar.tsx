@@ -13,7 +13,7 @@ const dummyTags: TagData[] = [
 ];
 
 const SearchBar = (props: {
-  fetchParkingSpots: (arg: SearchParameters) => void;
+  makeOnSearch: (arg: SearchParameters) => void;
 }) => {
   const [fromDate, setFromDate] = useState<Date>(new Date());
   const [toDate, setToDate] = useState<Date>(new Date());
@@ -27,7 +27,7 @@ const SearchBar = (props: {
       toDate: toDate?.toISOString() || '',
       tags: selectedTags
     };
-    props.fetchParkingSpots(searchParam);
+    props.makeOnSearch(searchParam);
   };
 
   const addTag = (tag: TagData) => {
