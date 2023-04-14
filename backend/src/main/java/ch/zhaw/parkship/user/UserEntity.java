@@ -60,8 +60,8 @@ public class UserEntity implements UserDetails {
      */
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "applicationuser_role",
-            joinColumns = @JoinColumn(name = "applicationuser_role_id"),
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roleEntities = new HashSet<>();
 
