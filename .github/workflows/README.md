@@ -42,7 +42,19 @@ the following actions happen:
 
 ---
 
-### 3. pr-size.yaml
+### 3. ci-frontend.yaml
+- On pushing to any (*) branch, which is not main...
+
+the following actions happen:
+
+#### job: buildpush
+1. Checkout repository to runner
+2. Set up Node Version 18 for frontend
+3. Test and build frontend
+
+---
+
+### 4. pr-size.yaml
 - On creating a pull request...
 
 the following actions happen:

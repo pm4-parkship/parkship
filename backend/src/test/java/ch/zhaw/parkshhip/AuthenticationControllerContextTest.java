@@ -1,11 +1,8 @@
 package ch.zhaw.parkshhip;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import ch.zhaw.parkship.ParkshipApplication;
+import ch.zhaw.parkship.authentication.AuthenticationController;
+import ch.zhaw.parkship.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,9 +11,8 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 
-import ch.zhaw.parkship.ParkshipApplication;
-import ch.zhaw.parkship.authentication.ApplicationUserService;
-import ch.zhaw.parkship.authentication.AuthenticationController;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
@@ -29,7 +25,7 @@ public class AuthenticationControllerContextTest {
 
 
     @Autowired
-    ApplicationUserService userService;
+    UserService userService;
 
     @Autowired
     AuthenticationController authenticationController;
@@ -74,7 +70,7 @@ public class AuthenticationControllerContextTest {
         AuthenticationController.SignInResponseDTO signInResponseDTO = authenticationController.signIn(signInRequestDTO);
 
         assertNotNull(signInResponseDTO.token(), "Response contains no token");
-        assertEquals("user", signInResponseDTO.username(),  "Response contains wrong username");
+        assertEquals("user", signInResponseDTO.username(), "Response contains wrong username");
         assertThat(signInResponseDTO.roles()).contains("USER");
 
         //Existing user wrong password
@@ -93,8 +89,6 @@ public class AuthenticationControllerContextTest {
         }, "No exception thrown for non-existent user");
 
     }
-
-
 
 
 }

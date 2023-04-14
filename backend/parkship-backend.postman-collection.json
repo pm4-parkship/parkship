@@ -39,7 +39,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"password\": \"admin\",\r\n    \"email\": \"admin@parkship.ch\"\r\n}",
+					"raw": "{\r\n    \"password\": \"user\",\r\n    \"email\": \"user@parkship.ch\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -102,13 +102,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/test/user",
+					"raw": "{{baseUrl}}/test/admin",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"test",
-						"user"
+						"admin"
 					]
 				}
 			},
@@ -122,7 +122,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNjgwODkyMDA2LCJyb2xlcyI6WyJhZG1pbiIsInVzZXIiXSwidXNlcm5hbWUiOiJhZG1pbiJ9.JC5TU9fnVYX3A3ReEnLnJATShUHp-AegUPX39zL0Oyc",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNjgwODkyODMyLCJyb2xlcyI6WyJBRE1JTiIsIlVTRVIiXSwidXNlcm5hbWUiOiJhZG1pbiJ9.vOB2H2FPYox-3B176Haym_mNB4f7uDulm29ixaSGZgM",
 							"type": "string"
 						}
 					]
@@ -130,13 +130,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/test/admin",
+					"raw": "{{baseUrl}}/test/user",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"test",
-						"admin"
+						"user"
 					]
 				}
 			},
@@ -166,7 +166,7 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "http://localhost:8080/api",
+			"value": "http://localhost:8080/backend",
 			"type": "default"
 		}
 	]

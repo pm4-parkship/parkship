@@ -1,12 +1,7 @@
 package ch.zhaw.parkship.configuration;
 
-import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
-
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
-import javax.crypto.spec.SecretKeySpec;
-
+import ch.zhaw.parkship.authentication.UserConverter;
+import ch.zhaw.parkship.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,8 +21,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import ch.zhaw.parkship.authentication.ApplicationUserConverter;
-import ch.zhaw.parkship.authentication.ApplicationUserService;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
 @Configuration
 @EnableMethodSecurity(securedEnabled = true)
@@ -52,7 +50,7 @@ public class ApplicationConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authenticationProvider(authenticationProvider());
         http.oauth2ResourceServer().jwt(c -> {
-            c.jwtAuthenticationConverter(new ApplicationUserConverter());
+            c.jwtAuthenticationConverter(new UserConverter());
         });
         http.anonymous();
         http.cors().configurationSource(corsConfigurationSource());
@@ -73,7 +71,7 @@ public class ApplicationConfiguration {
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(((ApplicationUserService)userDetailsService).getPasswordEncoder());
+        authProvider.setPasswordEncoder(((UserService) userDetailsService).getPasswordEncoder());
         return authProvider;
     }
 
