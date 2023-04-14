@@ -8,7 +8,7 @@ import java.util.List;
 @Repository
 public interface ParkingLotRepository extends JpaRepository<ParkingLotEntity, Long> {
     List<ParkingLotEntity> findAllByDescriptionContainsIgnoreCase(String description);
-//test
+
     List<ParkingLotEntity> findAllByAddressContainsIgnoreCase(String address);
 
     List<ParkingLotEntity> findAllByAddressNrContainsIgnoreCase(String address);
