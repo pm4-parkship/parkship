@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/auth")
+@Transactional
 public class AuthenticationController {
     /**
      * Record for having the users request from the frontend to sign in in one clean object.
@@ -93,6 +95,7 @@ public class AuthenticationController {
      * @return Response to the frontend if all user information.
      */
     @PostMapping("/signup")
+
     public SignUpResponseDTO signUp(@Valid @RequestBody SignUpRequestDTO signUpRequestDTO) {
         if (userService.existsByEmailOrUsername(signUpRequestDTO.email, signUpRequestDTO.username)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);

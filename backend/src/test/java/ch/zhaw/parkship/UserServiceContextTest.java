@@ -1,8 +1,8 @@
 package ch.zhaw.parkship;
 
-import ch.zhaw.parkship.ParkshipApplication;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserService;
+import ch.zhaw.parkship.util.AbstractDataRollbackTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @ActiveProfiles("test")
 @SpringBootTest(classes = ParkshipApplication.class)
-public class UserServiceContextTest {
+public class UserServiceContextTest extends AbstractDataRollbackTest {
 
     @Autowired
     UserService userService;

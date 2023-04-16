@@ -1,6 +1,8 @@
 package ch.zhaw.parkship.reservation;
 
+import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
+import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -39,32 +41,15 @@ public class ReservationService {
      * @return Optional<ReservationDto> Returns an Optional object containing the saved reservation
      * data if created successfully, otherwise returns an empty Optional object.
      */
-    public Optional<ReservationDto> create(ReservationDto data) {
-        var parkingLot = parkingLotRepository.findById(data.getParkingLot().getId());
-        var tenant = userRepository.findById(data.getTenant().id());
-        if (parkingLot.isPresent() && tenant.isPresent()) {
-            var reservationEntity = new ReservationEntity();
-            BeanUtils.copyProperties(data, reservationEntity);
-            reservationEntity.setParkingLot(parkingLot.get());
-            reservationEntity.setTenant(tenant.get());
-            var savedEntity = reservationRepository.save(reservationEntity);
-            return Optional.of(new ReservationDto(savedEntity));
-        }
-        return Optional.empty();
+    public ReservationEntity create(ParkingLotEntity parkingLotEntity, UserEntity tenant, ReservationDto data) {
+        var reservationEntity = new ReservationEntity();
+        BeanUtils.copyProperties(data, reservationEntity);
+        reservationEntity.setParkingLot(parkingLotEntity);
+        reservationEntity.setTenant(tenant);
+        return reservationRepository.save(reservationEntity);
     }
 
-    /**
-     * This method creates a new reservation with the provided parking lot id and reservation data.
-     *
-     * @param parkingLotId The id of the parking lot where the reservation will be created.
-     * @param data         The reservation data to be saved.
-     * @return Optional<ReservationDto> Returns an Optional object containing the saved reservation
-     * data if created successfully, otherwise returns an empty Optional object.
-     */
-    public Optional<ReservationDto> create(Long parkingLotId, ReservationDto data) {
-        data.getParkingLot().setId(parkingLotId);
-        return create(data);
-    }
+
 
     /**
      * This method retrieves a reservation with the provided id.

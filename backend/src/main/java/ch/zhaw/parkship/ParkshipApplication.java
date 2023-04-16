@@ -38,17 +38,11 @@ public class ParkshipApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication springApp = new SpringApplication(ParkshipApplication.class);
-
-        if (args.length == 0) {
-            springApp.setAdditionalProfiles("dev");
-        }
-
-        springApp.run(args);
+        SpringApplication.run(ParkshipApplication.class, args);
     }
 
     @Bean
-    @Profile({"dev", "test"})
+    @Profile("dev")
     @Transactional
     CommandLineRunner initTemplate(@Autowired RoleRepository roleRepository,
                                    UserService userService) {

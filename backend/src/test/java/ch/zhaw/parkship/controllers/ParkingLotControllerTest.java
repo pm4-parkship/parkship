@@ -1,6 +1,5 @@
 package ch.zhaw.parkship.controllers;
 
-import ch.zhaw.parkship.ParkshipApplication;
 import ch.zhaw.parkship.parkinglot.ParkingLotController;
 import ch.zhaw.parkship.parkinglot.ParkingLotDto;
 import ch.zhaw.parkship.parkinglot.ParkingLotService;
@@ -16,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,7 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class ParkingLotControllerTest {
+@ActiveProfiles("test")
+ class ParkingLotControllerTest {
     private MockMvc mockMvc;
 
     @Mock
