@@ -1,4 +1,4 @@
-package ch.zhaw.parkshhip;
+package ch.zhaw.parkship;
 
 import ch.zhaw.parkship.ParkshipApplication;
 import ch.zhaw.parkship.user.UserEntity;
