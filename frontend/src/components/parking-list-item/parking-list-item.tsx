@@ -7,7 +7,8 @@ const ParkingListItem = ({ color, parking }: {color: string, parking: ParkingLot
  
     return (
     <Paper elevation={1} className={classes.listItem} sx={{
-        bgcolor: {color}
+        bgcolor: {color},
+        m: 2
       }}>
       <Typography>Parkplatz {parking.nr}</Typography>
       <br />
@@ -22,7 +23,8 @@ const ParkingListItem = ({ color, parking }: {color: string, parking: ParkingLot
 const useStyles = makeStyles((theme) => ({
   listItem: {
     // todo add styling here.
-
+    // mr: 20,
+    // ml: 20
   }
 }));
 

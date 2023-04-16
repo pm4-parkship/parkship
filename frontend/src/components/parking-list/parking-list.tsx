@@ -8,7 +8,7 @@ const ParkingList = ({ parkings }: { parkings: ParkingLotModel[] }) => {
     return (
     <div className={classes.parkingList}>
       {parkings.map((parking) => {
-        return <ParkingListItem color={"red"} parking={parking} />;
+        return <ParkingListItem color={"#123456"} parking={parking} />;
       })}
     </div>
   );
@@ -18,8 +18,8 @@ const useStyles = makeStyles((theme) => ({
     parkingList: {
         display: "flex",
         flexDirection: "row",
-        overflow: "scroll"
-    }
+        overflow: "scroll"   
+       }
 }));
 
 export default ParkingList;
