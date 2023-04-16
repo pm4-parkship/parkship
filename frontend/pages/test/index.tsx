@@ -22,7 +22,6 @@ const Index = () => {
     }, 2000);
   });
 
-  const parkingEmptyDummyData: ParkingLotModel[] = [];
   const parkingDummyData: ParkingLotModel[] = [
     {
       address: 'Dorfstrasse',
