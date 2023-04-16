@@ -3,10 +3,7 @@ package ch.zhaw.parkship.services;
 import ch.zhaw.parkship.parkinglot.ParkingLotDto;
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
-import ch.zhaw.parkship.reservation.ReservationDto;
-import ch.zhaw.parkship.reservation.ReservationEntity;
-import ch.zhaw.parkship.reservation.ReservationRepository;
-import ch.zhaw.parkship.reservation.ReservationService;
+import ch.zhaw.parkship.reservation.*;
 import ch.zhaw.parkship.user.UserDto;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
@@ -16,13 +13,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -142,5 +142,59 @@ class ReservationServiceTest {
         // Add assertions for other properties
         verify(reservationRepository, times(1)).findById(1L);
         verify(reservationRepository, times(1)).delete(reservationEntity);
+    }
+
+    @Test
+    public void testCancelReservation() {
+
+        //Non-existent reservation
+        when(reservationRepository.findById(2L)).thenReturn(Optional.empty());
+
+        assertThrows(ReservationNotFoundException.class, () -> {
+            reservationService.cancelReservation(2L);
+        }, "No exception thrown, even if the reservation does not exist");
+        verify(reservationRepository, times(1)).findById(2L);
+
+        //Cancelation before deadline
+        LocalDate beforeDeadline = LocalDate.now().plusDays(5);
+        ReservationEntity reservation = new ReservationEntity();
+        reservation.setFrom(beforeDeadline);
+        reservation.setId(2L);
+        reservation.setState(ReservationState.ACTIVE);
+        when(reservationRepository.findById(2L)).thenReturn(Optional.of(reservation));
+        try {
+            reservationService.cancelReservation(2L);
+        } catch (Exception e) {
+            System.out.println("Cancelation failed");
+        }
+        verify(reservationRepository, times(2)).findById(2L);
+        verify(reservationRepository, times(1)).save(reservation);
+        assertEquals(ReservationState.CANCELED, reservation.getState(), "Reservation state was not set to canceled.");
+
+        //Cancelation before deadline edge case
+        beforeDeadline = LocalDate.now().plusDays(2);
+        reservation.setFrom(beforeDeadline);
+        reservation.setState(ReservationState.ACTIVE);
+        when(reservationRepository.findById(2L)).thenReturn(Optional.of(reservation));
+        try {
+            reservationService.cancelReservation(2L);
+        } catch (Exception e) {
+            System.out.println("Cancelation failed");
+        }
+        verify(reservationRepository, times(3)).findById(2L);
+        verify(reservationRepository, times(2)).save(reservation);
+        assertEquals(ReservationState.CANCELED, reservation.getState(), "Reservation state was not set to canceled.");
+
+        //Cancelation after deadline
+        LocalDate afterDeadline = LocalDate.now().plusDays(1);
+        reservation = new ReservationEntity();
+        reservation.setFrom(afterDeadline);
+        reservation.setId(2L);
+        when(reservationRepository.findById(2L)).thenReturn(Optional.of(reservation));
+        assertThrows(ReservationCanNotBeCanceledException.class, () -> {
+            reservationService.cancelReservation(2L);
+        }, "No exception thrown, even if cancelation after deadline");
+        verify(reservationRepository, times(4)).findById(2L);
+
     }
 }

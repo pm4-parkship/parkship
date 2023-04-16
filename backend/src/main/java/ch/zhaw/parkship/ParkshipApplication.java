@@ -4,6 +4,7 @@ import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
 import ch.zhaw.parkship.reservation.ReservationEntity;
 import ch.zhaw.parkship.reservation.ReservationRepository;
+import ch.zhaw.parkship.reservation.ReservationState;
 import ch.zhaw.parkship.role.RoleEntity;
 import ch.zhaw.parkship.role.RoleRepository;
 import ch.zhaw.parkship.user.UserEntity;
@@ -100,6 +101,7 @@ public class ParkshipApplication {
                 reservation.setTo(LocalDate.of(to.getYear()+1900, to.getMonth()+1, to.getDay()+1));
                 reservation.setParkingLot(parkingLots.get((i + 1) % 5));
                 reservation.setTenant(users.get(((i + 1) % 4)));
+                reservation.setState(ReservationState.CANCELED);
                 reservationRepository.save(reservation);
             }
         };

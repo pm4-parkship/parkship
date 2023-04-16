@@ -1,4 +1,4 @@
-package ch.zhaw.parkshhip.controllers;
+package ch.zhaw.parkship.controllers;
 
 import ch.zhaw.parkship.ParkshipApplication;
 import ch.zhaw.parkship.parkinglot.ParkingLotDto;
@@ -32,8 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-@ActiveProfiles("test")
-@SpringBootTest(classes = ParkshipApplication.class)
 public class ReservationControllerTest {
     private MockMvc mockMvc;
 

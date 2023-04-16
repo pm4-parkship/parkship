@@ -29,6 +29,8 @@ public class ReservationService {
     private final ParkingLotRepository parkingLotRepository;
     private final UserRepository userRepository;
 
+    private static final int CANCELATION_DEADLINE = 2;
+
 
     /**
      * This method creates a new reservation with the provided reservation data.
@@ -136,6 +138,36 @@ public class ReservationService {
 
     public boolean isFreeInDateRange(Long id, LocalDate startDate, LocalDate endDate) {
         return reservationRepository.findAllWithOverlappingDates(id, startDate, endDate).isEmpty();
+    }
+
+    /**
+     * Sets a reservation's state to canceled, if the reservation exists,
+     * is not yet canceled and the reservation is before the CANCELATION_DEADLINE.
+     * @param id
+     * @throws ReservationNotFoundException if the reservation does not exist
+     * @throws ReservationCanNotBeCanceledException if the reservation either is too late or the reservation is already canceled.
+     */
+    public void cancelReservation(Long id) throws ReservationNotFoundException, ReservationCanNotBeCanceledException{
+        LocalDate today = LocalDate.now();
+        Optional<ReservationEntity> reservationOptional = reservationRepository.findById(id);
+
+        if(reservationOptional.isEmpty()) {
+            throw new ReservationNotFoundException("Reservation not found");
+        }
+
+        ReservationEntity reservation = reservationOptional.get();
+
+        if(reservation.getFrom().minusDays(2).isBefore(today)) {
+            throw new ReservationCanNotBeCanceledException("It is too late to cancel this reservation");
+        }
+
+        if(reservation.getState().equals(ReservationState.CANCELED)) {
+            throw new ReservationCanNotBeCanceledException("This reservation is already canceled");
+        }
+
+        reservation.setState(ReservationState.CANCELED);
+        reservationRepository.save(reservation);
+
     }
 
 }

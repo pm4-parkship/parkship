@@ -109,4 +109,18 @@ public class ReservationController {
         return ResponseEntity.notFound().build();
     }
 
+    /**
+     * Cancels a reservation, if the reservation exists, is not yet canceled and the reservation
+     * is before the cancelataion deadline.
+     * @param id
+     * @throws ReservationNotFoundException if the reservation does not exist
+     * @throws ReservationCanNotBeCanceledException if the reservation either is too late or the reservation is already canceled.
+     */
+    @PostMapping(value = "/stornieren")
+    public void cancelReservation(@PathVariable("id") Long id) throws ReservationNotFoundException, ReservationCanNotBeCanceledException {
+        reservationService.cancelReservation(id);
+    }
+
+
+
 }
