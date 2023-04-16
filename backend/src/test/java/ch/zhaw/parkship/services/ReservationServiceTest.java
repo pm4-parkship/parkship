@@ -6,19 +6,19 @@ import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
 import ch.zhaw.parkship.reservation.*;
 import ch.zhaw.parkship.user.UserDto;
 import ch.zhaw.parkship.user.UserEntity;
-import ch.zhaw.parkship.user.UserRepository;
+import ch.zhaw.parkship.util.UserGenerator;
+import ch.zhaw.parkship.util.generator.ParkingLotGenerator;
+import ch.zhaw.parkship.util.generator.ReservationGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,8 +32,6 @@ class ReservationServiceTest {
     @Mock
     private ReservationRepository reservationRepository;
 
-    @Mock
-    private UserRepository userRepository;
 
     @Mock
     private ParkingLotRepository parkingLotRepository;
@@ -77,18 +75,16 @@ class ReservationServiceTest {
 
     @Test
     public void testCreate() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(reservationEntity.getTenant()));
-        when(reservationRepository.save(any(ReservationEntity.class))).thenReturn(reservationEntity);
-        when(parkingLotRepository.findById(anyLong())).thenReturn(Optional.of(parkingLotEntity));
+        ParkingLotEntity entity = ParkingLotGenerator.generate(UserGenerator.generate());
+        UserEntity userEntity = UserGenerator.generate();
+        when(reservationRepository.save(any())).thenReturn(ReservationGenerator.generate(entity, userEntity, 1L));
 
         var data = createReservationDto();
 
-        var result = reservationService.create(data);
+        var result = reservationService.create(entity, userEntity, data);
 
-        assertEquals(1, result.get().getId());
+        assertEquals(1, result.getId());
 
-        verify(parkingLotRepository, times(1)).findById(anyLong());
-        verify(userRepository, times(1)).findById(anyLong());
         verify(reservationRepository, times(1)).save(any(ReservationEntity.class));
     }
 

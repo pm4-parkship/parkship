@@ -1,8 +1,9 @@
 package ch.zhaw.parkship;
 
-import ch.zhaw.parkship.ParkshipApplication;
 import ch.zhaw.parkship.authentication.AuthenticationController;
+import ch.zhaw.parkship.util.AbstractDataRollbackTest;
 import ch.zhaw.parkship.user.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @ActiveProfiles("test")
 @SpringBootTest(classes = ParkshipApplication.class)
-public class AuthenticationControllerContextTest {
+class AuthenticationControllerContextTest extends AbstractDataRollbackTest {
 
 
     @Autowired
@@ -31,9 +32,13 @@ public class AuthenticationControllerContextTest {
     AuthenticationController authenticationController;
 
 
-    @Test
-    public void testSignUp() {
+    @BeforeEach
+    void init() {
+        doSeed();
+    }
 
+    @Test
+    void testSignUp() {
         //New user
         AuthenticationController.SignUpRequestDTO signUpRequestDTO = new AuthenticationController.SignUpRequestDTO("test@test.ch", "tester", "testest");
         AuthenticationController.SignUpResponseDTO signUpResponseDTO = authenticationController.signUp(signUpRequestDTO);
@@ -56,13 +61,10 @@ public class AuthenticationControllerContextTest {
         assertThrows(ResponseStatusException.class, () -> {
             authenticationController.signUp(signUpRequestDTOUsernameExists);
         }, "No exception thrown, because username already exists");
-
-
     }
 
     @Test
-    public void testSignIn() {
-
+    void testSignIn() {
         assertTrue(userService.existsByEmailOrUsername("user@parkship.ch", "user"), "Dummy user for test does not exist");
 
         //Existing user right password
