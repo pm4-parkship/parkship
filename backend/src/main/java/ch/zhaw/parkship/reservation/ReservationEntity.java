@@ -35,6 +35,9 @@ public class ReservationEntity {
     @Column(nullable = false)
     private LocalDate to;
 
+    @Column(nullable = false)
+    private ReservationState state;
+
     @Override
     public String toString() {
         return "ReservationEntity{" + "id=" + id + ", parkingLot=" + parkingLot + ", tenant=" + tenant
