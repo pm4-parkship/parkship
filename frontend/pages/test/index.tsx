@@ -16,6 +16,7 @@ const Index = () => {
   const [isError, setIsError] = useState<boolean>(true);
 
   useEffect(() => {
+    // here to show progress circle and error message
     setTimeout(() => {
       setIsLoading(false);
       setIsError(false);
