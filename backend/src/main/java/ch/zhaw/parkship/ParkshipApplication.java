@@ -1,28 +1,40 @@
 package ch.zhaw.parkship;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
+import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
+import ch.zhaw.parkship.reservation.ReservationEntity;
+import ch.zhaw.parkship.reservation.ReservationRepository;
+import ch.zhaw.parkship.role.RoleEntity;
+import ch.zhaw.parkship.role.RoleRepository;
+import ch.zhaw.parkship.user.UserEntity;
+import ch.zhaw.parkship.user.UserService;
+import com.github.javafaker.Faker;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
-import ch.zhaw.parkship.authentication.ApplicationUser;
-import ch.zhaw.parkship.authentication.ApplicationUserService;
-import ch.zhaw.parkship.authentication.Role;
-import ch.zhaw.parkship.authentication.RoleRepository;
-import ch.zhaw.parkship.examples.todos.Todo;
-import ch.zhaw.parkship.examples.todos.TodoRepository;
-import ch.zhaw.parkship.parkinglot.ParkingLotService;
-import ch.zhaw.parkship.reservation.ReservationService;
-import ch.zhaw.parkship.user.UserEntity;
-import ch.zhaw.parkship.user.UserRepository;
-import jakarta.transaction.Transactional;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 public class ParkshipApplication {
+    private final ParkingLotRepository parkingLotRepository;
+    private final ReservationRepository reservationRepository;
+
+
+    public ParkshipApplication(ParkingLotRepository parkingLotRepository,
+                               ReservationRepository reservationRepository) {
+        this.parkingLotRepository = parkingLotRepository;
+        this.reservationRepository = reservationRepository;
+    }
 
     public static void main(String[] args) {
         SpringApplication springApp = new SpringApplication(ParkshipApplication.class);
@@ -35,54 +47,60 @@ public class ParkshipApplication {
     }
 
     @Bean
-    @Profile({ "dev", "test" })
+    @Profile({"dev", "test"})
     @Transactional
-    CommandLineRunner initTemplate(@Autowired TodoRepository todoRepository, @Autowired RoleRepository roleRepository,
-            @Autowired UserRepository userRepository, ApplicationUserService userService,
-            ParkingLotService parkingLotService, ReservationService reservationService) {
+    CommandLineRunner initTemplate(@Autowired RoleRepository roleRepository,
+                                   UserService userService) {
         return args -> {
-            Role userRole = new Role("USER");
-            Role adminRole = new Role("ADMIN");
+            RoleEntity userRoleEntity = new RoleEntity("USER");
+            RoleEntity adminRoleEntity = new RoleEntity("ADMIN");
 
-            roleRepository.saveAll(Set.of(userRole, adminRole));
+            roleRepository.saveAll(Set.of(userRoleEntity, adminRoleEntity));
 
-            ApplicationUser user = userService.signUp("user", "user@parkship.ch", "user");
-            ApplicationUser secondUser = userService.signUp("second", "second@parkship.ch", "second");
-            ApplicationUser thirdUser = userService.signUp("thirdUser", "thirdUser@parkship.ch", "thirdUser");
-            ApplicationUser admin = userService.signUp("admin", "admin@parkship.ch", "admin");
+            UserEntity user = userService.signUp("user", "user@parkship.ch", "user");
+            UserEntity secondUser = userService.signUp("second", "second@parkship.ch", "second");
+            UserEntity thirdUser = userService.signUp("thirdUser", "thirdUser@parkship.ch", "thirdUser");
+            UserEntity admin = userService.signUp("admin", "admin@parkship.ch", "admin");
 
-            UserEntity userEntity = userRepository.save(new UserEntity("Fritz", "Fröhlich"));
-            UserEntity secondUserEntity = userRepository.save(new UserEntity("Sue", "Moe"));
-            UserEntity thirdUserEntity = userRepository.save(new UserEntity("Anne", "Bananne"));
-            UserEntity adminEntity = userRepository.save(new UserEntity("CHuck", "Huck"));
-
-            userEntity.setApplicationUser(user);
-            secondUserEntity.setApplicationUser(secondUser);
-            thirdUserEntity.setApplicationUser(thirdUser);
-            adminEntity.setApplicationUser(admin);
-
-            user.getRoles().add(userRole);
-            secondUser.getRoles().add(userRole);
-            thirdUser.getRoles().add(userRole);
-            admin.getRoles().add(adminRole);
+            user.getRoleEntities().add(userRoleEntity);
+            secondUser.getRoleEntities().add(userRoleEntity);
+            thirdUser.getRoleEntities().add(userRoleEntity);
+            admin.getRoleEntities().add(adminRoleEntity);
 
             userService.save(user);
             userService.save(secondUser);
             userService.save(thirdUser);
             userService.save(admin);
+            List<UserEntity> users = List.of(user, secondUser, thirdUser, admin);
+            Faker faker = new Faker();
 
-            userRepository.save(userEntity);
-            userRepository.save(secondUserEntity);
-            userRepository.save(thirdUserEntity);
-            userRepository.save(adminEntity);
+            List<ParkingLotEntity> parkingLots = new ArrayList<>();
 
-            if (todoRepository.count() == 0) {
-                List<Todo> todos = Arrays.asList(new Todo("Learn spring boot", "A must!"),
-                        new Todo("Learn react.js", "next.js rocks!"), new Todo("Learn docker", "containerize this!"),
-                        new Todo("Learn typescript", "Also google monad"),
-                        new Todo("Switch to Kotlin for backend", "or stay stable"),
-                        new Todo("Cuddle your cats", "They deserve it"));
-                todoRepository.saveAll(todos);
+            for (int i = 0; i < 5; i++) {
+                var parkingLot = new ParkingLotEntity();
+                parkingLot.setId(i + 1L);
+                parkingLot.setLongitude(Double.valueOf(faker.address().longitude()));
+                parkingLot.setLatitude(Double.valueOf(faker.address().latitude()));
+                parkingLot.setNr(faker.address().buildingNumber());
+                parkingLot.setPrice(faker.number().randomDouble(2, 10, 300));
+                parkingLot.setState(faker.address().state());
+                parkingLot.setAddress(faker.address().streetAddress());
+                parkingLot.setAddressNr(faker.address().streetAddressNumber());
+                parkingLot.setDescription(faker.weather().description());
+                parkingLot.setOwner(i == 0 ? admin : user);
+                parkingLotRepository.save(parkingLot);
+                parkingLots.add(parkingLot);
+            }
+
+            for (int i = 0; i < 9; i++) {
+                var reservation = new ReservationEntity();
+                Date from = faker.date().future(2, 1, TimeUnit.DAYS);
+                reservation.setFrom(LocalDate.of(from.getYear()+1900, from.getMonth()+1, from.getDay()+1));
+                Date to = faker.date().future(2, 1, TimeUnit.DAYS);
+                reservation.setTo(LocalDate.of(to.getYear()+1900, to.getMonth()+1, to.getDay()+1));
+                reservation.setParkingLot(parkingLots.get((i + 1) % 5));
+                reservation.setTenant(users.get(((i + 1) % 4)));
+                reservationRepository.save(reservation);
             }
         };
     }

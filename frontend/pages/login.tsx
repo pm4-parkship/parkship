@@ -22,15 +22,17 @@ export default function Login() {
             event.preventDefault();
 
             const body = {
-              username: event.currentTarget.username.value
+              email: event.currentTarget.email.value,
+              password: event.currentTarget.password.value,
             };
 
             try {
               await mutateUser(
-                await fetchJson('/api/login', {
+                await fetchJson('/backend/auth/signin', {
                   method: 'POST',
+                  credentials: 'include',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(body)
+                  body: JSON.stringify(body),
                 })
               );
             } catch (error) {

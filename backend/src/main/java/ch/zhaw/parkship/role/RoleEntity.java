@@ -1,17 +1,15 @@
-package ch.zhaw.parkship.authentication;
+package ch.zhaw.parkship.role;
+
+import ch.zhaw.parkship.user.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Class for the role entity in the database.
@@ -20,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Role {
+public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -30,11 +28,11 @@ public class Role {
     /**
      * User with this role.
      */
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roleEntities")
     @JsonIgnore
-    private Set<ApplicationUser> users = new HashSet<>();
+    private Set<UserEntity> users = new HashSet<>();
 
-    public Role(String name) {
+    public RoleEntity(String name) {
         this.name = name;
     }
 
@@ -42,8 +40,8 @@ public class Role {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Role role = (Role) o;
-        return id == role.id && name.equals(role.name);
+        RoleEntity roleEntity = (RoleEntity) o;
+        return id == roleEntity.id && name.equals(roleEntity.name);
     }
 
     @Override

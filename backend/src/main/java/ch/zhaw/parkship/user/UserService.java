@@ -1,14 +1,16 @@
-package ch.zhaw.parkship.authentication;
+package ch.zhaw.parkship.user;
 
+import ch.zhaw.parkship.role.RoleEntity;
+import ch.zhaw.parkship.role.RoleRepository;
+import jakarta.transaction.Transactional;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import jakarta.transaction.Transactional;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Manages the user data for request over the controller for signing up and
@@ -17,12 +19,12 @@ import lombok.Setter;
 @Service
 @Getter
 @Setter
-public class ApplicationUserService implements UserDetailsService {
+public class UserService implements UserDetailsService {
     /**
      * The default role is USER as this role has the lowest access level.
      */
     private static final String DEFAULT_ROLE = "USER";
-    private ApplicationUserRepository userRepository;
+    private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -30,7 +32,7 @@ public class ApplicationUserService implements UserDetailsService {
         return passwordEncoder;
     }
 
-    public ApplicationUserService(ApplicationUserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
@@ -38,12 +40,12 @@ public class ApplicationUserService implements UserDetailsService {
     /**
      * Save a ApplicationUser in the database.
      *
-     * @param applicationUser
+     * @param userEntity
      * @return Saved applicationUser
      */
-    public ApplicationUser save(ApplicationUser applicationUser) {
-        userRepository.save(applicationUser);
-        return applicationUser;
+    public UserEntity save(UserEntity userEntity) {
+        userRepository.save(userEntity);
+        return userEntity;
     }
 
     /**
@@ -68,13 +70,13 @@ public class ApplicationUserService implements UserDetailsService {
      * @return The saved new user.
      */
     @Transactional
-    public ApplicationUser signUp(String username, String email, String password) {
-        ApplicationUser newUser = new ApplicationUser();
+    public UserEntity signUp(String username, String email, String password) {
+        UserEntity newUser = new UserEntity();
         newUser.setEmail(email);
         newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(password));
-        Role userRole = roleRepository.findByName(DEFAULT_ROLE);
-        newUser.getRoles().add(userRole);
+        RoleEntity userRoleEntity = roleRepository.findByName(DEFAULT_ROLE);
+        newUser.getRoleEntities().add(userRoleEntity);
         userRepository.save(newUser);
         return newUser;
     }
