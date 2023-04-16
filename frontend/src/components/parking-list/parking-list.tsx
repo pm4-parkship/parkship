@@ -5,10 +5,16 @@ import ParkingListItem from '../parking-list-item/parking-list-item';
 const ParkingList = ({ parkings }: { parkings: ParkingLotModel[] }) => {
     const classes = useStyles();
 
+    const randomColors : string[] = ["red", "blue", "yellow", "green", "purple"];
+    const randomColor = (index : number) : string => {
+      // TODO : update with random color
+      return randomColors[index];
+    };
+
     return (
     <div className={classes.parkingList}>
-      {parkings.map((parking) => {
-        return <ParkingListItem bcolor={"red"} parking={parking} />;
+      {parkings.map((parking, index) => {
+        return <ParkingListItem bcolor={randomColor(index)} parking={parking} />;
       })}
       {(parkings?.length == 0) ? <div>hello</div> : <></>}
     </div>

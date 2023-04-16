@@ -3,16 +3,17 @@ import { lightBlue } from '@mui/material/colors';
 import { DefaultTheme, makeStyles } from '@mui/styles';
 import { ParkingLotModel } from 'src/models';
 
-const ParkingListItem = ({ bcolor, parking}: {bcolor: string, parking: ParkingLotModel }) => {
-    const classes = useStyles();
+interface Props {
+  bcolor: string,
+  parking: ParkingLotModel
+}
+
+const ParkingListItem = (props : Props) => {
+    const {bcolor, parking} = props;
+    const { listItem } = useStyles(props)();
  
     return (
-    <Paper elevation={1} className={classes.listItem} 
-    // sx={{
-    //     bgcolor: "red",
-    //     m: 2
-    //   }}
-      >
+    <Paper elevation={1} className={listItem}>
       <Typography>Parkplatz {parking.nr}</Typography>
       <br />
       <Typography>{parking.floor}</Typography>
@@ -23,13 +24,13 @@ const ParkingListItem = ({ bcolor, parking}: {bcolor: string, parking: ParkingLo
   );
 };
 
-const useStyles = makeStyles((theme : DefaultTheme) => ({
-  listItem: {
-    // todo add styling here.
 
-    backgroundColor: theme.palette.primary.light,
+const useStyles = (props : Props) => makeStyles( theme => ({
+  listItem: {
+    backgroundColor: props.bcolor,
     margin: 10
   }
 }));
+
 
 export default ParkingListItem;
