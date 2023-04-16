@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -116,9 +117,18 @@ public class ReservationController {
      * @throws ReservationNotFoundException if the reservation does not exist
      * @throws ReservationCanNotBeCanceledException if the reservation either is too late or the reservation is already canceled.
      */
-    @PostMapping(value = "/stornieren")
-    public void cancelReservation(@PathVariable("id") Long id) throws ReservationNotFoundException, ReservationCanNotBeCanceledException {
-        reservationService.cancelReservation(id);
+    @PostMapping(value = "/{id}/cancel")
+    public ResponseEntity<?> cancelReservation(@PathVariable("id") Long id) throws ReservationNotFoundException, ReservationCanNotBeCanceledException {
+        try {
+            reservationService.cancelReservation(id);
+            return ResponseEntity.noContent().build();
+        } catch (ReservationNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch(ReservationCanNotBeCanceledException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+
     }
 
 
