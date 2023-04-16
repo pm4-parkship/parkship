@@ -1,6 +1,8 @@
 package ch.zhaw.parkship.reservation;
 
+import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
+import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +31,8 @@ public class ReservationService {
     private final ParkingLotRepository parkingLotRepository;
     private final UserRepository userRepository;
 
+    private static final int CANCELATION_DEADLINE = 2;
+
 
     /**
      * This method creates a new reservation with the provided reservation data.
@@ -37,32 +41,15 @@ public class ReservationService {
      * @return Optional<ReservationDto> Returns an Optional object containing the saved reservation
      * data if created successfully, otherwise returns an empty Optional object.
      */
-    public Optional<ReservationDto> create(ReservationDto data) {
-        var parkingLot = parkingLotRepository.findById(data.getParkingLot().getId());
-        var tenant = userRepository.findById(data.getTenant().id());
-        if (parkingLot.isPresent() && tenant.isPresent()) {
-            var reservationEntity = new ReservationEntity();
-            BeanUtils.copyProperties(data, reservationEntity);
-            reservationEntity.setParkingLot(parkingLot.get());
-            reservationEntity.setTenant(tenant.get());
-            var savedEntity = reservationRepository.save(reservationEntity);
-            return Optional.of(new ReservationDto(savedEntity));
-        }
-        return Optional.empty();
+    public ReservationEntity create(ParkingLotEntity parkingLotEntity, UserEntity tenant, ReservationDto data) {
+        var reservationEntity = new ReservationEntity();
+        BeanUtils.copyProperties(data, reservationEntity);
+        reservationEntity.setParkingLot(parkingLotEntity);
+        reservationEntity.setTenant(tenant);
+        return reservationRepository.save(reservationEntity);
     }
 
-    /**
-     * This method creates a new reservation with the provided parking lot id and reservation data.
-     *
-     * @param parkingLotId The id of the parking lot where the reservation will be created.
-     * @param data         The reservation data to be saved.
-     * @return Optional<ReservationDto> Returns an Optional object containing the saved reservation
-     * data if created successfully, otherwise returns an empty Optional object.
-     */
-    public Optional<ReservationDto> create(Long parkingLotId, ReservationDto data) {
-        data.getParkingLot().setId(parkingLotId);
-        return create(data);
-    }
+
 
     /**
      * This method retrieves a reservation with the provided id.
@@ -136,6 +123,36 @@ public class ReservationService {
 
     public boolean isFreeInDateRange(Long id, LocalDate startDate, LocalDate endDate) {
         return reservationRepository.findAllWithOverlappingDates(id, startDate, endDate).isEmpty();
+    }
+
+    /**
+     * Sets a reservation's state to canceled, if the reservation exists,
+     * is not yet canceled and the reservation is before the CANCELATION_DEADLINE.
+     * @param id
+     * @throws ReservationNotFoundException if the reservation does not exist
+     * @throws ReservationCanNotBeCanceledException if the reservation either is too late or the reservation is already canceled.
+     */
+    public void cancelReservation(Long id) throws ReservationNotFoundException, ReservationCanNotBeCanceledException{
+        LocalDate today = LocalDate.now();
+        Optional<ReservationEntity> reservationOptional = reservationRepository.findById(id);
+
+        if(reservationOptional.isEmpty()) {
+            throw new ReservationNotFoundException("Reservation not found");
+        }
+
+        ReservationEntity reservation = reservationOptional.get();
+
+        if(reservation.getFrom().minusDays(2).isBefore(today)) {
+            throw new ReservationCanNotBeCanceledException("It is too late to cancel this reservation");
+        }
+
+        if(reservation.getState().equals(ReservationState.CANCELED)) {
+            throw new ReservationCanNotBeCanceledException("This reservation is already canceled");
+        }
+
+        reservation.setState(ReservationState.CANCELED);
+        reservationRepository.save(reservation);
+
     }
 
 }

@@ -17,11 +17,11 @@ export function Layout({ children }: LayoutProps) {
         <div className={classes.root}>{children}</div>
       </main>
       <div className={classes.bottomBar}>
-        <Typography variant="body2" color="textSecondary" align="center">
-          Created by Parkship
+        <Typography variant="body2" color="primary" align="center">
+          {'Created with ❤️ '}
         </Typography>
-        <Typography variant="body2" color="textSecondary" align="center">
-          {'© '}
+        <Typography variant="body2" color="textPrimary" align="center">
+          {' by Parkship © '}
           {new Date().getFullYear()}
         </Typography>
       </div>
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: '1600px',
     minHeight: '100vh',
-    margin: '0 auto',
+    margin: '1rem auto',
     background: theme.palette.background.default
   },
   topBarBottom: {

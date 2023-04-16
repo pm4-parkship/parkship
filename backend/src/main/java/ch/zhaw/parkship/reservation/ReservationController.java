@@ -1,12 +1,20 @@
 package ch.zhaw.parkship.reservation;
 
+import ch.zhaw.parkship.availability.AvailabilityService;
+import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
+import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
+import ch.zhaw.parkship.user.UserEntity;
+import ch.zhaw.parkship.user.UserRepository;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,28 +25,43 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/reservation")
+@RequiredArgsConstructor
 @SecurityRequirement(name = "Bearer Authentication")
 public class ReservationController {
 
-    @Autowired
-    private ReservationService reservationService;
+
+    private final ReservationService reservationService;
+    private final UserRepository userRepository;
+    private final ParkingLotRepository parkingLotRepository;
+    private final AvailabilityService availabilityService;
 
     /**
      * This end-point creates a new reservation with the provided reservation data.
      *
-     * @param ReservationDto The reservation data to be saved.
+     * @param reservationDto The reservation data to be saved.
      * @return ResponseEntity<ReservationDto> Returns the saved reservation data in the HTTP response
      * body with a status code of 201 if created successfully, otherwise returns a bad request
      * status code.
      */
-    @PostMapping(consumes = "application/json", produces = "application/json")
+
+    @Transactional
     @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<ReservationDto> createReservation(
-            @Valid @RequestBody ReservationDto ReservationDto) {
-        Optional<ReservationDto> createdReservation = reservationService.create(ReservationDto);
-        return createdReservation.map(value -> ResponseEntity.status(HttpStatus.CREATED).body(value))
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+            @Valid @RequestBody ReservationDto reservationDto) {
+        validateRequest(reservationDto);
+
+        ParkingLotEntity parkingLot = parkingLotRepository.getByIdLocked(reservationDto.getParkingLot().getId());
+        UserEntity tenant = userRepository.getReferenceById(reservationDto.getTenant().id());
+        if (!availabilityService.isParkingLotAvailable(parkingLot, reservationDto.getFrom(), reservationDto.getTo())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "ParkingLot has pending Reservation during given time");
+        }
+
+        ReservationEntity reservationEntity = reservationService.create(parkingLot, tenant, reservationDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ReservationDto(reservationEntity));
     }
+
 
     /**
      * This end-point retrieves a reservation with the provided id.
@@ -108,5 +131,56 @@ public class ReservationController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    /**
+     * Cancels a reservation, if the reservation exists, is not yet canceled and the reservation
+     * is before the cancelataion deadline.
+     * @param id
+     * @throws ReservationNotFoundException if the reservation does not exist
+     * @throws ReservationCanNotBeCanceledException if the reservation either is too late or the reservation is already canceled.
+     */
+    @PostMapping(value = "/stornieren")
+    public void cancelReservation(@PathVariable("id") Long id) throws ReservationNotFoundException, ReservationCanNotBeCanceledException {
+        reservationService.cancelReservation(id);
+    }
+
+
+
+
+    protected void validateRequest(ReservationDto reservationDto) {
+
+        if (reservationDto == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given object is null");
+        }
+        if (reservationDto.getParkingLot() == null || reservationDto.getParkingLot().getId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given parkingLot is invalid");
+        }
+
+        if (reservationDto.getTenant() == null || reservationDto.getTenant().id() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given tenant is invalid");
+        }
+
+        if (!isDateRangeValid(reservationDto)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a valid date range");
+        }
+
+        if (!areDatesInFuture(reservationDto)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given Range should be in the future");
+        }
+    }
+
+
+    private boolean areDatesInFuture(ReservationDto reservationDto) {
+        LocalDate today = LocalDate.now();
+        return !today.isBefore(reservationDto.getFrom()) && !today.isBefore(reservationDto.getTo());
+    }
+
+    private boolean isDateRangeValid(ReservationDto reservationDto) {
+        if (reservationDto.getFrom() == null || reservationDto.getTo() == null) {
+            return false;
+        }
+        return reservationDto.getFrom().isBefore(reservationDto.getTo());
+    }
+
 
 }

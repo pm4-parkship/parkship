@@ -2,7 +2,6 @@ package ch.zhaw.parkship.user;
 
 import ch.zhaw.parkship.role.RoleEntity;
 import ch.zhaw.parkship.role.RoleRepository;
-import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -69,7 +68,7 @@ public class UserService implements UserDetailsService {
      * @param password of the new user
      * @return The saved new user.
      */
-    @Transactional
+
     public UserEntity signUp(String username, String email, String password) {
         UserEntity newUser = new UserEntity();
         newUser.setEmail(email);
@@ -88,8 +87,8 @@ public class UserService implements UserDetailsService {
      * @param username
      * @return true, if the email or username already exists in the database.
      */
+
     public boolean existsByEmailOrUsername(String email, String username) {
         return userRepository.existsByEmailOrUsername(email, username);
     }
-
 }
