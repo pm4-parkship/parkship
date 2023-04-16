@@ -5,7 +5,7 @@ import { ParkingLotModel } from '../../src/models';
 import ParkingDetailModal from '../../src/components/parking-detail-modal/parking-detail-modal';
 import ParkingList from 'src/components/parking-list/parking-list';
 import { logger } from 'src/logger';
-import { CircularProgress } from '@mui/material';
+import { Alert, CircularProgress } from '@mui/material';
 
 const Index = () => {
   const classes = useStyles();
@@ -13,10 +13,12 @@ const Index = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isError, setIsError] = useState<boolean>(true);
 
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
+      setIsError(false);
     }, 2000);
   });
 
@@ -116,13 +118,14 @@ const Index = () => {
 
   return (
     <div className={classes.superRoot}>
-      {isLoading ?? 
+      {isLoading && (
         <div className={classes.progressContainer}>
           <CircularProgress color="primary" />{' '}
-        </div>}
+        </div>
+      )}
 
-        <ParkingList parkings={parkingDummyData} />
-      
+      {isError && <Alert variant="filled" severity="error">This is a demo error message</Alert>}
+      {!isLoading && !isError && <ParkingList parkings={parkingDummyData} />}
 
       <ParkingDetailModal
         showModal={showModal}
