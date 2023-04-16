@@ -8,7 +8,7 @@ const ParkingList = ({ parkings }: { parkings: ParkingLotModel[] }) => {
     return (
     <div className={classes.parkingList}>
       {parkings.map((parking) => {
-        return <ParkingListItem color={"#123456"} parking={parking} />;
+        return <ParkingListItem bcolor={"red"} parking={parking} />;
       })}
       {(parkings?.length == 0) ? <div>hello</div> : <></>}
     </div>

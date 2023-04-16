@@ -10,41 +10,8 @@ const Index = () => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(true);
 
+  const parkingEmptyDummyData: ParkingLotModel[] = [];
   const parkingDummyData: ParkingLotModel[] = [
-    {
-    address: 'Dorfstrasse',
-    addressNr: '8',
-    description: 'Der Parkplatz ist direkt neben der Säule. Also aufpassen!',
-    floor: 123,
-    latitude: 0,
-    longitude: 0,
-    nr: 'A1',
-    owner: 'Benjamin Blümchen',
-    pictures: [
-      'https://placehold.co/600x600.png',
-      'https://placehold.co/600x600.png'
-    ],
-    price: 1200,
-    state: 'busy',
-    tags: ['nice view', 'nice view', 'nice view', 'nice view']
-  },
-  {
-    address: 'Dorfstrasse',
-    addressNr: '8',
-    description: 'Vorsicht, Decke ist tief.',
-    floor: 123,
-    latitude: 0,
-    longitude: 0,
-    nr: 'A3',
-    owner: 'Benjamin Blümchen',
-    pictures: [
-      'https://placehold.co/600x600.png',
-      'https://placehold.co/600x600.png'
-    ],
-    price: 1200,
-    state: 'busy',
-    tags: ['nice view', 'nice view', 'nice view', 'nice view']
-  },
    {
     address: 'Dorfstrasse',
     addressNr: '8',
