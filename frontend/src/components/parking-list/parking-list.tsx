@@ -22,7 +22,7 @@ const ParkingList = ({ parkings }: { parkings: ParkingLotModel[] }) => {
   );
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     parkingList: {
         display: "flex",
         flexDirection: "row",

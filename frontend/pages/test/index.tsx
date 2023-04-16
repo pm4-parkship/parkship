@@ -4,7 +4,6 @@ import { makeStyles } from '@mui/styles';
 import { ParkingLotModel } from '../../src/models';
 import ParkingDetailModal from '../../src/components/parking-detail-modal/parking-detail-modal';
 import ParkingList from 'src/components/parking-list/parking-list';
-import { logger } from 'src/logger';
 import { Alert, CircularProgress } from '@mui/material';
 
 const Index = () => {
@@ -137,7 +136,7 @@ const Index = () => {
   );
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   superRoot: {
     maxWidth: '2000px',
     margin: '0 auto'

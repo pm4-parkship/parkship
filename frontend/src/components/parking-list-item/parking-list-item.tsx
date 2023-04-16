@@ -1,5 +1,5 @@
-import { Color, Paper, Typography } from '@mui/material';
-import { DefaultTheme, makeStyles } from '@mui/styles';
+import { Paper, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { ParkingLotModel } from 'src/models';
 
 interface Props {

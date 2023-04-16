@@ -11,7 +11,7 @@ const ParkingListEmptyItem = () => {
   );
 };
 
-const useStyles = makeStyles((theme : any) => ({
+const useStyles = makeStyles(() => ({
   listItem: {
     display: "flex",
     justifyContent: "center",
