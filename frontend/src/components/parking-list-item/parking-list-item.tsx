@@ -7,7 +7,7 @@ const ParkingListItem = ({ color, parking }: {color: string, parking: ParkingLot
  
     return (
     <Paper elevation={1} className={classes.listItem} sx={{
-        bgcolor: {color},
+        backgroundColor: {color},
         m: 2
       }}>
       <Typography>Parkplatz {parking.nr}</Typography>

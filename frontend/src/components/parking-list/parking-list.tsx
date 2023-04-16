@@ -10,6 +10,7 @@ const ParkingList = ({ parkings }: { parkings: ParkingLotModel[] }) => {
       {parkings.map((parking) => {
         return <ParkingListItem color={"#123456"} parking={parking} />;
       })}
+      {(parkings?.length == 0) ? <div>hello</div> : <></>}
     </div>
   );
 };
