@@ -1,5 +1,4 @@
 import { Color, Paper, Typography } from '@mui/material';
-import { lightBlue } from '@mui/material/colors';
 import { DefaultTheme, makeStyles } from '@mui/styles';
 import { ParkingLotModel } from 'src/models';
 
@@ -9,7 +8,7 @@ interface Props {
 }
 
 const ParkingListItem = (props : Props) => {
-    const {bcolor, parking} = props;
+    const {parking} = props;
     const { listItem } = useStyles(props)();
  
     return (

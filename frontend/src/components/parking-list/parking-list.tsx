@@ -1,6 +1,7 @@
 import { ParkingLotModel } from 'src/models';
 import { makeStyles } from '@mui/styles';
 import ParkingListItem from '../parking-list-item/parking-list-item';
+import ParkingListEmptyItem from '../parking-list-empty-item/parking-list-empty-item';
 
 const ParkingList = ({ parkings }: { parkings: ParkingLotModel[] }) => {
     const classes = useStyles();
@@ -16,7 +17,7 @@ const ParkingList = ({ parkings }: { parkings: ParkingLotModel[] }) => {
       {parkings.map((parking, index) => {
         return <ParkingListItem bcolor={randomColor(index)} parking={parking} />;
       })}
-      {(parkings?.length == 0) ? <div>hello</div> : <></>}
+      {(parkings?.length == 0) ? <ParkingListEmptyItem /> : <></>}
     </div>
   );
 };
