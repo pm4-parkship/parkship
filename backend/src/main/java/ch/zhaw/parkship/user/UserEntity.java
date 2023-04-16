@@ -46,10 +46,10 @@ public class UserEntity implements UserDetails {
 
 
     @OneToMany(mappedBy = "tenant")
-    private Set<ReservationEntity> reservations;
+    private Set<ReservationEntity> reservations = new HashSet<>();
 
     @OneToMany(mappedBy = "owner")
-    private Set<ParkingLotEntity> parkingLots;
+    private Set<ParkingLotEntity> parkingLots = new HashSet<>();
 
     public UserEntity(String email, String username, String password) {
         this.email = email;

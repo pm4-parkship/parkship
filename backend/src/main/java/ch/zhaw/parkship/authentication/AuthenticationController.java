@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -103,7 +103,7 @@ public class AuthenticationController {
         UserEntity newUser = userService.signUp(signUpRequestDTO.username, signUpRequestDTO.email,
                 signUpRequestDTO.password);
         return new SignUpResponseDTO(newUser.getId(), newUser.getUsername(),
-                newUser.getRoleEntities().stream().map(RoleEntity::getName).collect(Collectors.toSet()));
+                newUser.getRoleEntities().stream().filter(Objects::nonNull).map(RoleEntity::getName).collect(Collectors.toSet()));
     }
 
     /**

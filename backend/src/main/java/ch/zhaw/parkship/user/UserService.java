@@ -2,7 +2,6 @@ package ch.zhaw.parkship.user;
 
 import ch.zhaw.parkship.role.RoleEntity;
 import ch.zhaw.parkship.role.RoleRepository;
-import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -92,5 +91,4 @@ public class UserService implements UserDetailsService {
     public boolean existsByEmailOrUsername(String email, String username) {
         return userRepository.existsByEmailOrUsername(email, username);
     }
-
 }
