@@ -1,6 +1,7 @@
 import {
   Button,
   Divider,
+  FormControlLabel,
   Grid,
   Grow,
   Modal,
@@ -84,20 +85,13 @@ const ParkingDetailModal = ({
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       <Typography component={'span'} variant="body1">
-                        <Checkbox checked />
-                        Mo
-                        <Checkbox checked />
-                        Di
-                        <Checkbox checked />
-                        Mi
-                        <Checkbox checked />
-                        Do
-                        <Checkbox checked />
-                        Fr
-                        <Checkbox checked />
-                        Sa
-                        <Checkbox checked />
-                        So
+                        <FormControlLabel label="Mo" control={<Checkbox checked />} />                      
+                        <FormControlLabel label="Di" control={<Checkbox checked />} />  
+                        <FormControlLabel label="Mi" control={<Checkbox checked />} />  
+                        <FormControlLabel label="Do" control={<Checkbox checked />} />  
+                        <FormControlLabel label="Fr" control={<Checkbox checked />} />  
+                        <FormControlLabel label="Sa" control={<Checkbox checked />} />  
+                        <FormControlLabel label="So" control={<Checkbox checked />} />   
                       </Typography>
                     </TableCell>
                   </TableRow>

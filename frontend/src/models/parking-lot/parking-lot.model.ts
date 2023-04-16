@@ -1,5 +1,5 @@
 export interface ParkingLotModel {
-  id: string;
+  id?: string;
   owner: string;
   description: string;
   tags: string[];
