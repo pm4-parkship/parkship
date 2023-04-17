@@ -6,7 +6,6 @@ import SearchParkingLotTable from '../../src/components/search-parking-lot/searc
 import ParkingDetailModal from '../../src/components/parking-detail-modal/parking-detail-modal';
 import { ParkingLotModel } from '../../src/models';
 import { parkingDummyData } from '../../src/data/parkinglots';
-import fetchJson from '../../src/fetch-json/fetch-json';
 import { formatDate } from '../../src/date/date-formatter';
 import { format } from 'date-fns';
 
@@ -89,9 +88,9 @@ const fetchParkingSpots = (
       endDate: format(new Date(searchParameters.toDate), 'yyy-MM-dd')
     });
 
-    return fetchJson('/backend/parking-lot/searchTerm?' + query, {
+    return fetch('/backend/parking-lot/searchTerm?' + query, {
       method: 'GET'
-    });
+    }).then((response) => response.json());
   } else {
     return new Promise((resolve, reject) => {
       resolve(parkingDummyData);

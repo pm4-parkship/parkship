@@ -14,14 +14,11 @@ export default class MyDocument extends Document {
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
           />
           <link rel="shortcut icon" href="/favicon.ico" />
-          <link rel="apple-touch-icon" href="/icons/logo.jpg" />
           <meta name="robots" content="all" />
           <meta name="googlebot" content="noindex,nofollow" />
           <meta name="google" content="nositelinkssearchbox" />
           <meta name="mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
-          <link rel="apple-touch-icon" href="/icons/logo.jpg" />
-          <link rel="manifest" href="/manifest.json" />
 
           <link
             href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,700;1,900&display=swap"

@@ -8,7 +8,6 @@ import {
 import { dummy } from '../../src/data/reservations';
 import { logger } from '../../src/logger';
 import { Typography } from '@mui/material';
-import fetchJson from '../../src/fetch-json/fetch-json';
 import { formatDate } from '../../src/date/date-formatter';
 
 export interface ReservationFilterData {
@@ -28,7 +27,9 @@ const MyReservationPage = () => {
   useEffect(() => {
     fetchReservations(false)
       .then((result) => {
-        setReservations(result);
+        if (result) {
+          setReservations(result);
+        }
       })
       .catch();
   });
@@ -77,14 +78,14 @@ const noData = (
   </div>
 );
 
-const fetchReservations = (useApi: boolean): Promise<ReservationModel[]> => {
+const fetchReservations = async (useApi: boolean) => {
   if (useApi) {
-    return fetchJson('/api/reservations', {
+    return await fetch('/backend/reservations', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       }
-    });
+    }).then((response) => response.json());
   } else {
     return new Promise((resolve, reject) => {
       resolve(dummy);
