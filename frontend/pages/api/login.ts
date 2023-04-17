@@ -10,6 +10,7 @@ if(process.env.NODE_ENV === 'production') {
 }
 
 async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
+  logger.log('loginRoute start', url);
   try {
     const { email, password } = req.body as {
       email: string;
@@ -21,7 +22,6 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
-    logger.log(response, 'loginRoute', response.status);
 
     if (response.status === 200) {
       const data = await response.json();

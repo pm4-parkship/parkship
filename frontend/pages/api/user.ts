@@ -1,14 +1,14 @@
 import { withIronSessionApiRoute } from 'iron-session/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sessionOptions } from '../../src/auth/session';
-import {logger} from "../../src/logger";
+import { logger } from '../../src/logger';
 
-export type User = {
+export interface User {
   isLoggedIn: boolean;
   token: string;
   username: string;
   roles: string[];
-};
+}
 
 async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
   logger.log('userRoute', req.session.user);

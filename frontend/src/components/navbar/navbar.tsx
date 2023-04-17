@@ -1,21 +1,17 @@
-import { AppBar, Toolbar, Typography, useMediaQuery } from '@mui/material';
+import {AppBar, Toolbar, Typography, useMediaQuery} from '@mui/material';
 import Link from '../link/link';
 import DrawerComponent from './drawer/drawer';
-import { makeStyles, useTheme } from '@mui/styles';
+import {makeStyles, useTheme} from '@mui/styles';
 import LogoutIcon from '@mui/icons-material/Logout';
-import React, { useContext } from 'react';
-import useUser from '../../auth/use-user';
-import { ColorModeContext } from '../../../context';
+import React, {useContext} from 'react';
+import {ColorModeContext} from '../../../context';
+import {User} from '../../../pages/api/user';
 
-function Navbar() {
+function Navbar({ user }: { user?: User }) {
   const classes = useStyles();
   const colorMode = useContext(ColorModeContext);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const { user } = useUser({
-    redirectTo: '/login',
-    redirectIfFound: false
-  });
 
   return (
     <AppBar position="static">
@@ -23,8 +19,9 @@ function Navbar() {
         {isMobile ? (
           <DrawerComponent />
         ) : (
-          user && (
+          user?.isLoggedIn && (
             <>
+              {' '}
               <div className={classes.navlinks}>
                 <Link href="/search">Parkplatz finden</Link>
                 <Link href="/my-reservation">Meine Reservation</Link>
@@ -38,7 +35,7 @@ function Navbar() {
                     colorMode.toggleColorMode();
                   }}
                 >
-                  Hi {user?.username}
+                  Willkommen {user?.username}
                 </Typography>
 
                 <Link href="/logout">
@@ -87,4 +84,5 @@ const useStyles = makeStyles((theme) => ({
     }
   }
 }));
+
 export default Navbar;

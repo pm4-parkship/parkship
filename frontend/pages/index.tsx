@@ -3,7 +3,7 @@ import { Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import SearchPage from './search';
 
-const Index = () => {
+const Index = (props) => {
   const classes = useStyles();
 
   return (

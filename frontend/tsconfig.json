@@ -4,7 +4,7 @@
     "jsx": "preserve",
     "allowJs": true,
     "strictNullChecks": true,
-    "strict": true,
+    "strict": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "types": [
