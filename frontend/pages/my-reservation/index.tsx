@@ -78,9 +78,9 @@ const noData = (
   </div>
 );
 
-const fetchReservations = (useApi: boolean) => {
+const fetchReservations = async (useApi: boolean) => {
   if (useApi) {
-    return fetch('/backend/reservations', {
+    return await fetch('/backend/reservations', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
