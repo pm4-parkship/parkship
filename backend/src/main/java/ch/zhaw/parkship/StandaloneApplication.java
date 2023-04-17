@@ -1,7 +1,7 @@
 package ch.zhaw.parkship;
 
-import ch.zhaw.parkship.ParkshipApplication;
 import org.springframework.boot.SpringApplication;
+
 /**
  * This runnable program starts up the complete application
  * with a h2 db locally using an embedded web-container.

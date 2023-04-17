@@ -32,7 +32,7 @@ Hier kann man den Port sehen, auf welchem die Backend Services angeboten werden:
 
 ## Zugriff DB
 
-- Link: http://localhost:8080/h2-console/
+- Link: http://localhost:8080/backend/h2-console/
 - JDBC URL: Jenachdem welche Source man in application-dev.properties angegeben hat. (Default: jdbc:h2:mem:test)
 - User Name: sa
 - Password:
@@ -80,9 +80,9 @@ Request:
 
 ```json
 {
-    "email": "test@parkship.ch",
-    "password": "test",
-    "username": "test"
+  "email": "test@parkship.ch",
+  "password": "test",
+  "username": "test"
 }
 ```
 
@@ -147,13 +147,13 @@ public class AuthTestController {
     //@PreAuthorize("hasAnyAuthority('USER', 'ADMIN')") // works
     @Secured("USER") // works
     //@Secured({ "USER", "ADMIN" }) // works
-    public ApplicationUser allowUser(@AuthenticationPrincipal ApplicationUser user) {
+    public ApplicationUser allowUser(@AuthenticationPrincipal UserEntity user) {
         return user;
     }
 
     @GetMapping("/admin")
     @Secured("ADMIN")
-    public ApplicationUser allowAdmin(@AuthenticationPrincipal ApplicationUser user) {
+    public ApplicationUser allowAdmin(@AuthenticationPrincipal UserEntity user) {
         return user;
     }
 }
