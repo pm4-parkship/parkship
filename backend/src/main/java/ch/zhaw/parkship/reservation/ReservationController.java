@@ -120,16 +120,6 @@ public class ReservationController {
     @PostMapping(value = "/{id}/cancel")
     public void cancelReservation(@PathVariable("id") Long id) throws ReservationNotFoundException, ReservationCanNotBeCanceledException {
         reservationService.cancelReservation(id);
-//        try {
-//            reservationService.cancelReservation(id);
-//            return ResponseEntity.noContent().build();
-//        } catch (ReservationNotFoundException e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-//        } catch(ReservationCanNotBeCanceledException e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-//        }
-
-
     }
 
 
