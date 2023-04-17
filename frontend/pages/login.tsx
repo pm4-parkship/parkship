@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import useUser from '../src/auth/use-user';
 import { ErrorMapCtx, z, ZodIssueOptionalMessage } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -6,15 +6,10 @@ import { useForm } from 'react-hook-form';
 import { TextFieldElement } from 'react-hook-form-mui';
 import { Box, Button, Paper, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
-import { logger } from '../src/logger';
 
 export default function Login() {
   // here we just check if user is already logged in and redirect to profile
   const { mutateUser, user } = useUser();
-
-  useEffect(() => {
-    logger.log('Login user', user);
-  }, [user]);
 
   const formSchema = z.object({
     email: z.string().email(),
@@ -59,7 +54,7 @@ export default function Login() {
       password: data.password
     };
 
-    if(body.email === 'test@mail.ch' && body.password === 'test') {
+    if (body.email === 'test@mail.ch' && body.password === 'test') {
       await mutateUser({
         isLoggedIn: true,
         roles: ['ADMIN'],

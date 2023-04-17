@@ -1,7 +1,6 @@
 import { withIronSessionApiRoute } from 'iron-session/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sessionOptions } from '../../src/auth/session';
-import { logger } from '../../src/logger';
 
 export interface User {
   isLoggedIn: boolean;
@@ -11,7 +10,6 @@ export interface User {
 }
 
 async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
-  logger.log('userRoute', req.session.user);
   if (req.session.user) {
     // in a real world application you might read the user id from the session and then do a database request
     // to get more information on the user if needed
