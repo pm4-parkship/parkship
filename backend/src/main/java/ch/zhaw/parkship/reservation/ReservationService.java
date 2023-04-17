@@ -1,10 +1,13 @@
 package ch.zhaw.parkship.reservation;
 
+import java.awt.print.Pageable;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
@@ -96,6 +99,23 @@ public class ReservationService {
       reservationDtos.add(new ReservationDto(entity));
     }
     return reservationDtos;
+  }
+
+  /**
+   * This method retrieves reservations by customer id
+   * @return List<ReservationDto> Returns a list of reservation data in the ReservationDto format in
+   *        the HTTP response body with a status code of 200 if found, otherwise returns a no
+   *        content status code.
+   */
+  public List<ReservationDto> getByUserId(Long userId, Pageable pageRequest){
+    ZonedDateTime currentTime = ZonedDateTime.now();
+    var reservationEntities = reservationRepository.findAllByTenant(userId, currentTime, pageRequest);
+    List<ReservationDto> reservationDtos = new ArrayList<>();
+    for ( ReservationEntity reservationEntity: reservationEntities){
+      reservationDtos.add(new ReservationDto(reservationEntity));
+    }
+    return reservationDtos;
+
   }
 
   /**

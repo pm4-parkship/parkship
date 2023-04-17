@@ -51,7 +51,7 @@ public class ReservationController {
   /**
    *
    */
-  @GetMapping(value = "/user/{id}", consumes = "application/json", produces = "application/json")
+  @GetMapping(value = "/user/{userId}", consumes = "application/json", produces = "application/json")
   public ResponseEntity<ReservationDto[]> getUserReservations (
           @PathVariable Long id){
     Optional<ReservationDto> reservationDto = reservationService.getById(id);
