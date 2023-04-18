@@ -1,8 +1,6 @@
-package ch.zhaw.parkship.errorHandling;
+package ch.zhaw.parkship.errorhandling;
 
 
-import ch.zhaw.parkship.reservation.ReservationCanNotBeCanceledException;
-import ch.zhaw.parkship.reservation.ReservationNotFoundException;
 import org.hibernate.TransientPropertyValueException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.ResponseEntity;
@@ -58,16 +56,11 @@ public class ExceptionControllerAdvice {
         return buildResponseEntity(new ApiError(FORBIDDEN, ex.getMessage(), ex));
     }
 
-
-    @ExceptionHandler(ReservationNotFoundException.class)
-    protected ResponseEntity<Object> handleReservationNotFoundException(ReservationNotFoundException ex) {
-        return buildResponseEntity(new ApiError(NOT_FOUND, ex.getMessage(), ex));
+    @ExceptionHandler(BaseException.class)
+    protected ResponseEntity<Object> handleBaseException(BaseException ex) {
+        return buildResponseEntity(new ApiError(ex.getHttpStatus(), ex.getMessage(), ex));
     }
 
-    @ExceptionHandler(ReservationCanNotBeCanceledException.class)
-    protected ResponseEntity<Object> handleReservationCanNotBeCanceledException(ReservationCanNotBeCanceledException ex) {
-        return buildResponseEntity(new ApiError(BAD_REQUEST, ex.getMessage(), ex));
-    }
 
     private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
         return new ResponseEntity<>(apiError, apiError.getStatus());

@@ -1,4 +1,4 @@
-package ch.zhaw.parkship.errorHandling;
+package ch.zhaw.parkship.errorhandling;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
