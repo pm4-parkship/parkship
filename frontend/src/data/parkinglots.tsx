@@ -1,6 +1,6 @@
-import { ParkingLotModel } from '../models';
+import { SearchResultModel } from '../models/search/search-result.model';
 
-export const parkingDummyData: ParkingLotModel[] = [
+export const parkingDummyData: SearchResultModel[] = [
   {
     id: 'Parkplatz A1',
     address: 'Dorfstrasse',
@@ -10,7 +10,13 @@ export const parkingDummyData: ParkingLotModel[] = [
     latitude: 0,
     longitude: 0,
     nr: 'A1',
-    owner: 'Benjamin Blümchen',
+    owner: {
+      id: '1',
+      email: 'mail',
+      surname: 'benjamin',
+      name: 'Blümchen',
+      roles: []
+    },
     pictures: [
       'https://placehold.co/600x600.png',
       'https://placehold.co/600x600.png'

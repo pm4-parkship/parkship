@@ -4,7 +4,7 @@ import useSWR from 'swr';
 import { User } from '../../pages/api/user';
 
 export default function useUser({
-  redirectTo = '',
+  redirectTo = '/login',
   redirectIfFound = false
 } = {}) {
   const { data: user, mutate: mutateUser } = useSWR<User>('/api/user');

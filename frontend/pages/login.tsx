@@ -9,7 +9,10 @@ import { toast } from 'react-toastify';
 
 export default function Login() {
   // here we just check if user is already logged in and redirect to profile
-  const { mutateUser, user } = useUser();
+  const { mutateUser, user } = useUser({
+    redirectTo: '/search',
+    redirectIfFound: true
+  });
 
   const formSchema = z.object({
     email: z.string().email(),

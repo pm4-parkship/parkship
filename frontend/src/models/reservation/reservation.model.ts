@@ -6,8 +6,8 @@ export interface ReservationModel {
   parkingLot: ParkingLotModel;
   tenant: UserModel;
   reservationState: ReservationState;
-  reservationFrom: Date;
-  reservationTo: Date;
+  from: Date;
+  to: Date;
   paymentState: string;
   cancelDate: Date | null;
 }
