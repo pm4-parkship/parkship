@@ -27,7 +27,6 @@ const SearchParkingLotTable = ({
       <TableComponent
         data={parkingLots}
         headerNames={headerNames}
-        onCellClick={onCellClick}
         onRowClick={onRowClick}
       ></TableComponent>
     </div>
