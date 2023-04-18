@@ -9,7 +9,7 @@ import TableHeader from './table-header';
 interface TableComponentProps {
   headerNames: string[];
   onRowClick: (row: any) => void;
-  data: Array<RowDataType>;
+  data: RowDataType[];
 }
 
 const TableComponent = ({
