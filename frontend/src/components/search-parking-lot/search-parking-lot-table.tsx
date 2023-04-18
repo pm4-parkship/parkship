@@ -1,9 +1,9 @@
-import { logger } from '../../logger';
 import TableComponent from '../table/table-component';
 import React from 'react';
+import { RowDataType } from '../table/table-row';
 
 interface SearchParkingLotTableProps {
-  parkingLots: Array<string[]>;
+  parkingLots: RowDataType[];
   onRowClick: (data: string[]) => void;
 }
 
@@ -18,9 +18,6 @@ const SearchParkingLotTable = ({
     'verfügbar',
     'reservieren'
   ];
-  const onCellClick = new Map([
-    ['reservieren', (e: any) => logger.log('book' + e)]
-  ]);
 
   return (
     <div>

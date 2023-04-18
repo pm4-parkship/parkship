@@ -2,11 +2,10 @@ export interface UserModel {
   id: string;
   name: string;
   surname: string;
-  roles: UserRoles[];
+  role: UserRole;
   email: string;
 }
-
-export enum UserRoles {
-    ADMIN = 'ADMIN',
-  USER = 'USER',
+export enum UserRole {
+  user = 'USER',
+  admin = 'ADMIN'
 }

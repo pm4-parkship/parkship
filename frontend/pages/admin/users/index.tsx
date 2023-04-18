@@ -1,15 +1,20 @@
-import React, {useState} from 'react';
-import { logger } from '../../src/logger';
-import useUser from '../../src/auth/use-user';
+import React, { useState } from 'react';
+import useUser from '../../../src/auth/use-user';
+import {
+  ParkingLotModel,
+  ParkingLotState,
+  UserRole
+} from '../../../src/models';
+import { logger } from '../../../src/logger';
 import { toast } from 'react-toastify';
-import { ParkingLotModel, UserRoles } from '../../src/models';
+import { User } from '../../api/user';
 import { Button, MenuItem, Select } from '@mui/material';
-import {User} from "../api/user";
 
-const MyAdminPanel = () => {
+const MyParkingLotPage = () => {
   const { user } = useUser();
 
   const newParkingLot: ParkingLotModel = {
+    id: 'new parking',
     latitude: 0,
     longitude: 0,
     nr: '',
@@ -20,7 +25,7 @@ const MyAdminPanel = () => {
     owner: '4',
     pictures: [],
     price: 19999,
-    state: 'Lucerne',
+    state: ParkingLotState.locked,
     tags: ['new', 'parking', 'lot']
   };
 
@@ -46,7 +51,6 @@ const MyAdminPanel = () => {
 
   const [newUser, setNewUser] = useState<User>();
 
-
   return (
     <div>
       <h1>Something great will come</h1>
@@ -56,7 +60,7 @@ const MyAdminPanel = () => {
         label="User Roles"
         onChange={(value) => logger.log(value)}
       >
-        {Object.keys(UserRoles).map((role) => {
+        {Object.keys(UserRole).map((role) => {
           return <MenuItem value={role}>{role}</MenuItem>;
         })}
       </Select>
@@ -64,4 +68,4 @@ const MyAdminPanel = () => {
   );
 };
 
-export default MyAdminPanel;
+export default MyParkingLotPage;

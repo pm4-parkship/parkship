@@ -1,5 +1,5 @@
 export interface ParkingLotModel {
-  id?: string;
+  id: string;
   owner: string;
   description: string;
   tags: string[];
@@ -11,5 +11,10 @@ export interface ParkingLotModel {
   nr: string;
   pictures: string[];
   price: number;
-  state: string;
+  state: ParkingLotState;
+}
+
+export enum ParkingLotState {
+  released = 'freigegegben',
+  locked = 'gesperrt'
 }

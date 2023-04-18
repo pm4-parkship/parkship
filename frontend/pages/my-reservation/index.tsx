@@ -13,11 +13,13 @@ import { RowDataType } from '../../src/components/table/table-row';
 import { toast } from 'react-toastify';
 import { User } from '../api/user';
 import { logger } from '../../src/logger';
-import { dummy } from '../../src/data/reservations';
+import { dummy } from '../../src/mock-data/reservations-dummy';
+import ReservationStateIcon from '../../src/components/my-reservation/reservation-state-icon';
 
 export interface ReservationFilterData {
   states: Set<ReservationState>;
 }
+
 const initFilter: ReservationFilterData = { states: new Set() };
 const initState = {
   error: null,
@@ -67,7 +69,7 @@ const MyReservationPage = () => {
     .map((item) => {
       return [
         `${item.id}`,
-        `${item.parkingLot.id}`,
+        ReservationStateIcon(item.reservationState),
         `${item.parkingLot.address} ${item.parkingLot.addressNr}`,
         `${item.tenant.name} ${item.tenant.surname}`,
         `${formatDate(new Date(item.from))} - ${formatDate(new Date(item.to))}`,

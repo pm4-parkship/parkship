@@ -9,7 +9,7 @@ interface reservationTableProps {
 
 const headerNames = [
   'ID',
-  'Bezeichnung',
+  'Status',
   'Ort',
   'Besitzer',
   'gebucht von - bis',

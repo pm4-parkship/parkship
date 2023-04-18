@@ -5,7 +5,7 @@ import { TagData } from '../../src/components/search-bar/tag-bar';
 import SearchParkingLotTable from '../../src/components/search-parking-lot/search-parking-lot-table';
 import ParkingDetailModal from '../../src/components/parking-detail-modal/parking-detail-modal';
 import { ParkingLotModel } from '../../src/models';
-import { parkingDummyData } from '../../src/data/parkinglots';
+import { searchDummyData } from '../../src/mock-data/search-dummy';
 import { formatDate } from '../../src/date/date-formatter';
 import { format } from 'date-fns';
 import { logger } from '../../src/logger';
@@ -17,6 +17,7 @@ import {
   SearchResultModel
 } from '../../src/models/search/search-result.model';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
+import { RowDataType } from '../../src/components/table/table-row';
 
 export interface SearchParameters {
   searchTerm: string;
@@ -47,18 +48,17 @@ const SearchPage = () => {
     setShowDetails(true);
   };
 
-  const makeOnSearch = async(searchParameters: SearchParameters) => {
+  const makeOnSearch = (searchParameters: SearchParameters) => {
     if (!user) return;
     setSearchResult({ error: null, loading: true, result: [] });
-    logger.log('searchParameters', searchParameters);
-    await fetchParkingSpots(searchParameters, true, user)
+    fetchParkingSpots(searchParameters, true, user)
       .then((result) => {
         setSearchResult({ error: null, loading: false, result: result });
       })
       .catch((error) => toast.error(error.message));
   };
 
-  const mappedResult: Array<string[]> = searchResult.result.map((item) => {
+  const mappedResult: Array<RowDataType> = searchResult.result.map((item) => {
     return [
       `${item.id}`,
       `${item.address} ${item.addressNr}`,
@@ -107,8 +107,6 @@ const fetchParkingSpots = async (
       endDate: format(new Date(searchParameters.toDate), 'yyy-MM-dd')
     });
 
-    logger.log(query.toString(), 'Query for request: ');
-
     return fetch('/backend/parking-lot/searchTerm?' + query, {
       method: 'GET',
       headers: { Authorization: `Bearer ${user.token}` }
@@ -119,7 +117,7 @@ const fetchParkingSpots = async (
     });
   } else {
     return new Promise((resolve) => {
-      setTimeout(() => resolve(parkingDummyData), 2000);
+      setTimeout(() => resolve(searchDummyData), 2000);
     });
   }
 };

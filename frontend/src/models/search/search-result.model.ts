@@ -1,5 +1,8 @@
 import { UserModel } from '../user/user.model';
-import { ParkingLotModel } from '../parking-lot/parking-lot.model';
+import {
+  ParkingLotModel,
+  ParkingLotState
+} from '../parking-lot/parking-lot.model';
 
 export interface SearchResultModel {
   id?: string;
@@ -14,14 +17,14 @@ export interface SearchResultModel {
   nr: string;
   pictures: string[];
   price: number;
-  state: string;
+  state: ParkingLotState;
 }
 
 export const mapSearchResultToParkingLot = (
   search: SearchResultModel
 ): ParkingLotModel => {
   return {
-    id: search.id,
+    id: search.id || '',
     owner: search.owner.name,
     description: search.description,
     tags: search.tags,

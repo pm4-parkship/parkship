@@ -6,7 +6,7 @@ export interface User {
   isLoggedIn: boolean;
   token: string;
   username: string;
-  roles: string[];
+  role: string;
 }
 
 async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
@@ -17,7 +17,7 @@ async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
       ...req.session.user,
       username: req.session.user.username,
       token: req.session.user.token,
-      roles: req.session.user.roles,
+      role: req.session.user.role,
       isLoggedIn: true
     });
   } else {
@@ -25,7 +25,7 @@ async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
       isLoggedIn: false,
       username: '',
       token: '',
-      roles: []
+      role: ''
     });
   }
 }
