@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import useUser from '../src/auth/use-user';
 import { ErrorMapCtx, z, ZodIssueOptionalMessage } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -6,13 +6,22 @@ import { useForm } from 'react-hook-form';
 import { TextFieldElement } from 'react-hook-form-mui';
 import { Box, Button, Paper, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
+import { logger } from '../src/logger';
+import { UserRole } from '../src/models';
+import { useRouter } from 'next/router';
 
 export default function Login() {
+  const router = useRouter();
   // here we just check if user is already logged in and redirect to profile
-  const { mutateUser, user } = useUser({
-    redirectTo: '/search',
-    redirectIfFound: true
-  });
+  const { mutateUser, user } = useUser();
+
+  useEffect(() => {
+    if (user?.isLoggedIn && user?.role == UserRole.admin) {
+      router.push('/admin/parking-lots');
+    } else if (user?.isLoggedIn && user?.role == UserRole.user) {
+      router.push('/search');
+    }
+  }, [user]);
 
   const formSchema = z.object({
     email: z.string().email(),
@@ -55,7 +64,7 @@ export default function Login() {
     if (body.email === 'test@mail.ch' && body.password === 'test') {
       await mutateUser({
         isLoggedIn: true,
-        roles: ['ADMIN'],
+        role: UserRole.admin,
         token: 'myuselesstoken',
         username: 'lokalTestUser'
       });
@@ -71,7 +80,7 @@ export default function Login() {
           const data = await res.json();
           await mutateUser({
             isLoggedIn: true,
-            roles: data.roles,
+            role: data.roles[0],
             token: data.token,
             username: data.username
           });

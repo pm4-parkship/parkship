@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
@@ -8,7 +8,7 @@ import TableHeader from './table-header';
 
 interface TableComponentProps {
   headerNames: string[];
-  onRowClick: (row: any) => void;
+  onRowClick?: (row: unknown) => void;
   data: RowDataType[];
 }
 

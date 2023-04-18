@@ -3,7 +3,6 @@ import {
   Divider,
   FormControlLabel,
   Grid,
-  Grow,
   Modal,
   Paper,
   Stack,
@@ -85,13 +84,34 @@ const ParkingDetailModal = ({
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       <Typography component={'span'} variant="body1">
-                        <FormControlLabel label="Mo" control={<Checkbox checked />} />                      
-                        <FormControlLabel label="Di" control={<Checkbox checked />} />  
-                        <FormControlLabel label="Mi" control={<Checkbox checked />} />  
-                        <FormControlLabel label="Do" control={<Checkbox checked />} />  
-                        <FormControlLabel label="Fr" control={<Checkbox checked />} />  
-                        <FormControlLabel label="Sa" control={<Checkbox checked />} />  
-                        <FormControlLabel label="So" control={<Checkbox checked />} />   
+                        <FormControlLabel
+                          label="Mo"
+                          control={<Checkbox checked />}
+                        />
+                        <FormControlLabel
+                          label="Di"
+                          control={<Checkbox checked />}
+                        />
+                        <FormControlLabel
+                          label="Mi"
+                          control={<Checkbox checked />}
+                        />
+                        <FormControlLabel
+                          label="Do"
+                          control={<Checkbox checked />}
+                        />
+                        <FormControlLabel
+                          label="Fr"
+                          control={<Checkbox checked />}
+                        />
+                        <FormControlLabel
+                          label="Sa"
+                          control={<Checkbox checked />}
+                        />
+                        <FormControlLabel
+                          label="So"
+                          control={<Checkbox checked />}
+                        />
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -185,11 +205,12 @@ const ParkingDetailModal = ({
 
           <Divider variant="middle" />
           <Stack direction="row" spacing={2}>
-            {parkingLotModel.pictures.map((picture) => (
-              <div>
-                <ImageCustom alt="images" src={picture} />
-              </div>
-            ))}
+            {parkingLotModel.pictures &&
+              parkingLotModel.pictures.map((picture) => (
+                <div>
+                  <ImageCustom alt="images" src={picture} />
+                </div>
+              ))}
           </Stack>
           <Button className={classes.button} variant="outlined">
             reservieren
