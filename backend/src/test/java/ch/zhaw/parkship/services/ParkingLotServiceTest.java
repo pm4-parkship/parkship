@@ -8,6 +8,7 @@ import ch.zhaw.parkship.reservation.ReservationService;
 import ch.zhaw.parkship.user.UserDto;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
+import ch.zhaw.parkship.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +35,9 @@ class ParkingLotServiceTest {
 
     @Mock
     private ReservationService reservationService;
+
+    @Mock
+    private UserService userService;
 
     @Mock
     private UserRepository userRepository;
@@ -120,7 +124,7 @@ class ParkingLotServiceTest {
 
         var result = parkingLotService.getAll();
 
-       // assertEquals(1, result.size());
+        // assertEquals(1, result.size());
         assertEquals(1, result.get(0).getId());
 
         verify(parkingLotRepository, times(1)).findAll();
@@ -268,6 +272,50 @@ class ParkingLotServiceTest {
         List<ParkingLotDto> actualReturnValue = parkingLotService.getBySearchTerm("entrance", null, null, 1, 1);
 
         assertEquals(expectedReturnValue.get(1).getId(), actualReturnValue.get(0).getId());
+    }
+
+    @Test
+    public void getAllParkingLotsOfLoggedInUser_hasParkingLots() {
+        var parkingLotEntity1 = new ParkingLotEntity();
+        parkingLotEntity1.setId(1L);
+        parkingLotEntity1.setOwner(userEntity);
+
+        var parkingLotEntity2 = new ParkingLotEntity();
+        parkingLotEntity2.setId(2L);
+        parkingLotEntity2.setOwner(userEntity);
+
+        Set<ParkingLotEntity> parkingLots = Set.of(parkingLotEntity1, parkingLotEntity2);
+
+
+        when(parkingLotRepository.findByOwnerId(userEntity.getId())).thenReturn(parkingLots);
+
+        Optional<Set<ParkingLotDto>> result = parkingLotService.getParkingLotsByUserId(userEntity.getId());
+
+        assertTrue(result.isPresent());
+        assertEquals(parkingLots.size(), result.get().size());
+
+        result.get().forEach(parkingLotDto -> {
+            Optional<ParkingLotEntity> correspondingEntity = parkingLots.stream()
+                    .filter(entity -> entity.getId().equals(parkingLotDto.getId())).findFirst();
+            assertTrue(correspondingEntity.isPresent());
+            assertEquals(correspondingEntity.get().getOwner().getId(), parkingLotDto.getOwner().id());
+        });
+
+        verify(parkingLotRepository, times(1)).findByOwnerId(userEntity.getId());
+    }
+
+
+    @Test
+    public void getAllParkingLotsOfLoggedInUser_noParkingLots() {
+        Set<ParkingLotEntity> emptyParkingLots = Set.of();
+
+        when(parkingLotRepository.findByOwnerId(userEntity.getId())).thenReturn(emptyParkingLots);
+
+        Optional<Set<ParkingLotDto>> result = parkingLotService.getParkingLotsByUserId(userEntity.getId());
+
+        assertTrue(result.isEmpty());
+
+        verify(parkingLotRepository, times(1)).findByOwnerId(userEntity.getId());
     }
 
 }

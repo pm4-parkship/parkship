@@ -6,6 +6,7 @@ import ch.zhaw.parkship.role.RoleEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity implements UserDetails {
     /**
      * The user gets a generated id.
@@ -44,10 +46,10 @@ public class UserEntity implements UserDetails {
 
 
     @OneToMany(mappedBy = "tenant")
-    private Set<ReservationEntity> reservations;
+    private Set<ReservationEntity> reservations = new HashSet<>();
 
     @OneToMany(mappedBy = "owner")
-    private Set<ParkingLotEntity> parkingLots;
+    private Set<ParkingLotEntity> parkingLots = new HashSet<>();
 
     public UserEntity(String email, String username, String password) {
         this.email = email;

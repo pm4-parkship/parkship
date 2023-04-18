@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import useSWR from 'swr';
-import { User } from 'pages/api/user';
+import { User } from '../../pages/api/user';
 
 export default function useUser({
-  redirectTo = '',
+  redirectTo = '/login',
   redirectIfFound = false
 } = {}) {
   const { data: user, mutate: mutateUser } = useSWR<User>('/api/user');
-
+  const router = useRouter();
   useEffect(() => {
     // if no redirect needed, just return (example: already on /dashboard)
     // if user data not yet there (fetch in progress, logged in or not) then don't do anything yet
@@ -20,7 +20,7 @@ export default function useUser({
       // If redirectIfFound is also set, redirect if the user was found
       (redirectIfFound && user?.isLoggedIn)
     ) {
-      Router.push(redirectTo);
+      router.push(redirectTo);
     }
   }, [user, redirectIfFound, redirectTo]);
 

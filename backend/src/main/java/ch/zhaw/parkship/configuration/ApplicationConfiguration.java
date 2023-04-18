@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -23,6 +24,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
@@ -39,11 +41,13 @@ public class ApplicationConfiguration {
     @Value("${app.auth-urls}")
     private String[] authUrls;
 
+    private Environment env;
     private final UserDetailsService userDetailsService;
 
     @Autowired
-    public ApplicationConfiguration(UserDetailsService userDetailsService) {
+    public ApplicationConfiguration(UserDetailsService userDetailsService, Environment env) {
         this.userDetailsService = userDetailsService;
+        this.env = env;
     }
 
     @Bean
@@ -58,8 +62,13 @@ public class ApplicationConfiguration {
         http.exceptionHandling();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.headers().frameOptions().disable();
-        http.authorizeHttpRequests()
-                .requestMatchers(toH2Console()).permitAll()
+        var matcher = http.authorizeHttpRequests();
+
+        if (Arrays.asList(env.getActiveProfiles()).contains("dev")) {
+            matcher = matcher.requestMatchers(toH2Console()).permitAll();
+        }
+
+        matcher
                 .requestMatchers(allowedUrls).permitAll()
                 .requestMatchers(HttpMethod.POST, authUrls).permitAll()
                 .anyRequest()

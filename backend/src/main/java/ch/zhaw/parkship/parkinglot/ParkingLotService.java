@@ -2,6 +2,7 @@ package ch.zhaw.parkship.parkinglot;
 
 import ch.zhaw.parkship.reservation.ReservationService;
 import ch.zhaw.parkship.user.UserRepository;
+import ch.zhaw.parkship.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +27,7 @@ public class ParkingLotService {
     private final ParkingLotRepository parkingLotRepository;
     private final UserRepository userRepository;
     private final ReservationService reservationService;
+    private final UserService userService;
 
     @Value("${search.blacklist}")
     private Set<String> blackList;
@@ -179,5 +181,13 @@ public class ParkingLotService {
         if (maxIndex > numOfResults) maxIndex -= size - (numOfResults % size);
 
         return parkingLotDtos.subList(lowestIndex, maxIndex);
+    }
+
+    public Optional<Set<ParkingLotDto>> getParkingLotsByUserId(Long userId) {
+        Set<ParkingLotEntity> parkingLots = parkingLotRepository.findByOwnerId(userId);
+        if (parkingLots.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(parkingLots.stream().map(ParkingLotDto::new).collect(Collectors.toSet()));
     }
 }

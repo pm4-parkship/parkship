@@ -1,9 +1,10 @@
 import TableComponent from '../table/table-component';
 import { logger } from '../../logger';
 import { toast } from 'react-toastify';
+import { RowDataType } from '../table/table-row';
 
 interface reservationTableProps {
-  reservations: Array<string[]>;
+  reservations: Array<RowDataType>;
 }
 
 const headerNames = [
@@ -16,21 +17,10 @@ const headerNames = [
 ];
 
 const ReservationTable = ({ reservations }: reservationTableProps) => {
-  const cancelReservation = (e: any) => {
-    toast.success('🦄 Wow so easy!', {
-      // theme: palette.mode
-    });
-  };
-
-  const onCellClick = new Map([
-    ['stornieren', (e: any) => cancelReservation(e)]
-  ]);
-
   return (
     <TableComponent
       data={reservations}
       headerNames={headerNames}
-      onCellClick={onCellClick}
       onRowClick={(e) => logger.log(e)}
     ></TableComponent>
   );

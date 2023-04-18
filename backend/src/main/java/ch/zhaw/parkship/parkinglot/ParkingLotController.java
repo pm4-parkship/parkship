@@ -1,15 +1,18 @@
 package ch.zhaw.parkship.parkinglot;
 
+import ch.zhaw.parkship.user.UserEntity;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * This class is a Rest Controller for managing ParkingLotDto objects
@@ -113,5 +116,20 @@ public class ParkingLotController {
                                                 @RequestParam(defaultValue = DEFAULT_PAGE_NUM) int page,
                                                 @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
         return parkingLotService.getBySearchTerm(searchTerm, startDate, endDate, page, size);
+    }
+
+    /**
+     * Retrieves all parking lots owned by the currently logged-in user.
+     *
+     * @return a ResponseEntity containing a Set of ParkingLotDto objects, or a no-content
+     * ResponseEntity if the user has no parking lots.
+     */
+    @GetMapping(value = "/my-parkinglots", produces = "application/json")
+    public ResponseEntity<Set<ParkingLotDto>> getOwnParkingLots(@AuthenticationPrincipal UserEntity user) {
+        Optional<Set<ParkingLotDto>> parkingLots = parkingLotService.getParkingLotsByUserId(user.getId());
+        if (parkingLots.isPresent()) {
+            return ResponseEntity.ok(parkingLots.get());
+        }
+        return ResponseEntity.noContent().build();
     }
 }

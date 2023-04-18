@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import React, { useEffect, useMemo, useState } from 'react';
 import Head from 'next/head';
-
 import { getDesignTokens } from '../styles/theme/theme';
 import createEmotionCache from '../src/emotion-cache/create-emotion-cache';
 import { CacheProvider, EmotionCache } from '@emotion/react';

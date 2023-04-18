@@ -1,14 +1,22 @@
 import SearchBar from '../../src/components/search-bar/search-bar';
 import React, { useState } from 'react';
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import { TagData } from '../../src/components/search-bar/tag-bar';
 import SearchParkingLotTable from '../../src/components/search-parking-lot/search-parking-lot-table';
 import ParkingDetailModal from '../../src/components/parking-detail-modal/parking-detail-modal';
 import { ParkingLotModel } from '../../src/models';
 import { parkingDummyData } from '../../src/data/parkinglots';
-import fetchJson from '../../src/fetch-json/fetch-json';
 import { formatDate } from '../../src/date/date-formatter';
 import { format } from 'date-fns';
+import { logger } from '../../src/logger';
+import { toast } from 'react-toastify';
+import useUser from '../../src/auth/use-user';
+import { User } from '../api/user';
+import {
+  mapSearchResultToParkingLot,
+  SearchResultModel
+} from '../../src/models/search/search-result.model';
+import { Loading } from '../../src/components/loading-buffer/loading-buffer';
 
 export interface SearchParameters {
   searchTerm: string;
@@ -18,7 +26,15 @@ export interface SearchParameters {
 }
 
 const SearchPage = () => {
-  const [searchResult, setSearchResult] = useState<ParkingLotModel[]>([]);
+  const { user } = useUser();
+
+  const initState = {
+    error: null,
+    loading: false,
+    result: Array<SearchResultModel>()
+  };
+
+  const [searchResult, setSearchResult] = useState(initState);
 
   const [showDetails, setShowDetails] = useState(false);
   const [selectedParkingLot, setSelectedParkingLot] =
@@ -26,23 +42,26 @@ const SearchPage = () => {
 
   const onSelectParkingLot = (data: string[]) => {
     const id = data[0];
-    setSelectedParkingLot(() => searchResult.find((value) => value.id == id));
+    const parkingLot = searchResult.result.find((value) => value.id == id);
+    setSelectedParkingLot(() => mapSearchResultToParkingLot(parkingLot!));
     setShowDetails(true);
   };
 
   const makeOnSearch = (searchParameters: SearchParameters) => {
-    fetchParkingSpots(searchParameters, false)
+    if (!user) return;
+    setSearchResult({ error: null, loading: true, result: [] });
+    fetchParkingSpots(searchParameters, false, user)
       .then((result) => {
-        setSearchResult(result);
+        setSearchResult({ error: null, loading: false, result: result });
       })
-      .catch();
+      .catch((error) => toast.error(error.message));
   };
 
-  const mappedResult: Array<string[]> = searchResult.map((item) => {
+  const mappedResult: Array<string[]> = searchResult.result.map((item) => {
     return [
       `${item.id}`,
       `${item.address} ${item.addressNr}`,
-      `${item.owner}`,
+      `${item.owner.name} ${item.owner.surname}`,
       `${formatDate(new Date())} - ${formatDate(new Date())}`,
       `reservieren`
     ];
@@ -55,16 +74,13 @@ const SearchPage = () => {
       </Grid>
 
       <Grid item xs={12}>
-        {/*todo add result and loading*/}
-        {searchResult ? (
-          <div>
-            <SearchParkingLotTable
-              parkingLots={mappedResult}
-              onRowClick={onSelectParkingLot}
-            ></SearchParkingLotTable>
-          </div>
+        {mappedResult.length > 0 ? (
+          <SearchParkingLotTable
+            parkingLots={mappedResult}
+            onRowClick={onSelectParkingLot}
+          ></SearchParkingLotTable>
         ) : (
-          <Typography>Todo loading and result here</Typography>
+          <Loading loading={searchResult.loading} />
         )}
       </Grid>
       {selectedParkingLot ? (
@@ -78,10 +94,11 @@ const SearchPage = () => {
   );
 };
 
-const fetchParkingSpots = (
+const fetchParkingSpots = async (
   searchParameters: SearchParameters,
-  useApi = false
-): Promise<ParkingLotModel[]> => {
+  useApi = false,
+  user: User
+): Promise<SearchResultModel[]> => {
   if (useApi) {
     const query = new URLSearchParams({
       searchTerm: searchParameters.searchTerm,
@@ -89,14 +106,19 @@ const fetchParkingSpots = (
       endDate: format(new Date(searchParameters.toDate), 'yyy-MM-dd')
     });
 
-    return fetchJson('/backend/parking-lot/searchTerm?' + query, {
-      method: 'GET'
+    return fetch('/backend/parking-lot/searchTerm?' + query, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${user.token}` }
+    }).then(async (response) => {
+      const data = await response.json();
+      logger.log(data);
+      return data;
     });
   } else {
-    return new Promise((resolve, reject) => {
-      resolve(parkingDummyData);
-      reject('epic fail');
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(parkingDummyData), 2000);
     });
   }
 };
+
 export default SearchPage;

@@ -5,90 +5,118 @@ import {
   ReservationModel,
   ReservationState
 } from '../../src/models/reservation/reservation.model';
-import { dummy } from '../../src/data/reservations';
-import { logger } from '../../src/logger';
-import { Typography } from '@mui/material';
-import fetchJson from '../../src/fetch-json/fetch-json';
+import { Link, Typography } from '@mui/material';
 import { formatDate } from '../../src/date/date-formatter';
+import useUser from '../../src/auth/use-user';
+import { Loading } from '../../src/components/loading-buffer/loading-buffer';
+import { RowDataType } from '../../src/components/table/table-row';
+import { toast } from 'react-toastify';
+import { User } from '../api/user';
+import { logger } from '../../src/logger';
+import { dummy } from '../../src/data/reservations';
 
 export interface ReservationFilterData {
   states: Set<ReservationState>;
 }
+const initFilter: ReservationFilterData = { states: new Set() };
+const initState = {
+  error: null,
+  loading: false,
+  result: Array<ReservationModel>()
+};
 
 const MyReservationPage = () => {
-  const initFilter: ReservationFilterData = { states: new Set() };
+  const { user } = useUser();
 
   const [filter, setFilter] = useState<ReservationFilterData>(initFilter);
-  const [reservations, setReservations] = useState<Array<ReservationModel>>([]);
+  const [reservations, setReservations] = useState(initState);
 
-  const updateFilter = (newFilter: ReservationFilterData) => {
-    setFilter(() => newFilter);
+  const cancelReservation = (e: ReservationModel) => {
+    toast.success('🦄 Wow so easy! ID: ' + e.id);
+  };
+  const makeCancelCell = (item: ReservationModel): string | JSX.Element => {
+    return item.cancelDate ? (
+      `${formatDate(new Date(item.cancelDate))}`
+    ) : (
+      <Link href="#" onClick={() => cancelReservation(item)}>
+        <Typography variant={'body2'}>{'stornieren'}</Typography>
+      </Link>
+    );
   };
 
   useEffect(() => {
-    fetchReservations(false)
+    if (!user) return;
+    setReservations({ error: null, loading: true, result: [] });
+    fetchReservations(false, user)
       .then((result) => {
-        setReservations(result);
+        if (result) {
+          setReservations({ error: null, loading: false, result: result });
+        }
       })
       .catch();
-  });
+  }, []);
 
   const filterReservation = (reservation: ReservationModel): boolean => {
-    logger.log(reservation);
     return (
       filter.states.has(reservation.reservationState) || !filter.states.size
     );
   };
 
-  const filteredReservations: Array<string[]> = reservations
+  const filteredReservations: Array<RowDataType> = reservations.result
     .filter((item) => filterReservation(item))
     .map((item) => {
       return [
         `${item.id}`,
         `${item.parkingLot.id}`,
         `${item.parkingLot.address} ${item.parkingLot.addressNr}`,
-        `${item.parkingLot.owner}`,
-        `${formatDate(item.reservationFrom)} - ${formatDate(
-          item.reservationTo
-        )}`,
-        `${item.cancelDate ? formatDate(item.cancelDate) : 'stornieren'}`
+        `${item.tenant.name} ${item.tenant.surname}`,
+        `${formatDate(new Date(item.from))} - ${formatDate(new Date(item.to))}`,
+        makeCancelCell(item)
       ];
     });
 
   return (
     <div>
-      <ReservationFilter updateFilter={updateFilter}></ReservationFilter>
+      <ReservationFilter
+        updateFilter={(newFilter) => setFilter(() => newFilter)}
+      ></ReservationFilter>
       <>
-        {reservations.length > 0 ? (
+        <Loading loading={reservations.loading} />
+
+        {reservations.result.length > 0 ? (
           <ReservationTable
             reservations={filteredReservations}
           ></ReservationTable>
         ) : (
-          noData
+          <NoData size={reservations.result.length} />
         )}
       </>
     </div>
   );
 };
 
-const noData = (
-  <div>
-    <Typography>Keine Reservationen gefunden :(</Typography>
-  </div>
-);
+const NoData = ({ size }) =>
+  size > 0 ? <Typography>Keine Reservationen gefunden :(</Typography> : null;
 
-const fetchReservations = (useApi: boolean): Promise<ReservationModel[]> => {
+const fetchReservations = async (
+  useApi: boolean,
+  user: User
+): Promise<ReservationModel[]> => {
   if (useApi) {
-    return fetchJson('/api/reservations', {
+    return await fetch('/backend/reservation', {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`
       }
+    }).then(async (response) => {
+      const data = await response.json();
+      logger.log(data);
+      return data;
     });
   } else {
-    return new Promise((resolve, reject) => {
-      resolve(dummy);
-      reject('epic fail');
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(dummy), 2000);
     });
   }
 };
