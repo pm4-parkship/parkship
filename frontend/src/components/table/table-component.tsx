@@ -1,22 +1,20 @@
-import React from 'react';
+import React, { FC } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
-import CustomTableRow from './table-row';
+import CustomTableRow, { RowDataType } from './table-row';
 import Paper from '@mui/material/Paper';
 import TableHeader from './table-header';
 
 interface TableComponentProps {
   headerNames: string[];
   onRowClick: (row: any) => void;
-  onCellClick: Map<string, (cell: any) => void>;
-  data: Array<string[]>;
+  data: Array<RowDataType>;
 }
 
 const TableComponent = ({
   headerNames,
   onRowClick,
-  onCellClick,
   data
 }: TableComponentProps) => {
   return (
@@ -30,7 +28,6 @@ const TableComponent = ({
               key={index}
               data={row}
               rowKey={index}
-              onCellClick={onCellClick}
               onRowClick={onRowClick}
             />
           ))}

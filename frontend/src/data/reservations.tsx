@@ -29,8 +29,8 @@ export const dummy: Array<ReservationModel> = [
       email: 'jane.doe@example.com'
     },
     reservationState: ReservationState.OK,
-    reservationFrom: new Date(),
-    reservationTo: new Date(),
+    from: new Date(),
+    to: new Date(),
     paymentState: 'paid',
     cancelDate: null
   },
@@ -59,8 +59,8 @@ export const dummy: Array<ReservationModel> = [
       email: 'jane.doe@example.com'
     },
     reservationState: ReservationState.XX,
-    reservationFrom: new Date(),
-    reservationTo: new Date(),
+    from: new Date(),
+    to: new Date(),
     paymentState: 'paid',
     cancelDate: new Date()
   }
