@@ -25,7 +25,7 @@ Hier kann man den Port sehen, auf welchem die Backend Services angeboten werden:
 ![img.png](readme/tomcatPort.png)
 
 ## Zugriff DB
-- Link: http://localhost:8080/h2-console/
+- Link: http://localhost:8080/backend/h2-console/
 - JDBC URL: Jenachdem welche Source man in application-dev.properties angegeben hat. (Default: jdbc:h2:mem:test)
 - User Name: sa
 - Password: 

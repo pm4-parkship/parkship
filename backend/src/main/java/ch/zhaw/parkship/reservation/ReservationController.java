@@ -1,26 +1,18 @@
 package ch.zhaw.parkship.reservation;
 
-import java.sql.Array;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 /**
  *
  * This class is a Rest Controller for managing ReservationDto objects
- *
  * and exposes various API end-points for CRUD operations.
  */
 @RestController
@@ -52,15 +44,15 @@ public class ReservationController {
    *
    */
   @GetMapping(value = "/user/{userId}", consumes = "application/json", produces = "application/json")
-  public ResponseEntity<ReservationDto[]> getUserReservations (
-          @PathVariable Long id){
-    Optional<ReservationDto> reservationDto = reservationService.getById(id);
-    // declares an Array of integers.
-    ReservationDto[] arr;
+  public List<ReservationDto> getUserReservations (
+          @PathVariable Long userId, @RequestParam ("from") Optional<LocalDate> from, @RequestParam ("to") Optional<LocalDate> to){
+    LocalDate fromTime;
+    LocalDate toTime;
 
-    // allocating memory for 5 integers.
-    arr = new ReservationDto[4];
-    return ResponseEntity.ok(arr);
+    fromTime = from.orElseGet(LocalDate::now);
+    toTime = to.orElseGet(LocalDate::now);
+
+    return reservationService.getByUserId(userId, fromTime, toTime);
   }
 
   /**
