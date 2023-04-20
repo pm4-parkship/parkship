@@ -139,10 +139,11 @@ public class ReservationController {
      * @throws ReservationNotFoundException if the reservation does not exist
      * @throws ReservationCanNotBeCanceledException if the reservation either is too late or the reservation is already canceled.
      */
-    @PostMapping(value = "/stornieren")
+    @PostMapping(value = "/{id}/cancel")
     public void cancelReservation(@PathVariable("id") Long id) throws ReservationNotFoundException, ReservationCanNotBeCanceledException {
         reservationService.cancelReservation(id);
     }
+
 
 
 
