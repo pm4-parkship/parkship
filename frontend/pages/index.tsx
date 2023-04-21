@@ -3,12 +3,12 @@ import { Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import SearchPage from './search';
 
-const Index = () => {
+const Index = (props) => {
   const classes = useStyles();
 
   return (
     <div className={classes.superRoot}>
-      <Grid container justifyContent="center" display="flex" spacing={2}>
+      <Grid container justifyContent="center" display="flex">
         <Grid item xs={12}>
           <SearchPage />
         </Grid>
