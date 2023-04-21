@@ -1,7 +1,5 @@
-import {
-  ReservationModel,
-  ReservationState
-} from '../models/reservation/reservation.model';
+import {ReservationModel, ReservationState} from '../models/reservation/reservation.model';
+import {UserRoles} from "../models";
 
 export const dummy: Array<ReservationModel> = [
   {
@@ -25,7 +23,7 @@ export const dummy: Array<ReservationModel> = [
       id: '1',
       name: 'Jane',
       surname: 'Doe',
-      roles: ['role1', 'role2'],
+      roles: [UserRoles.USER],
       email: 'jane.doe@example.com'
     },
     reservationState: ReservationState.OK,
@@ -55,7 +53,7 @@ export const dummy: Array<ReservationModel> = [
       id: '1',
       name: 'Jane',
       surname: 'Doe',
-      roles: ['role1', 'role2'],
+      roles: [UserRoles.ADMIN],
       email: 'jane.doe@example.com'
     },
     reservationState: ReservationState.XX,
