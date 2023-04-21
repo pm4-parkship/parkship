@@ -16,7 +16,7 @@ export default function Login() {
 
   const formSchema = z.object({
     email: z.string().email(),
-    password: z.string().min(1)
+    password: z.string().min(1, 'Bitte geben Sie Ihr Passwort ein!')
   });
 
   const customErrorMap = () => {
@@ -25,11 +25,6 @@ export default function Login() {
         if (issue.path.includes('email')) {
           return {
             message: `Bitte geben Sie eine korrekte Email ein!`
-          };
-        }
-        if (issue.path.includes('password')) {
-          return {
-            message: `Bitte sie Ihr Passwort ein!`
           };
         }
       }
@@ -102,11 +97,11 @@ export default function Login() {
             alignItems: 'center'
           }}
         >
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h5" >
             Willkommen bei Parkship!
           </Typography>
           <form
-            style={{ display: 'grid', width: '25%', gap: '20px' }}
+            style={{ display: 'grid', width: '25%', marginTop: '20px'}}
             onSubmit={handleSubmit((data) => handleFormSubmit(data))}
           >
             <Paper elevation={3}>
@@ -120,7 +115,7 @@ export default function Login() {
                 autoComplete="email"
                 autoFocus
                 control={control}
-                style={{ marginTop: '20px' }}
+                style={{ marginTop: '10px', height: '60px' }}
               />
               <TextFieldElement
                 required
@@ -132,12 +127,15 @@ export default function Login() {
                 autoComplete="current-password"
                 control={control}
                 autoFocus
-                style={{ marginTop: '20px' }}
+                style={{ marginTop: '30px', height: '60px' }}
               />
               <Button
                 type={'submit'}
                 variant={'contained'}
-                sx={{ width: '100%', marginTop: '20px' }}
+                sx={{
+                  width: '94%',
+                  marginTop: '30px',
+                }}
               >
                 Einloggen
               </Button>
