@@ -1,17 +1,11 @@
-import {
-  Box,
-  Link,
-  Button,
-  Modal,
-  Typography,
-  Grid,
-  TextField,
-  Stack
-} from '@mui/material';
-import React, { useState } from 'react';
+import { Box, Button, Grid, Modal, Stack, Typography } from '@mui/material';
+import React from 'react';
 import { makeStyles } from '@mui/styles';
-import { DatePicker } from '@mui/x-date-pickers';
 import { Icon } from '@iconify/react';
+import { ParkingLotModel } from '../../models';
+import { logger } from '../../logger';
+import useUser from '../../auth/use-user';
+import { toast } from 'react-toastify';
 
 export const enum ParkingLotAction {
   RESERVIEREN = 'reservieren',
@@ -19,40 +13,79 @@ export const enum ParkingLotAction {
 }
 
 const ParkingReservationConfirmationModal = ({
-  description,
+  showModal = true,
+  setShowModal,
+  parkingLot,
   requestType,
   from,
-  to,
-  makeReservation
+  to
 }: {
-  description: string;
+  showModal: boolean;
+  setShowModal: (value: boolean) => void;
+  parkingLot: ParkingLotModel;
   requestType: ParkingLotAction;
-  from: Date;
-  to: Date;
-  makeReservation: (parkingLotAction: ParkingLotAction) => void;
+  from: string;
+  to: string;
 }) => {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const { user } = useUser();
   const classes = useStyles();
+
+  const executeReservation = (data: ParkingLotModel) => {
+    if (user) {
+      fetch('/backend/reservation', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+          'Content-Type': 'application/json'
+        }
+      }).then(async (response) => {
+        const data = await response.json();
+        logger.log(data);
+        return data;
+      });
+    } else {
+      logger.log('User not logged in');
+      toast.error('User not logged in');
+    }
+  };
+
+  const executeCancellation = (data: ParkingLotModel) => {
+    if (user) {
+      fetch('/backend/reservation', {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+          'Content-Type': 'application/json'
+        }
+      }).then(async (response) => {
+        const data = await response.json();
+        logger.log(data);
+        return data;
+      });
+    } else {
+      logger.log('User not logged in');
+      toast.error('User not logged in');
+    }
+  };
 
   return (
     <div>
-      <Link href="#" onClick={handleOpen}>
-        Reservieren
-      </Link>
-      <Modal open={open} onClose={handleClose}>
+      <Modal
+        style={{ zIndex: 10000 }}
+        open={showModal}
+        onClose={() => setShowModal(false)}
+      >
         <Box sx={style}>
           <div className={classes.closeIconOnHeader}>
             <Icon
-              onClick={() => setOpen(false)}
+              onClick={() => setShowModal(false)}
               className={classes.closeIcon}
               icon="ci:close-big"
             />
           </div>
           <Stack spacing={2}>
             <Typography align="center" variant="h4">
-              {description}
+              {parkingLot.description}
             </Typography>
             {/* <Typography align="center" variant="h5">
             {requestType}
@@ -60,40 +93,24 @@ const ParkingReservationConfirmationModal = ({
 
             <Grid container columnSpacing={2}>
               <Grid item xs={6}>
-                <DatePicker
-                  label="from"
-                  onChange={() => null}
-                  value={from}
-                  disabled
-                  renderInput={(props) => (
-                    <TextField {...props} required={true} />
-                  )}
-                />
+                <Typography variant="subtitle2">{from}</Typography>
               </Grid>
 
               <Grid item xs={6}>
-                <DatePicker
-                  label="to"
-                  onChange={() => null}
-                  value={to}
-                  disabled
-                  renderInput={(props) => (
-                    <TextField {...props} required={true} />
-                  )}
-                />
+                <Typography variant="subtitle2">{to}</Typography>
               </Grid>
             </Grid>
 
             <Box textAlign="center">
               <Button
                 style={buttonStyle}
-                onClick={() =>
-                  makeReservation(
-                    requestType === ParkingLotAction.RESERVIEREN
-                      ? ParkingLotAction.RESERVIEREN
-                      : ParkingLotAction.STORNIEREN
-                  )
-                }
+                onClick={() => {
+                  if (requestType === ParkingLotAction.RESERVIEREN) {
+                    executeReservation(parkingLot);
+                  } else {
+                    executeCancellation(parkingLot);
+                  }
+                }}
               >
                 jetzt {requestType}
               </Button>

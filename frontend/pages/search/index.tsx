@@ -40,15 +40,22 @@ const SearchPage = () => {
   const [selectedParkingLot, setSelectedParkingLot] =
     useState<ParkingLotModel>();
 
+  let fromDatum = '2021-09-01';
+  let toDatum = '2021-09-02';
+
   const onSelectParkingLot = (data: string[]) => {
     const id = data[0];
     const parkingLot = searchResult.result.find((value) => value.id == id);
-    setSelectedParkingLot(() => mapSearchResultToParkingLot(parkingLot!));
-    setShowDetails(true);
+    if (parkingLot) {
+      setSelectedParkingLot(() => mapSearchResultToParkingLot(parkingLot));
+      setShowDetails(true);
+    }
   };
 
   const makeOnSearch = (searchParameters: SearchParameters) => {
     if (!user) return;
+    fromDatum = searchParameters.fromDate;
+    toDatum = searchParameters.toDate;
     setSearchResult({ error: null, loading: true, result: [] });
     fetchParkingSpots(searchParameters, false, user)
       .then((result) => {
@@ -70,7 +77,7 @@ const SearchPage = () => {
   return (
     <Grid padding={2}>
       <Grid item xs={12}>
-        <SearchBar makeOnSearch={makeOnSearch}></SearchBar>
+        <SearchBar makeOnSearch={makeOnSearch} />
       </Grid>
 
       <Grid item xs={12}>
@@ -78,7 +85,7 @@ const SearchPage = () => {
           <SearchParkingLotTable
             parkingLots={mappedResult}
             onRowClick={onSelectParkingLot}
-          ></SearchParkingLotTable>
+          />
         ) : (
           <Loading loading={searchResult.loading} />
         )}
@@ -88,6 +95,8 @@ const SearchPage = () => {
           showModal={showDetails}
           setShowModal={setShowDetails}
           parkingLotModel={selectedParkingLot}
+          fromDate={fromDatum}
+            toDate={toDatum}
         />
       ) : null}
     </Grid>

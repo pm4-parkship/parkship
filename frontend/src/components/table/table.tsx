@@ -11,7 +11,6 @@ import { styled } from '@mui/styles';
 import ParkingReservationConfirmationModal, {
   ParkingLotAction
 } from '../parking-reservation-confirmation-modal/parking-reservation-confirmation-modal';
-import fetchJson from 'src/auth/fetch-json';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -81,7 +80,7 @@ async function makeReservation(parkingLotAction: ParkingLotAction) {
   };
 
   //Todo Backend API definieren
-  await fetchJson('/api/backend/' + parkingLotAction, {
+  await fetch('/backend/' + parkingLotAction, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
@@ -115,15 +114,6 @@ const TableComponent = ({ status }: { status: ParkingLotAction }) => {
                 {getFormattedAvailabilitySpan(row.startDatum, row.endDatum)}
               </StyledTableCell>
               <StyledTableCell align="center">
-                <ParkingReservationConfirmationModal
-                  description={row.description}
-                  requestType={status}
-                  from={row.startDatum}
-                  to={row.endDatum}
-                  makeReservation={(parkingLotAction) =>
-                    makeReservation(parkingLotAction)
-                  }
-                ></ParkingReservationConfirmationModal>
               </StyledTableCell>
             </StyledTableRow>
           ))}
