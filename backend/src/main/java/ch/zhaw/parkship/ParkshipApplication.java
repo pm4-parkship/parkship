@@ -42,7 +42,7 @@ public class ParkshipApplication {
     }
 
     @Bean
-    @Profile("dev")
+    @Profile({"dev", "production"})
     @Transactional
     CommandLineRunner initTemplate(@Autowired RoleRepository roleRepository,
                                    UserService userService) {
