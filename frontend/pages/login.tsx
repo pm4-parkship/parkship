@@ -21,10 +21,11 @@ export default function Login() {
   }, [user]);
 
   const redirectUser = (user: User) => {
-    if (user.isLoggedIn && user.role == UserRole.admin) {
+    // logger.log(user);
+    if (user.isLoggedIn && user.role == UserRole.ADMIN) {
       logger.log(user);
       router.push('/admin/parking-lots');
-    } else if (user.isLoggedIn && user.role == UserRole.user) {
+    } else if (user.isLoggedIn && user.role == UserRole.USER) {
       router.push('/search');
     }
   };
@@ -81,11 +82,6 @@ export default function Login() {
             token: data.user.token,
             username: data.user.username
           }).then((user) => user && redirectUser(user));
-          if (data.roles == UserRole.admin) {
-            router.push('/admin/parking-lots');
-          } else if (data.roles == UserRole.user) {
-            router.push('/search');
-          }
         }
       });
     } catch (error: any) {

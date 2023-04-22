@@ -25,9 +25,9 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <>
-      {UserSession?.role == UserRole.user ? (
+      {UserSession?.role == UserRole.USER ? (
         <NavbarUser user={UserSession} />
-      ) : UserSession?.role == UserRole.admin ? (
+      ) : UserSession?.role == UserRole.ADMIN ? (
         <NavbarAdmin user={UserSession} />
       ) : null}
       <main>

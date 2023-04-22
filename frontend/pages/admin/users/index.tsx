@@ -28,7 +28,7 @@ const MyParkingLotPage = () => {
       name: 'Smith',
       surname: 'John ',
       email: 'adfasf@.asfom.com',
-      role: UserRole.user
+      role: UserRole.USER
     },
     pictures: [],
     price: 19999,

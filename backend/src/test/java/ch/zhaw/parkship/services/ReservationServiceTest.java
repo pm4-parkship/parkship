@@ -193,6 +193,7 @@ class ReservationServiceTest {
         reservation.setParkingLot(ParkingLotGenerator.generate(UserGenerator.generate()));
 
         when(reservationRepository.findById(2L)).thenReturn(Optional.of(reservation));
+        ReservationDto reservationDto = null;
         try {
             reservationDto = reservationService.cancelReservation(2L);
         } catch (Exception e) {
