@@ -47,10 +47,11 @@ const SearchPage = () => {
     setShowDetails(true);
   };
 
-  const makeOnSearch = (searchParameters: SearchParameters) => {
+  const makeOnSearch = async(searchParameters: SearchParameters) => {
     if (!user) return;
     setSearchResult({ error: null, loading: true, result: [] });
-    fetchParkingSpots(searchParameters, false, user)
+    logger.log('searchParameters', searchParameters);
+    await fetchParkingSpots(searchParameters, true, user)
       .then((result) => {
         setSearchResult({ error: null, loading: false, result: result });
       })
@@ -105,6 +106,8 @@ const fetchParkingSpots = async (
       startDate: format(new Date(searchParameters.fromDate), 'yyy-MM-dd'),
       endDate: format(new Date(searchParameters.toDate), 'yyy-MM-dd')
     });
+
+    logger.log(query.toString(), 'Query for request: ');
 
     return fetch('/backend/parking-lot/searchTerm?' + query, {
       method: 'GET',

@@ -1,8 +1,7 @@
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import React from 'react';
-import { makeStyles } from '@mui/styles';
-import { Link, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 
 export type RowDataType = Array<string | JSX.Element>;
 

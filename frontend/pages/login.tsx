@@ -16,13 +16,13 @@ export default function Login() {
 
   const formSchema = z.object({
     email: z.string().email(),
-    password: z.string().min(1)
+    password: z.string().min(1),
   });
 
   const customErrorMap = () => {
     return (issue: ZodIssueOptionalMessage, ctx: ErrorMapCtx) => {
       if (issue.code === z.ZodIssueCode.invalid_string) {
-        if (issue.path.includes('email')) {
+        if (issue.path.includes('username')) {
           return {
             message: `Bitte geben Sie eine korrekte Email ein!`
           };
