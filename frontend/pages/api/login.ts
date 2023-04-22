@@ -1,5 +1,6 @@
 import { withIronSessionApiRoute } from 'iron-session/next';
 import { sessionOptions } from '../../src/auth/session';
+import { logger } from '../../src/logger';
 
 export default withIronSessionApiRoute(async function loginRoute(req, res) {
   await fetch('http://localhost:8080/backend/auth/signin', {
@@ -10,9 +11,10 @@ export default withIronSessionApiRoute(async function loginRoute(req, res) {
     if (response.ok) {
       const data = await response.json();
       // get user from database then:
+      logger.log(data);
       req.session.user = {
         isLoggedIn: true,
-        role: 'user',
+        role: data.role,
         token: data.token,
         username: data.username
       };
