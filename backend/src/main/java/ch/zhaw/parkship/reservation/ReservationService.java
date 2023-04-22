@@ -2,6 +2,8 @@ package ch.zhaw.parkship.reservation;
 
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
+import ch.zhaw.parkship.reservation.exceptions.ReservationCanNotBeCanceledException;
+import ch.zhaw.parkship.reservation.exceptions.ReservationNotFoundException;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +50,6 @@ public class ReservationService {
         reservationEntity.setTenant(tenant);
         return reservationRepository.save(reservationEntity);
     }
-
 
 
     /**
@@ -128,25 +129,26 @@ public class ReservationService {
     /**
      * Sets a reservation's state to canceled, if the reservation exists,
      * is not yet canceled and the reservation is before the CANCELATION_DEADLINE.
+     *
      * @param id
-     * @throws ReservationNotFoundException if the reservation does not exist
+     * @throws ReservationNotFoundException         if the reservation does not exist
      * @throws ReservationCanNotBeCanceledException if the reservation either is too late or the reservation is already canceled.
      */
-    public void cancelReservation(Long id) throws ReservationNotFoundException, ReservationCanNotBeCanceledException{
+    public void cancelReservation(Long id) throws ReservationNotFoundException, ReservationCanNotBeCanceledException {
         LocalDate today = LocalDate.now();
         Optional<ReservationEntity> reservationOptional = reservationRepository.findById(id);
 
-        if(reservationOptional.isEmpty()) {
+        if (reservationOptional.isEmpty()) {
             throw new ReservationNotFoundException("Reservation not found");
         }
 
         ReservationEntity reservation = reservationOptional.get();
 
-        if(reservation.getFrom().minusDays(2).isBefore(today)) {
+        if (reservation.getFrom().minusDays(2).isBefore(today)) {
             throw new ReservationCanNotBeCanceledException("It is too late to cancel this reservation");
         }
 
-        if(reservation.getState().equals(ReservationState.CANCELED)) {
+        if (reservation.getState().equals(ReservationState.CANCELED)) {
             throw new ReservationCanNotBeCanceledException("This reservation is already canceled");
         }
 
