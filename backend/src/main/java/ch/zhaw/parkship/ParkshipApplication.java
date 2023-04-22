@@ -90,9 +90,9 @@ public class ParkshipApplication {
             for (int i = 0; i < 9; i++) {
                 var reservation = new ReservationEntity();
                 Date from = faker.date().future(2, 1, TimeUnit.DAYS);
-                reservation.setFrom(LocalDate.of(from.getYear()+1900, from.getMonth()+1, from.getDay()+1));
+                reservation.setFrom(LocalDate.of(from.getYear() + 1900, from.getMonth() + 1, from.getDay() + 1));
                 Date to = faker.date().future(2, 1, TimeUnit.DAYS);
-                reservation.setTo(LocalDate.of(to.getYear()+1900, to.getMonth()+1, to.getDay()+1));
+                reservation.setTo(LocalDate.of(to.getYear() + 1900, to.getMonth() + 1, to.getDay() + 1));
                 reservation.setParkingLot(parkingLots.get((i + 1) % 5));
                 reservation.setTenant(users.get(((i + 1) % 4)));
                 reservation.setState(ReservationState.CANCELED);
