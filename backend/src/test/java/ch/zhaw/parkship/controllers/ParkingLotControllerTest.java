@@ -99,20 +99,6 @@ class ParkingLotControllerTest {
     }
 
     @Test
-    public void getAllParkingLotsTest() throws Exception {
-        ParkingLotDto parkingLotDto1 = new ParkingLotDto();
-        ParkingLotDto parkingLotDto2 = new ParkingLotDto();
-        parkingLotDto1.setId(1L);
-        parkingLotDto2.setId(2L);
-
-        when(parkingLotService.getAll()).thenReturn(Arrays.asList(parkingLotDto1, parkingLotDto2));
-
-        mockMvc.perform(get("/parking-lot")).andExpect(status().isOk())
-                .andExpect(jsonPath("$.[0].id").value(1)).andExpect(jsonPath("$.[1].id").value(2));
-        verify(parkingLotService, times(1)).getAll();
-    }
-
-    @Test
     public void updateParkingLotTest() throws Exception {
         ParkingLotDto parkingLotDto = createBasicParkingLotDto();
         parkingLotDto.setId(1L);

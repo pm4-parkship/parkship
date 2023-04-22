@@ -1,7 +1,7 @@
 package ch.zhaw.parkship.configuration;
 
 import ch.zhaw.parkship.authentication.UserConverter;
-import ch.zhaw.parkship.user.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +15,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -53,6 +55,10 @@ public class ApplicationConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authenticationProvider(authenticationProvider());
+        http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
+            response.setContentType("application/json");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authorization Failed : " + authException.getMessage());
+        });
         http.oauth2ResourceServer().jwt(c -> {
             c.jwtAuthenticationConverter(new UserConverter());
         });
@@ -80,7 +86,7 @@ public class ApplicationConfiguration {
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(((UserService) userDetailsService).getPasswordEncoder());
+        authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
 
@@ -106,5 +112,10 @@ public class ApplicationConfiguration {
         return NimbusJwtDecoder
                 .withSecretKey(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), algorithm))
                 .build();
+    }
+
+    @Bean
+    public static PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

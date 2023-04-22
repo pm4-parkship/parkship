@@ -53,7 +53,7 @@ public class GlobalExceptionControllerAdvice {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleRuntimeException(AccessDeniedException ex) {
-        return buildResponseEntity(new ApiError(FORBIDDEN, ex.getMessage(), ex));
+        return buildResponseEntity(new ApiError(UNAUTHORIZED, ex.getMessage(), ex));
     }
 
     @ExceptionHandler(BaseException.class)
