@@ -3,6 +3,8 @@ package ch.zhaw.parkship.reservation;
 import ch.zhaw.parkship.availability.AvailabilityService;
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
+import ch.zhaw.parkship.reservation.exceptions.ReservationCanNotBeCanceledException;
+import ch.zhaw.parkship.reservation.exceptions.ReservationNotFoundException;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -135,17 +137,15 @@ public class ReservationController {
     /**
      * Cancels a reservation, if the reservation exists, is not yet canceled and the reservation
      * is before the cancelataion deadline.
+     *
      * @param id
-     * @throws ReservationNotFoundException if the reservation does not exist
+     * @throws ReservationNotFoundException         if the reservation does not exist
      * @throws ReservationCanNotBeCanceledException if the reservation either is too late or the reservation is already canceled.
      */
     @PostMapping(value = "/{id}/cancel")
     public void cancelReservation(@PathVariable("id") Long id) throws ReservationNotFoundException, ReservationCanNotBeCanceledException {
         reservationService.cancelReservation(id);
     }
-
-
-
 
 
     protected void validateRequest(ReservationDto reservationDto) {

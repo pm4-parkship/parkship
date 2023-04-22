@@ -14,40 +14,36 @@ import java.util.List;
 public class ApiError {
 
     private HttpStatus status;
+    private int statusCode;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime timestamp;
     private String message;
     private String debugMessage;
-    private List<ApiSubError> subErrors;
+    private List<ApiSubError> errors;
 
     private ApiError() {
         timestamp = LocalDateTime.now();
-        subErrors = new ArrayList<>();
+        errors = new ArrayList<>();
     }
 
     ApiError(HttpStatus status) {
         this();
         this.status = status;
+        this.statusCode = status.value();
     }
 
     ApiError(HttpStatus status, Throwable ex) {
-        this();
-        this.status = status;
+        this(status);
         this.message = "Unexpected error";
         this.debugMessage = ex.getLocalizedMessage();
     }
 
     ApiError(HttpStatus status, String message, Throwable ex) {
-        this();
-        this.status = status;
+        this(status, ex);
         this.message = message;
-        this.debugMessage = ex.getLocalizedMessage();
     }
 
-    public void addSubError(String path, String message) {
-        ApiSubError error = new ApiValidationError(path, message);
-        subErrors.add(error);
+    public void addError(ApiValidationError error) {
+        errors.add(error);
     }
-
-
 }

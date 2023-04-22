@@ -3,7 +3,9 @@ package ch.zhaw.parkship.errorhandling;
 import org.hibernate.TransientPropertyValueException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,7 +28,7 @@ public class GlobalExceptionControllerAdvice {
     private ApiError processFieldErrors(List<FieldError> fieldErrors, Exception ex) {
         ApiError apiError = new ApiError(BAD_REQUEST, "validation error", ex);
         for (FieldError fieldError : fieldErrors) {
-            apiError.addSubError(fieldError.getField(), fieldError.getDefaultMessage());
+            apiError.addError(new ApiValidationError(fieldError));
         }
         return apiError;
     }
@@ -59,6 +61,15 @@ public class GlobalExceptionControllerAdvice {
         return buildResponseEntity(new ApiError(ex.getHttpStatus(), ex.getMessage(), ex));
     }
 
+    @ExceptionHandler(value = HttpMessageNotReadableException.class)
+    public ResponseEntity<Object> handleUnprocessableMsgException(HttpMessageNotReadableException ex) {
+        return buildResponseEntity(new ApiError(UNPROCESSABLE_ENTITY, ex.getMessage(), ex));
+    }
+
+    @ExceptionHandler(value = AuthenticationException.class)
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
+        return buildResponseEntity(new ApiError(UNAUTHORIZED, "Invalid credentials or roles", ex));
+    }
 
     private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {
         return new ResponseEntity<>(apiError, apiError.getStatus());

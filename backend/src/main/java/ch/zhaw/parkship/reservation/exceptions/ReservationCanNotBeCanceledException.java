@@ -1,4 +1,4 @@
-package ch.zhaw.parkship.reservation;
+package ch.zhaw.parkship.reservation.exceptions;
 
 import ch.zhaw.parkship.errorhandling.BaseException;
 import org.springframework.http.HttpStatus;
