@@ -23,6 +23,8 @@ export function Layout({ children }: LayoutProps) {
     }
   }, [user]);
 
+  logger.log(UserSession);
+
   return (
     <>
       <Navbar user={UserSession} />

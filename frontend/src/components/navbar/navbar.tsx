@@ -26,6 +26,7 @@ function Navbar({ user }: { user?: User }) {
                 <Link href="/search">Parkplatz finden</Link>
                 <Link href="/my-reservation">Meine Reservation</Link>
                 <Link href="/my-parking-lot">Mein Parkplatz</Link>
+                {user?.roles.find(value => value.includes('ADMIN')) && (<Link href="/admin">ADMIN</Link>)}
               </div>
               <div className={classes.logout}>
                 <Typography

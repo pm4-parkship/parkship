@@ -22,7 +22,7 @@ export default function Login() {
   const customErrorMap = () => {
     return (issue: ZodIssueOptionalMessage, ctx: ErrorMapCtx) => {
       if (issue.code === z.ZodIssueCode.invalid_string) {
-        if (issue.path.includes('email')) {
+        if (issue.path.includes('username')) {
           return {
             message: `Bitte geben Sie eine korrekte Email ein!`
           };
