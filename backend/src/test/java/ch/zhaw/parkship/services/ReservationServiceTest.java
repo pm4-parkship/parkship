@@ -6,6 +6,9 @@ import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
 import ch.zhaw.parkship.reservation.*;
 import ch.zhaw.parkship.user.UserDto;
 import ch.zhaw.parkship.user.UserEntity;
+import ch.zhaw.parkship.util.UserGenerator;
+import ch.zhaw.parkship.util.generator.ParkingLotGenerator;
+import ch.zhaw.parkship.util.generator.ReservationGenerator;
 import ch.zhaw.parkship.user.UserRepository;
 import ch.zhaw.parkship.util.UserGenerator;
 import ch.zhaw.parkship.util.generator.ParkingLotGenerator;
@@ -44,13 +47,14 @@ class ReservationServiceTest {
 
     // Sample data for testing
     private ReservationEntity reservationEntity;
+    private ParkingLotEntity parkingLotEntity;
 
     UserEntity userEntity = new UserEntity();
 
     @BeforeEach
     public void setUp() {
         userEntity = new UserEntity();
-        ParkingLotEntity parkingLotEntity = new ParkingLotEntity();
+        parkingLotEntity = new ParkingLotEntity();
         parkingLotEntity.setId(1L);
         parkingLotEntity.setOwner(userEntity);
         userEntity.setId(1L);

@@ -1,8 +1,6 @@
 package ch.zhaw.parkship.reservation;
 
-import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
-import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -48,6 +46,7 @@ public class ReservationService {
         reservationEntity.setTenant(tenant);
         return reservationRepository.save(reservationEntity);
     }
+
 
 
     /**
@@ -148,7 +147,6 @@ public class ReservationService {
     /**
      * Sets a reservation's state to canceled, if the reservation exists,
      * is not yet canceled and the reservation is before the CANCELATION_DEADLINE.
-     *
      * @param id
      * @throws ReservationNotFoundException if the reservation does not exist
      * @throws ReservationCanNotBeCanceledException if the reservation either is too late or the reservation is already canceled.
