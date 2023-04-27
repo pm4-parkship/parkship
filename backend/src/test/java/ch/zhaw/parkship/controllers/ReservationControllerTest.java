@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -210,5 +211,16 @@ class ReservationControllerTest {
 
         // assert
         verify(reservationService, times(1)).deleteById(1L);
+    }
+
+    @Test
+    public void getUserReservationsTest() throws Exception{
+        // arrange
+        List<ReservationDto> reservationDtos = new ArrayList<>();
+        when(reservationService.getByUserId(1L,LocalDate.now(),LocalDate.MAX)).thenReturn(reservationDtos);
+        //act
+        reservationController.getUserReservations(1L, Optional.of(LocalDate.now()),Optional.of(LocalDate.MAX));
+        //assert
+        verify(reservationService, times(1)).getByUserId(1L,LocalDate.now(),LocalDate.MAX);
     }
 }

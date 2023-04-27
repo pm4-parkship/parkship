@@ -50,7 +50,6 @@ public class ReservationService {
     }
 
 
-
     /**
      * This method retrieves a reservation with the provided id.
      *
@@ -82,21 +81,26 @@ public class ReservationService {
         return reservationDtos;
     }
 
-  /**
-   * This method retrieves reservations by customer id
-   * @return List<ReservationDto> Returns a list of reservation data in the ReservationDto format in
-   *        the HTTP response body with a status code of 200 if found, otherwise returns a no
-   *        content status code.
-   */
-  public List<ReservationDto> getByUserId(Long userId, LocalDate from, LocalDate to){
-
-    var reservationEntities = reservationRepository.findAllByTenant(userId, from, to);
-    List<ReservationDto> reservationDtos = new ArrayList<>();
-    for ( ReservationEntity reservationEntity: reservationEntities){
-      reservationDtos.add(new ReservationDto(reservationEntity));
+    /**
+     * This method retrieves reservations by customer id
+     *
+     * @return List<ReservationDto> Returns a list of reservation data in the ReservationDto format in
+     * the HTTP response body with a status code of 200 if found, otherwise returns a no
+     * content status code.
+     */
+    public List<ReservationDto> getByUserId(Long userId, LocalDate from, LocalDate to) throws Exception {
+        Optional<UserEntity> tenant = userRepository.findById(userId);
+        if (tenant.isPresent()){
+            var reservationEntities = reservationRepository.findAllByTenant(tenant.get(), from, to);
+            List<ReservationDto> reservationDtos = new ArrayList<>();
+            for (ReservationEntity reservationEntity : reservationEntities) {
+                reservationDtos.add(new ReservationDto(reservationEntity));
+            }
+            return reservationDtos;
+        } else {
+            throw new Exception("User not found");
+        }
     }
-    return reservationDtos;
-  }
 
     /**
      * This method updates a reservation with the provided reservation data.
@@ -144,6 +148,7 @@ public class ReservationService {
     /**
      * Sets a reservation's state to canceled, if the reservation exists,
      * is not yet canceled and the reservation is before the CANCELATION_DEADLINE.
+     *
      * @param id
      * @throws ReservationNotFoundException if the reservation does not exist
      * @throws ReservationCanNotBeCanceledException if the reservation either is too late or the reservation is already canceled.

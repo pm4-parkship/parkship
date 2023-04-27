@@ -6,6 +6,7 @@ import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
 import ch.zhaw.parkship.reservation.*;
 import ch.zhaw.parkship.user.UserDto;
 import ch.zhaw.parkship.user.UserEntity;
+import ch.zhaw.parkship.user.UserRepository;
 import ch.zhaw.parkship.util.UserGenerator;
 import ch.zhaw.parkship.util.generator.ParkingLotGenerator;
 import ch.zhaw.parkship.util.generator.ReservationGenerator;
@@ -32,6 +33,8 @@ class ReservationServiceTest {
     @Mock
     private ReservationRepository reservationRepository;
 
+    @Mock
+    private UserRepository userRepository;
 
     @Mock
     private ParkingLotRepository parkingLotRepository;
@@ -41,14 +44,13 @@ class ReservationServiceTest {
 
     // Sample data for testing
     private ReservationEntity reservationEntity;
-    private ParkingLotEntity parkingLotEntity;
 
     UserEntity userEntity = new UserEntity();
 
     @BeforeEach
     public void setUp() {
         userEntity = new UserEntity();
-        parkingLotEntity = new ParkingLotEntity();
+        ParkingLotEntity parkingLotEntity = new ParkingLotEntity();
         parkingLotEntity.setId(1L);
         parkingLotEntity.setOwner(userEntity);
         userEntity.setId(1L);
@@ -193,4 +195,21 @@ class ReservationServiceTest {
         verify(reservationRepository, times(4)).findById(2L);
 
     }
+
+    @Test
+    public void getReservationByUserTest() throws Exception {
+        when(reservationRepository.findAllByTenant(userEntity,LocalDate.now(),LocalDate.MAX)).thenReturn(new ArrayList<ReservationEntity>());
+        when(userRepository.findById(1L)).thenReturn(Optional.of(userEntity));
+
+        try {
+            reservationService.getByUserId(1L,LocalDate.now(),LocalDate.MAX);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+        verify(reservationRepository,times(1)).findAllByTenant(userEntity,LocalDate.now(),LocalDate.MAX);
+        verify(userRepository,times(1)).findById(1L);
+
+    }
+
 }

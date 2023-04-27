@@ -1,5 +1,6 @@
 package ch.zhaw.parkship.reservation;
 
+import ch.zhaw.parkship.user.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -12,8 +13,9 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     @Query(
             "SELECT r FROM ReservationEntity r WHERE r.id = ?1 AND r.to >= ?2 AND r.from <= ?3"
     )
-    public List<ReservationEntity> findAllWithOverlappingDates(Long id, LocalDate startDate, LocalDate endDate);
-    @Query ("SELECT r FROM ReservationEntity r WHERE r.tenant = ?1 AND r.from > ?2 AND r.to < ?3 ORDER BY r.from")
-    List<ReservationEntity> findAllByTenant(Long id, LocalDate from, LocalDate to);
-
+    List<ReservationEntity> findAllWithOverlappingDates(Long id, LocalDate startDate, LocalDate endDate);
+    @Query (
+            "SELECT r FROM ReservationEntity r WHERE r.tenant = ?1 AND r.from > ?2 AND r.to < ?3 ORDER BY r.from"
+    )
+    List<ReservationEntity> findAllByTenant(UserEntity tenant, LocalDate from, LocalDate to);
 }

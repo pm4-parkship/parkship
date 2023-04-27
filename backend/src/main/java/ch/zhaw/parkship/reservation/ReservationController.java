@@ -18,12 +18,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
-
 /**
  * This class is a Rest Controller for managing ReservationDto objects
  * <p>
@@ -87,16 +81,19 @@ public class ReservationController {
   /**
    *
    */
-  @GetMapping(value = "/user/{userId}", consumes = "application/json", produces = "application/json")
+  @GetMapping(value = "/user/{userId}", produces = "application/json")
   public List<ReservationDto> getUserReservations (
-          @PathVariable Long userId, @RequestParam ("from") Optional<LocalDate> from, @RequestParam ("to") Optional<LocalDate> to){
-    LocalDate fromTime;
-    LocalDate toTime;
-
-    fromTime = from.orElseGet(LocalDate::now);
-    toTime = to.orElseGet(LocalDate::now);
-
-    return reservationService.getByUserId(userId, fromTime, toTime);
+          @PathVariable Long userId, @RequestParam ("from") Optional<LocalDate> from, @RequestParam ("to") Optional<LocalDate> to) throws Exception {
+      LocalDate fromDate ;
+      LocalDate toDate;
+      if (to.isPresent() || from.isPresent()) {
+          toDate = to.orElseGet(LocalDate::now);
+          fromDate = from.orElseGet(LocalDate::now);
+      } else {
+          toDate = LocalDate.MAX;
+          fromDate = LocalDate.now();
+      }
+      return reservationService.getByUserId(userId, fromDate, toDate);
   }
 
     /**
