@@ -27,6 +27,9 @@ public class ReservationDto implements Serializable {
 
     @NotNull
     private LocalDate to;
+    @NotNull
+    private ReservationState reservationState;
+    private LocalDate cancelDate;
 
     public ReservationDto(ReservationEntity reservationEntity) {
         this.id = reservationEntity.getId();
@@ -34,6 +37,8 @@ public class ReservationDto implements Serializable {
         this.from = reservationEntity.getFrom();
         this.to = reservationEntity.getTo();
         this.parkingLot = new ParkingLotDto(reservationEntity.getParkingLot());
+        this.reservationState = reservationEntity.getState();
+        this.cancelDate = reservationEntity.getCancelDate();
     }
 
     public ReservationDto() {
@@ -42,7 +47,7 @@ public class ReservationDto implements Serializable {
     @Override
     public String toString() {
         return "ReservationDto{" + "id=" + id + ", parkingLot=" + parkingLot + ", tenant=" + tenant
-                + ", from=" + from + ", to=" + to + '}';
+                + ", from=" + from + ", to=" + to + "reservationState=" + reservationState + '}';
     }
 
     @Override

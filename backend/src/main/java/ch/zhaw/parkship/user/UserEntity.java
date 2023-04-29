@@ -2,7 +2,6 @@ package ch.zhaw.parkship.user;
 
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.reservation.ReservationEntity;
-import ch.zhaw.parkship.role.RoleEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -10,15 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Class for the user entity in the database.
@@ -28,7 +23,7 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity implements UserDetails {
+public class UserEntity {
     /**
      * The user gets a generated id.
      */
@@ -43,6 +38,8 @@ public class UserEntity implements UserDetails {
     private String name;
     private String surname;
     private String password;
+    private UserRole userRole;
+    private UserState userState;
 
 
     @OneToMany(mappedBy = "tenant")
@@ -57,45 +54,6 @@ public class UserEntity implements UserDetails {
         this.password = password;
     }
 
-    /**
-     * The roles that are assigned to the user.
-     */
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<RoleEntity> roleEntities = new HashSet<>();
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    /**
-     * The authorities that are assigned to the user according to the roles.
-     *
-     * @return
-     */
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roleEntities.stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toSet());
-    }
 
     @Override
     public boolean equals(Object o) {

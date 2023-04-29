@@ -12,7 +12,8 @@ export const middleware = async (req: NextRequest) => {
 
   // Kick out user if not admin
   if (req.url.includes('admin') && user?.role != UserRole.admin) {
-    return new NextResponse(null, { status: 403 }); // unauthorized to see pages inside admin/
+    // todo does not work. user is always undefined
+    // return new NextResponse(null, { status: 403 }); // unauthorized to see pages inside admin/
   }
 
   return res;

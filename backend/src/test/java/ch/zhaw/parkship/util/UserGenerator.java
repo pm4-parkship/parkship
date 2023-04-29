@@ -1,6 +1,8 @@
 package ch.zhaw.parkship.util;
 
 import ch.zhaw.parkship.user.UserEntity;
+import ch.zhaw.parkship.user.UserRole;
+import ch.zhaw.parkship.user.UserState;
 import com.github.javafaker.Faker;
 
 import java.util.Set;
@@ -20,7 +22,8 @@ public abstract class UserGenerator {
                 faker.name().firstName(),
                 faker.name().lastName(),
                 faker.internet().password(),
-                Set.of(),
+                UserRole.USER,
+                UserState.UNLOCKED,
                 Set.of(),
                 Set.of());
 

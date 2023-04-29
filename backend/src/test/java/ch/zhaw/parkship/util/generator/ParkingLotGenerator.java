@@ -11,6 +11,7 @@ public abstract class ParkingLotGenerator {
     public static ParkingLotEntity generate(UserEntity owner) {
         var entity = new ParkingLotEntity();
         entity.setLongitude(Double.valueOf(faker.address().longitude()));
+        entity.setName(faker.funnyName().name());
         entity.setLatitude(Double.valueOf(faker.address().latitude()));
         entity.setNr(faker.address().buildingNumber());
         entity.setPrice(faker.number().randomDouble(2, 10, 300));
