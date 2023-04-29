@@ -2,14 +2,14 @@ import { ParkingLotModel } from '../parking-lot/parking-lot.model';
 import { UserModel } from '../user/user.model';
 
 export interface ReservationModel {
-  id: number;
+  id?: number;
   parkingLot: ParkingLotModel;
   tenant: UserModel;
-  reservationState: ReservationState;
+  reservationState?: ReservationState;
   from: Date;
   to: Date;
-  paymentState: string;
-  cancelDate: Date | null;
+  paymentState?: string;
+  cancelDate?: Date | null;
 }
 
 export enum ReservationState {

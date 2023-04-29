@@ -124,10 +124,9 @@ export const getDesignTokens = (mode: any) => ({
       letterSpacing: '0.063rem'
     },
     highlighted: {
-      fontWeight: 1000,
+      fontWeight: 2000,
       fontSize: '1.0rem',
-      letterSpacing: '0.063rem',
-      color: 'orange'
+      letterSpacing: '0.063rem'
     }
   },
   breakpoints: {

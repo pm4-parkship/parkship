@@ -6,7 +6,7 @@ import { ParkingLotModel } from '../../models';
 import { logger } from '../../logger';
 import useUser from '../../auth/use-user';
 import { toast } from 'react-toastify';
-import { common } from '@mui/material/colors';
+import { ReservationModel } from 'src/models/reservation/reservation.model';
 
 export const enum ParkingLotAction {
   RESERVIEREN = 'reservieren',
@@ -31,19 +31,32 @@ const ParkingReservationConfirmationModal = ({
   const { user } = useUser();
   const classes = useStyles();
 
-  const executeReservation = (data: ParkingLotModel) => {
+  const executeReservation = (parkingLot: ParkingLotModel) => {
+    const reservationData: ReservationModel = {
+      parkingLot,
+      tenant: {
+        username: user?.username ?? '',
+        email: 'test@test'
+      },
+      from: new Date(from),
+      to: new Date(to)
+    };
+
     if (user) {
       fetch('/backend/reservation', {
         method: 'POST',
+        body: JSON.stringify(reservationData),
         headers: {
           Authorization: `Bearer ${user.token}`,
           'Content-Type': 'application/json'
         }
-      }).then(async (response) => {
-        const data = await response.json();
-        logger.log(data);
-        return data;
-      });
+      })
+        .then(async (response) => {
+          const data = await response.json();
+          logger.log(data);
+          return data;
+        })
+        .catch((error) => logger.log(error));
     } else {
       logger.log('User not logged in');
       toast.error('User not logged in');
@@ -52,7 +65,7 @@ const ParkingReservationConfirmationModal = ({
 
   const executeCancellation = (data: ParkingLotModel) => {
     if (user) {
-      fetch('/backend/reservation', {
+      fetch('/backend/reservation' + data.id, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${user.token}`,
@@ -94,7 +107,7 @@ const ParkingReservationConfirmationModal = ({
 
             <Grid container columnSpacing={1}>
               <Grid item xs={2}>
-                <Typography variant="subtitle2">vom</Typography>
+                <Typography variant="subtitle2">von:</Typography>
               </Grid>
 
               <Grid item xs={4}>
@@ -102,7 +115,7 @@ const ParkingReservationConfirmationModal = ({
               </Grid>
 
               <Grid item xs={2}>
-                <Typography variant="subtitle2">bis</Typography>
+                <Typography variant="subtitle2">bis:</Typography>
               </Grid>
               <Grid item xs={4}>
                 <Typography variant="highlighted">{to}</Typography>
