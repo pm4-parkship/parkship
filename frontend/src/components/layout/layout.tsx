@@ -4,7 +4,6 @@ import { makeStyles } from '@mui/styles';
 import NavbarUser from '../navbar/navbar-user';
 import { useRouter } from 'next/router';
 import user from '../../../pages/api/user';
-import { logger } from '../../logger';
 import useUser from '../../auth/use-user';
 import NavbarAdmin from '../navbar/navbar-admin';
 import { UserRole } from '../../models';
@@ -22,7 +21,6 @@ export function Layout({ children }: LayoutProps) {
     if (!UserSession?.isLoggedIn) {
       router.push('/login');
     }
-    logger.log(UserSession);
   }, [user]);
 
   return (

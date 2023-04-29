@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { logger } from '../src/logger';
 import { UserRole } from '../src/models';
 import { useRouter } from 'next/router';
+import { User } from './api/user';
 
 export default function Login() {
   const router = useRouter();
@@ -16,12 +17,17 @@ export default function Login() {
   const { mutateUser, user } = useUser();
 
   useEffect(() => {
-    if (user?.isLoggedIn && user?.role == UserRole.admin) {
+    redirectUser(user);
+  }, [user]);
+
+  const redirectUser = (user: User) => {
+    if (user.isLoggedIn && user.role == UserRole.admin) {
+      logger.log(user);
       router.push('/admin/parking-lots');
-    } else if (user?.isLoggedIn && user?.role == UserRole.user) {
+    } else if (user.isLoggedIn && user.role == UserRole.user) {
       router.push('/search');
     }
-  }, [user]);
+  };
 
   const formSchema = z.object({
     email: z.string().email(),
@@ -74,7 +80,7 @@ export default function Login() {
             role: UserRole[data.user.role],
             token: data.user.token,
             username: data.user.username
-          });
+          }).then((user) => user && redirectUser(user));
           if (data.roles == UserRole.admin) {
             router.push('/admin/parking-lots');
           } else if (data.roles == UserRole.user) {

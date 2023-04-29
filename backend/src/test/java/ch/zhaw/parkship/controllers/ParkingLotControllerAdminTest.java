@@ -6,7 +6,6 @@ import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
 import ch.zhaw.parkship.parkinglot.ParkingLotService;
 import ch.zhaw.parkship.reservation.ReservationRepository;
 import ch.zhaw.parkship.reservation.ReservationService;
-import ch.zhaw.parkship.role.RoleRepository;
 import ch.zhaw.parkship.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -30,9 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ParkingLotControllerAdminTest {
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    private RoleRepository roleRepository;
 
     @MockBean
     private UserService userService;

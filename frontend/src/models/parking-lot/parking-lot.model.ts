@@ -1,6 +1,9 @@
+import { UserModel } from '../user/user.model';
+
 export interface ParkingLotModel {
-  id: string;
-  owner: string;
+  id: number;
+  name: string;
+  owner: UserModel;
   description: string;
   tags: string[];
   longitude: number;
@@ -15,6 +18,6 @@ export interface ParkingLotModel {
 }
 
 export enum ParkingLotState {
-  released = 'freigegegben',
-  locked = 'gesperrt'
+  released = 'released',
+  locked = 'locked'
 }

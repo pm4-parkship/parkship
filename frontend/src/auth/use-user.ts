@@ -12,6 +12,12 @@ export default function useUser({
     revalidateOnFocus: false,
     keepPreviousData: true
   });
+  const loggedOutUser: User = {
+    isLoggedIn: false,
+    username: '',
+    token: '',
+    role: ''
+  };
   const router = useRouter();
   useEffect(() => {
     // if no redirect needed, just return (example: already on /dashboard)
@@ -28,5 +34,5 @@ export default function useUser({
     }
   }, [user, redirectIfFound, redirectTo]);
 
-  return { user, mutateUser };
+  return { user: user || loggedOutUser, mutateUser };
 }

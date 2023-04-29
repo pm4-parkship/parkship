@@ -140,17 +140,19 @@ public class ParkingLotService {
      * the HTTP response body with a status code of 200 if found, otherwise returns a no
      * content status code.
      */
-    public List<ParkingLotDto> getBySearchTerm(String searchTerm, LocalDate startDate, LocalDate endDate, int page, int size) {
-
+    public List<ParkingLotSearchDto> getBySearchTerm(String searchTerm, LocalDate startDate, LocalDate endDate, int page, int size) {
         Set<ParkingLotEntity> parkingLots = getParkingLotsFromDatabase(searchTerm);
-        parkingLots = filterParkingLotsByDate(startDate, endDate, parkingLots);
+        Set<ParkingLotEntity> availableParkingLots = filterParkingLotsByDate(startDate, endDate, parkingLots);
+        List<ParkingLotSearchDto> parkingLotSearchDtos = availableParkingLots.stream().map(
+                parkingLotEntity -> {
+                    ParkingLotSearchDto parkingLotSearchDto = new ParkingLotSearchDto(parkingLotEntity, parkingLotEntity.getOwner());
+                    parkingLotSearchDto.setFrom(startDate);
+                    parkingLotSearchDto.setTo(endDate);
+                    return parkingLotSearchDto;
+                }
+        ).toList();
 
-        List<ParkingLotDto> parkingLotDtos = new ArrayList<>();
-        for (ParkingLotEntity entity : parkingLots) {
-            parkingLotDtos.add(new ParkingLotDto(entity));
-        }
-
-        return getParkingLotDtosPage(page, size, parkingLotDtos);
+        return getParkingLotSearchDtoPage(page, size, parkingLotSearchDtos);
     }
 
     private Set<ParkingLotEntity> getParkingLotsFromDatabase(String searchTerm) {
@@ -176,14 +178,13 @@ public class ParkingLotService {
         return parkingLots;
     }
 
-    private List<ParkingLotDto> getParkingLotDtosPage(int page, int size, List<ParkingLotDto> parkingLotDtos) {
+    private List<ParkingLotSearchDto> getParkingLotSearchDtoPage(int page, int size, List<ParkingLotSearchDto> parkingLotDtos) {
         int maxIndex = (page + 1) * size;
         int lowestIndex = maxIndex - size;
         int numOfResults = parkingLotDtos.size();
 
         if (lowestIndex > numOfResults - 1) {
-            parkingLotDtos.clear();
-            return parkingLotDtos;
+            return Collections.emptyList();
         }
 
         if (maxIndex > numOfResults) maxIndex -= size - (numOfResults % size);
