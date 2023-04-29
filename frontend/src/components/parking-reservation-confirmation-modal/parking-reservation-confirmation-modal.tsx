@@ -6,6 +6,7 @@ import { ParkingLotModel } from '../../models';
 import { logger } from '../../logger';
 import useUser from '../../auth/use-user';
 import { toast } from 'react-toastify';
+import { common } from '@mui/material/colors';
 
 export const enum ParkingLotAction {
   RESERVIEREN = 'reservieren',
@@ -85,19 +86,26 @@ const ParkingReservationConfirmationModal = ({
           </div>
           <Stack spacing={2}>
             <Typography align="center" variant="h4">
-              {parkingLot.description}
+              {parkingLot.id}
             </Typography>
             {/* <Typography align="center" variant="h5">
             {requestType}
           </Typography> */}
 
-            <Grid container columnSpacing={2}>
-              <Grid item xs={6}>
-                <Typography variant="subtitle2">{from}</Typography>
+            <Grid container columnSpacing={1}>
+              <Grid item xs={2}>
+                <Typography variant="subtitle2">vom</Typography>
               </Grid>
 
-              <Grid item xs={6}>
-                <Typography variant="subtitle2">{to}</Typography>
+              <Grid item xs={4}>
+                <Typography variant="highlighted">{from}</Typography>
+              </Grid>
+
+              <Grid item xs={2}>
+                <Typography variant="subtitle2">bis</Typography>
+              </Grid>
+              <Grid item xs={4}>
+                <Typography variant="highlighted">{to}</Typography>
               </Grid>
             </Grid>
 
