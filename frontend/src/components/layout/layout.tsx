@@ -1,7 +1,11 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Navbar from '../navbar/navbar';
+import { useRouter } from 'next/router';
+import user from '../../../pages/api/user';
+import { logger } from '../../logger';
+import useUser from '../../auth/use-user';
 
 export type LayoutProps = {
   children: ReactNode;
@@ -9,19 +13,28 @@ export type LayoutProps = {
 
 export function Layout({ children }: LayoutProps) {
   const classes = useStyles();
+  const router = useRouter();
+  const { user: UserSession } = useUser();
+
+  useEffect(() => {
+    logger.error('Layout user', UserSession);
+    if (!UserSession?.isLoggedIn) {
+      router.push('/login');
+    }
+  }, [user]);
 
   return (
     <>
-      <Navbar />
+      <Navbar user={UserSession} />
       <main>
         <div className={classes.root}>{children}</div>
       </main>
       <div className={classes.bottomBar}>
-        <Typography variant="body2" color="textSecondary" align="center">
-          Created by Parkship
+        <Typography variant="body2" color="primary" align="center">
+          {'Created with ❤️ '}
         </Typography>
-        <Typography variant="body2" color="textSecondary" align="center">
-          {'© '}
+        <Typography variant="body2" color="textPrimary" align="center">
+          {' by Parkship © '}
           {new Date().getFullYear()}
         </Typography>
       </div>
@@ -33,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: '1600px',
     minHeight: '100vh',
-    margin: '0 auto',
+    margin: '1rem auto',
     background: theme.palette.background.default
   },
   topBarBottom: {

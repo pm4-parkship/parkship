@@ -1,7 +1,8 @@
 import {
+  Button,
   Divider,
+  FormControlLabel,
   Grid,
-  Grow,
   Modal,
   Paper,
   Stack,
@@ -11,28 +12,32 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import { ParkingLotModel } from '../../models';
-import { logger } from '../../logger';
 import { Icon } from '@iconify/react';
 import ImageCustom from '../image/image-custom';
 import { nanoid } from 'nanoid';
 import Checkbox from '@mui/material/Checkbox';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-
+import ParkingReservationConfirmationModal, {
+  ParkingLotAction
+} from '../parking-reservation-confirmation-modal/parking-reservation-confirmation-modal';
 
 const ParkingDetailModal = ({
   showModal = true,
   setShowModal,
-  parkingLotModel
+  parkingLotModel,
+  fromDate,
+  toDate
 }: {
   showModal: boolean;
   setShowModal: (value: boolean) => void;
   parkingLotModel: ParkingLotModel;
+  fromDate: string;
+  toDate: string;
 }) => {
   const classes = useStyles();
+  const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
 
   return (
     <>
@@ -87,13 +92,34 @@ const ParkingDetailModal = ({
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       <Typography component={'span'} variant="body1">
-                        <Checkbox checked />Mo
-                        <Checkbox checked />Di
-                        <Checkbox checked />Mi
-                        <Checkbox checked />Do
-                        <Checkbox checked />Fr
-                        <Checkbox checked />Sa
-                        <Checkbox checked />So
+                        <FormControlLabel
+                          label="Mo"
+                          control={<Checkbox checked />}
+                        />
+                        <FormControlLabel
+                          label="Di"
+                          control={<Checkbox checked />}
+                        />
+                        <FormControlLabel
+                          label="Mi"
+                          control={<Checkbox checked />}
+                        />
+                        <FormControlLabel
+                          label="Do"
+                          control={<Checkbox checked />}
+                        />
+                        <FormControlLabel
+                          label="Fr"
+                          control={<Checkbox checked />}
+                        />
+                        <FormControlLabel
+                          label="Sa"
+                          control={<Checkbox checked />}
+                        />
+                        <FormControlLabel
+                          label="So"
+                          control={<Checkbox checked />}
+                        />
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -141,7 +167,7 @@ const ParkingDetailModal = ({
               </Table>
             </Grid>
 
-            <Grid item xs={12} sm={12}  md={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
@@ -160,9 +186,9 @@ const ParkingDetailModal = ({
               </Table>
             </Grid>
 
-            <Grid item xs={0} sm={0}  md={6}></Grid>
+            <Grid item xs={0} sm={0} md={6}></Grid>
 
-            <Grid item xs={12} sm={12}  md={6}>
+            <Grid item xs={12} sm={12} md={6}>
               <Table className={classes.tableRoot}>
                 <TableBody className={classes.tableBody}>
                   <TableRow className={classes.tableRow} key={nanoid()}>
@@ -193,13 +219,31 @@ const ParkingDetailModal = ({
               </div>
             ))}
           </Stack>
+          <Button
+            onClick={() => setOpenConfirmationModal(true)}
+            className={classes.button}
+            variant="outlined"
+          >
+            reservieren
+          </Button>
         </div>
       </Modal>
+      <ParkingReservationConfirmationModal
+        showModal={openConfirmationModal}
+        setShowModal={setOpenConfirmationModal}
+        from={fromDate}
+        to={toDate}
+        parkingLot={parkingLotModel}
+        requestType={ParkingLotAction.RESERVIEREN}
+      />
     </>
   );
 };
 
 const useStyles = makeStyles((theme) => ({
+  button: {
+    float: 'right'
+  },
   tableRoot: {
     overflow: 'scroll'
   },
@@ -217,7 +261,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       display: 'grid',
       gap: '0',
-      marginBottom: '5px', 
+      marginBottom: '5px'
     },
     gap: '20px'
   },
@@ -246,7 +290,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
     borderRadius: '0%',
     textAlign: 'left',
-    overflow: 'hidden',
+    overflow: 'scroll',
     textOverflow: 'ellipsis',
     padding: '20px',
     top: '50%',

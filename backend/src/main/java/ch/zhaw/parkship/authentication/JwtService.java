@@ -1,11 +1,7 @@
 package ch.zhaw.parkship.authentication;
 
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Service;
+import ch.zhaw.parkship.configuration.JwtConfiguration;
+import ch.zhaw.parkship.user.UserEntity;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
@@ -13,7 +9,13 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import ch.zhaw.parkship.configuration.JwtConfiguration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service for generating and verifying JWTs.
@@ -28,18 +30,19 @@ public class JwtService {
 
     /**
      * Generates and configures a JWT for a specific user.
-     * @param applicationUser the JWT is generated for
+     *
+     * @param userEntity the JWT is generated for
      * @return a signed JWT
      */
-    public String generateToken(ApplicationUser applicationUser) {
-        List<String> roles = applicationUser.getAuthorities()
+    public String generateToken(UserEntity userEntity) {
+        List<String> roles = userEntity.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .subject(applicationUser.getId() + "")
-                .claim("username", applicationUser.getUsername())
+                .subject(userEntity.getId() + "")
+                .claim("username", userEntity.getUsername())
                 .claim("roles", roles)
                 .expirationTime(new Date(new Date().getTime() + jwtConfiguration.getExpiration()))
                 .build();
@@ -55,8 +58,9 @@ public class JwtService {
     }
 
     /**
-     * Verifies if a toke is a valid JWT.
-     * @param token that is verfied
+     * Verifies if a token is a valid JWT.
+     *
+     * @param token that to be verified
      * @return true, if the token is a  valid JWT
      */
     public SignedJWT verify(String token) {
