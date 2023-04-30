@@ -2,6 +2,7 @@ import {
   ReservationModel,
   ReservationState
 } from '../models/reservation/reservation.model';
+import { ParkingLotState, UserRole } from '../models';
 
 export const dummy: Array<ReservationModel> = [
   {
@@ -19,13 +20,13 @@ export const dummy: Array<ReservationModel> = [
       nr: 'A',
       pictures: ['url1', 'url2'],
       price: 10,
-      state: 'available'
+      state: ParkingLotState.released
     },
     tenant: {
       id: '1',
       name: 'Jane',
       surname: 'Doe',
-      roles: ['role1', 'role2'],
+      role: UserRole.user,
       email: 'jane.doe@example.com'
     },
     reservationState: ReservationState.OK,
@@ -49,13 +50,13 @@ export const dummy: Array<ReservationModel> = [
       nr: 'A',
       pictures: ['url1', 'url2'],
       price: 10,
-      state: 'available'
+      state: ParkingLotState.released
     },
     tenant: {
       id: '1',
       name: 'Jane',
       surname: 'Doe',
-      roles: ['role1', 'role2'],
+      role: UserRole.admin,
       email: 'jane.doe@example.com'
     },
     reservationState: ReservationState.XX,

@@ -3,15 +3,15 @@ import { makeStyles } from '@mui/styles';
 import { ParkingLotModel } from 'src/models';
 
 interface Props {
-  bcolor: string,
-  parking: ParkingLotModel
+  bcolor: string;
+  parking: ParkingLotModel;
 }
 
-const ParkingListItem = (props : Props) => {
-    const {parking} = props;
-    const { listItem } = useStyles(props)();
- 
-    return (
+const ParkingListItem = (props: Props) => {
+  const { parking } = props;
+  const { listItem } = useStyles(props)();
+
+  return (
     <Paper elevation={1} className={listItem}>
       <Typography>Parkplatz {parking.nr}</Typography>
       <br />
@@ -23,13 +23,12 @@ const ParkingListItem = (props : Props) => {
   );
 };
 
-
-const useStyles = (props : Props) => makeStyles( theme => ({
-  listItem: {
-    backgroundColor: props.bcolor,
-    margin: 10
-  }
-}));
-
+const useStyles = (props: Props) =>
+  makeStyles(() => ({
+    listItem: {
+      backgroundColor: props.bcolor,
+      margin: 10
+    }
+  }));
 
 export default ParkingListItem;

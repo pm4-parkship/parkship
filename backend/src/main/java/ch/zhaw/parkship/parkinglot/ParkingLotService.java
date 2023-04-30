@@ -6,6 +6,8 @@ import ch.zhaw.parkship.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,6 +84,12 @@ public class ParkingLotService {
             parkingLotDtos.add(new ParkingLotDto(entity));
         }
         return parkingLotDtos;
+    }
+
+    public Page<ParkingLotDto> findAllPaginated(int pageNumber, int size) {
+        // Spring starts page numbers at 0, but that's awkward so we start at 1.
+        var page = parkingLotRepository.findAll(PageRequest.of(pageNumber - 1, size));
+        return page.map(ParkingLotDto::new);
     }
 
     /**

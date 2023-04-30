@@ -1,13 +1,17 @@
 package ch.zhaw.parkship.parkinglot;
 
+import ch.zhaw.parkship.common.PaginatedResponse;
 import ch.zhaw.parkship.user.UserEntity;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -69,12 +73,18 @@ public class ParkingLotController {
      * code.
      */
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<ParkingLotDto>> getAllParkingLots() {
-        List<ParkingLotDto> parkingLotDtos = parkingLotService.getAll();
-        if (parkingLotDtos.isEmpty()) {
+    @Secured("ADMIN")
+    public ResponseEntity<PaginatedResponse<ParkingLotDto>> getAllParkingLots(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size) {
+        if (page < 1 || size < 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page number and size must be positive integers.");
+        }
+        Page<ParkingLotDto> parkinglotPage = parkingLotService.findAllPaginated(page, size);
+        if (parkinglotPage.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(parkingLotDtos);
+        return ResponseEntity.ok(PaginatedResponse.fromPage(parkinglotPage));
     }
 
     /**
