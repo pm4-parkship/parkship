@@ -50,7 +50,6 @@ class ReservationServiceTest {
     // Sample data for testing
     private ReservationEntity reservationEntity;
     private ParkingLotEntity parkingLotEntity;
-
     UserEntity userEntity = new UserEntity();
 
     @BeforeEach
