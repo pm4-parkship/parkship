@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface ReservationRepository extends JpaRepository<ReservationEntity, Long> {
     @Query(
-            "SELECT r FROM ReservationEntity r WHERE r.id = ?1 AND r.to >= ?2 AND r.from <= ?3"
+            "SELECT r FROM ReservationEntity r WHERE r.id = ?1 AND ((r.from <= ?2 AND r.to >= ?2) OR (r.from <= ?3 AND r.to >= ?3))"
     )
     public List<ReservationEntity> findAllWithOverlappingDates(Long id, LocalDate startDate, LocalDate endDate);
     @Query(
