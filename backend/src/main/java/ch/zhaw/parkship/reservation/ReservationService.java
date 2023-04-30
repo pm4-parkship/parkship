@@ -2,8 +2,6 @@ package ch.zhaw.parkship.reservation;
 
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
-import ch.zhaw.parkship.reservation.exceptions.ReservationCanNotBeCanceledException;
-import ch.zhaw.parkship.reservation.exceptions.ReservationNotFoundException;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
 import lombok.RequiredArgsConstructor;

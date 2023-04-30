@@ -1,13 +1,14 @@
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import React from 'react';
-import { Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { Link, Typography } from '@mui/material';
 
 export type RowDataType = Array<string | JSX.Element>;
 
 interface CustomTableRowProps {
   rowKey: number;
-  onRowClick?: (row: unknown) => void;
+  onRowClick: (row: any) => void;
   data: RowDataType;
 }
 

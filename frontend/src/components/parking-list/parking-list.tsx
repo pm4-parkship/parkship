@@ -1,7 +1,7 @@
 import { ParkingLotModel } from 'src/models';
 import { makeStyles } from '@mui/styles';
-import ParkingListItem from './parking-list-item';
-import ParkingListEmptyItem from './parking-list-empty-item';
+import ParkingListItem from '../parking-list-item/parking-list-item';
+import ParkingListEmptyItem from '../parking-list-empty-item/parking-list-empty-item';
 
 const ParkingList = ({ parkings }: { parkings: ParkingLotModel[] }) => {
   const classes = useStyles();

@@ -7,7 +7,7 @@ import React, { useContext } from 'react';
 import { ColorModeContext } from '../../../context';
 import { User } from '../../../pages/api/user';
 
-function NavbarUser({ user }: { user?: User }) {
+function Navbar({ user }: { user?: User }) {
   const classes = useStyles();
   const colorMode = useContext(ColorModeContext);
   const theme = useTheme();
@@ -85,4 +85,4 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default NavbarUser;
+export default Navbar;

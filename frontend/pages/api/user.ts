@@ -6,7 +6,7 @@ export interface User {
   isLoggedIn: boolean;
   token: string;
   username: string;
-  role: string;
+  roles: string[];
 }
 
 async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {

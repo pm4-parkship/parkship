@@ -5,7 +5,7 @@ import { TagData } from '../../src/components/search-bar/tag-bar';
 import SearchParkingLotTable from '../../src/components/search-parking-lot/search-parking-lot-table';
 import ParkingDetailModal from '../../src/components/parking-detail-modal/parking-detail-modal';
 import { ParkingLotModel } from '../../src/models';
-import { searchDummyData } from '../../src/mock-data/search-dummy';
+import { parkingDummyData } from '../../src/data/parkinglots';
 import { formatDate } from '../../src/date/date-formatter';
 import { format } from 'date-fns';
 import { logger } from '../../src/logger';
@@ -17,7 +17,6 @@ import {
   SearchResultModel
 } from '../../src/models/search/search-result.model';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
-import { RowDataType } from '../../src/components/table/table-row';
 
 export interface SearchParameters {
   searchTerm: string;
@@ -41,24 +40,31 @@ const SearchPage = () => {
   const [selectedParkingLot, setSelectedParkingLot] =
     useState<ParkingLotModel>();
 
+  let fromDatum = '2021-09-01';
+  let toDatum = '2021-09-02';
+
   const onSelectParkingLot = (data: string[]) => {
     const id = data[0];
     const parkingLot = searchResult.result.find((value) => value.id == id);
-    setSelectedParkingLot(() => mapSearchResultToParkingLot(parkingLot!));
-    setShowDetails(true);
+    if (parkingLot) {
+      setSelectedParkingLot(() => mapSearchResultToParkingLot(parkingLot));
+      setShowDetails(true);
+    }
   };
 
   const makeOnSearch = (searchParameters: SearchParameters) => {
     if (!user) return;
+    fromDatum = searchParameters.fromDate;
+    toDatum = searchParameters.toDate;
     setSearchResult({ error: null, loading: true, result: [] });
-    fetchParkingSpots(searchParameters, true, user)
+    fetchParkingSpots(searchParameters, false, user)
       .then((result) => {
         setSearchResult({ error: null, loading: false, result: result });
       })
       .catch((error) => toast.error(error.message));
   };
 
-  const mappedResult: Array<RowDataType> = searchResult.result.map((item) => {
+  const mappedResult: Array<string[]> = searchResult.result.map((item) => {
     return [
       `${item.id}`,
       `${item.address} ${item.addressNr}`,
@@ -71,7 +77,7 @@ const SearchPage = () => {
   return (
     <Grid padding={2}>
       <Grid item xs={12}>
-        <SearchBar makeOnSearch={makeOnSearch}></SearchBar>
+        <SearchBar makeOnSearch={makeOnSearch} />
       </Grid>
 
       <Grid item xs={12}>
@@ -79,7 +85,7 @@ const SearchPage = () => {
           <SearchParkingLotTable
             parkingLots={mappedResult}
             onRowClick={onSelectParkingLot}
-          ></SearchParkingLotTable>
+          />
         ) : (
           <Loading loading={searchResult.loading} />
         )}
@@ -89,6 +95,8 @@ const SearchPage = () => {
           showModal={showDetails}
           setShowModal={setShowDetails}
           parkingLotModel={selectedParkingLot}
+          fromDate={fromDatum}
+          toDate={toDatum}
         />
       ) : null}
     </Grid>
@@ -117,7 +125,7 @@ const fetchParkingSpots = async (
     });
   } else {
     return new Promise((resolve) => {
-      setTimeout(() => resolve(searchDummyData), 2000);
+      setTimeout(() => resolve(parkingDummyData), 2000);
     });
   }
 };

@@ -3,8 +3,6 @@ package ch.zhaw.parkship.reservation;
 import ch.zhaw.parkship.availability.AvailabilityService;
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
-import ch.zhaw.parkship.reservation.exceptions.ReservationCanNotBeCanceledException;
-import ch.zhaw.parkship.reservation.exceptions.ReservationNotFoundException;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -146,6 +144,43 @@ public class ReservationController {
     public void cancelReservation(@PathVariable("id") Long id) throws ReservationNotFoundException, ReservationCanNotBeCanceledException {
         reservationService.cancelReservation(id);
     }
+
+
+    protected void validateRequest(ReservationDto reservationDto) {
+
+        if (reservationDto == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given object is null");
+        }
+        if (reservationDto.getParkingLot() == null || reservationDto.getParkingLot().getId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given parkingLot is invalid");
+        }
+
+        if (reservationDto.getTenant() == null || reservationDto.getTenant().id() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given tenant is invalid");
+        }
+
+        if (!isDateRangeValid(reservationDto)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a valid date range");
+        }
+
+        if (!areDatesInFuture(reservationDto)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given Range should be in the future");
+        }
+    }
+
+
+    private boolean areDatesInFuture(ReservationDto reservationDto) {
+        LocalDate today = LocalDate.now();
+        return !today.isBefore(reservationDto.getFrom()) && !today.isBefore(reservationDto.getTo());
+    }
+
+    private boolean isDateRangeValid(ReservationDto reservationDto) {
+        if (reservationDto.getFrom() == null || reservationDto.getTo() == null) {
+            return false;
+        }
+        return reservationDto.getFrom().isBefore(reservationDto.getTo());
+    }
+
 
 
     protected void validateRequest(ReservationDto reservationDto) {

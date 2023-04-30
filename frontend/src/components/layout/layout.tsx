@@ -1,13 +1,11 @@
 import React, { ReactNode, useEffect } from 'react';
 import { Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import NavbarUser from '../navbar/navbar-user';
 import { useRouter } from 'next/router';
 import user from '../../../pages/api/user';
 import { logger } from '../../logger';
 import useUser from '../../auth/use-user';
-import NavbarAdmin from '../navbar/navbar-admin';
-import { UserRole } from '../../models';
+import Navbar from '../navbar/navbar-user';
 
 export type LayoutProps = {
   children: ReactNode;
@@ -19,19 +17,15 @@ export function Layout({ children }: LayoutProps) {
   const { user: UserSession } = useUser();
 
   useEffect(() => {
+    logger.error('Layout user', UserSession);
     if (!UserSession?.isLoggedIn) {
       router.push('/login');
     }
-    logger.log(UserSession);
   }, [user]);
 
   return (
     <>
-      {UserSession?.role == UserRole.user ? (
-        <NavbarUser user={UserSession} />
-      ) : UserSession?.role == UserRole.admin ? (
-        <NavbarAdmin user={UserSession} />
-      ) : null}
+      <Navbar user={UserSession} />
       <main>
         <div className={classes.root}>{children}</div>
       </main>

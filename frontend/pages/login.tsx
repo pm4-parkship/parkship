@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import useUser from '../src/auth/use-user';
 import { ErrorMapCtx, z, ZodIssueOptionalMessage } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -6,34 +6,30 @@ import { useForm } from 'react-hook-form';
 import { TextFieldElement } from 'react-hook-form-mui';
 import { Box, Button, Paper, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
-import { logger } from '../src/logger';
-import { UserRole } from '../src/models';
-import { useRouter } from 'next/router';
 
 export default function Login() {
-  const router = useRouter();
   // here we just check if user is already logged in and redirect to profile
-  const { mutateUser, user } = useUser();
-
-  useEffect(() => {
-    if (user?.isLoggedIn && user?.role == UserRole.admin) {
-      router.push('/admin/parking-lots');
-    } else if (user?.isLoggedIn && user?.role == UserRole.user) {
-      router.push('/search');
-    }
-  }, [user]);
+  const { mutateUser, user } = useUser({
+    redirectTo: '/search',
+    redirectIfFound: true
+  });
 
   const formSchema = z.object({
     email: z.string().email(),
-    password: z.string().min(1, 'Bitte geben Sie Ihr Passwort ein!')
+    password: z.string().min(1)
   });
 
   const customErrorMap = () => {
     return (issue: ZodIssueOptionalMessage, ctx: ErrorMapCtx) => {
       if (issue.code === z.ZodIssueCode.invalid_string) {
-        if (issue.path.includes('username')) {
+        if (issue.path.includes('email')) {
           return {
             message: `Bitte geben Sie eine korrekte Email ein!`
+          };
+        }
+        if (issue.path.includes('password')) {
+          return {
+            message: `Bitte sie Ihr Passwort ein!`
           };
         }
       }
@@ -64,7 +60,7 @@ export default function Login() {
     if (body.email === 'test@mail.ch' && body.password === 'test') {
       await mutateUser({
         isLoggedIn: true,
-        role: UserRole.admin,
+        roles: ['ADMIN'],
         token: 'myuselesstoken',
         username: 'lokalTestUser'
       });
@@ -80,7 +76,7 @@ export default function Login() {
           const data = await res.json();
           await mutateUser({
             isLoggedIn: true,
-            role: data.roles[0],
+            roles: data.roles,
             token: data.token,
             username: data.username
           });
@@ -106,11 +102,11 @@ export default function Login() {
             alignItems: 'center'
           }}
         >
-          <Typography component="h1" variant="h5" >
+          <Typography component="h1" variant="h5">
             Willkommen bei Parkship!
           </Typography>
           <form
-            style={{ display: 'grid', width: '25%', marginTop: '20px'}}
+            style={{ display: 'grid', width: '25%', gap: '20px' }}
             onSubmit={handleSubmit((data) => handleFormSubmit(data))}
           >
             <Paper elevation={3}>
@@ -124,7 +120,7 @@ export default function Login() {
                 autoComplete="email"
                 autoFocus
                 control={control}
-                style={{ marginTop: '10px', height: '60px' }}
+                style={{ marginTop: '20px' }}
               />
               <TextFieldElement
                 required
@@ -136,15 +132,12 @@ export default function Login() {
                 autoComplete="current-password"
                 control={control}
                 autoFocus
-                style={{ marginTop: '30px', height: '60px' }}
+                style={{ marginTop: '20px' }}
               />
               <Button
                 type={'submit'}
                 variant={'contained'}
-                sx={{
-                  width: '94%',
-                  marginTop: '30px',
-                }}
+                sx={{ width: '100%', marginTop: '20px' }}
               >
                 Einloggen
               </Button>

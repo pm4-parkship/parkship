@@ -1,3 +1,5 @@
+import { colors } from '@mui/material';
+
 const palette = {
   light: {
     primary: {
@@ -117,8 +119,13 @@ export const getDesignTokens = (mode: any) => ({
       fontSize: '1rem'
     },
     subtitle2: {
-      fontWeight: 1000,
-      fontSize: '0.8rem',
+      fontWeight: 500,
+      fontSize: '1.0rem',
+      letterSpacing: '0.063rem'
+    },
+    highlighted: {
+      fontWeight: 2000,
+      fontSize: '1.0rem',
       letterSpacing: '0.063rem'
     }
   },
