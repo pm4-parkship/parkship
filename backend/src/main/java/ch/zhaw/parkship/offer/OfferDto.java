@@ -1,18 +1,17 @@
 package ch.zhaw.parkship.offer;
 
 import ch.zhaw.parkship.parkinglot.ParkingLotDto;
-import ch.zhaw.parkship.reservation.ReservationDto;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Getter
 @Setter
-public class OfferDto {
+public class OfferDto implements Serializable {
     private Long id;
 
     @NotNull
@@ -25,38 +24,38 @@ public class OfferDto {
     private LocalDate to;
 
     @NotNull
-    private boolean monday;
+    private Boolean monday;
 
     @NotNull
-    private boolean tuesday;
+    private Boolean tuesday;
 
     @NotNull
-    private boolean wednesday;
+    private Boolean wednesday;
 
     @NotNull
-    private boolean thursday;
+    private Boolean thursday;
 
     @NotNull
-    private boolean friday;
+    private Boolean friday;
 
     @NotNull
-    private boolean saturday;
+    private Boolean saturday;
 
     @NotNull
-    private boolean sunday;
+    private Boolean sunday;
 
     public OfferDto(OfferEntity offerEntity){
         this.id = offerEntity.getId();
         this.parkingLot = new ParkingLotDto(offerEntity.getParkingLot());
         this.from = offerEntity.getFrom();
         this.to = offerEntity.getTo();
-        this.monday = offerEntity.isMonday();
-        this.tuesday = offerEntity.isTuesday();
-        this.wednesday = offerEntity.isWednesday();
-        this.thursday = offerEntity.isThursday();
-        this.friday = offerEntity.isFriday();
-        this.saturday = offerEntity.isSaturday();
-        this.sunday = offerEntity.isSunday();
+        this.monday = offerEntity.getMonday();
+        this.tuesday = offerEntity.getTuesday();
+        this.wednesday = offerEntity.getWednesday();
+        this.thursday = offerEntity.getThursday();
+        this.friday = offerEntity.getFriday();
+        this.saturday = offerEntity.getSaturday();
+        this.sunday = offerEntity.getSunday();
     }
 
     @Override
