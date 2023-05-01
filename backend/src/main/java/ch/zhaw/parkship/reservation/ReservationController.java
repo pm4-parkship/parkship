@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -35,6 +34,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Bearer Authentication")
 public class ReservationController {
+    private static final LocalDate MaxDate = LocalDate.of(9999, 12, 31);
+    private static final LocalDate MinDate = LocalDate.of(1000, 01, 01);
 
 
     private final ReservationService reservationService;
@@ -105,19 +106,28 @@ public class ReservationController {
   /**
    *
    */
-  @GetMapping(value = "/user/{userId}", produces = "application/json")
+  @GetMapping(value = "/user", produces = "application/json")
   public List<ReservationDto> getUserReservations (
-          @PathVariable Long userId, @RequestParam ("from") Optional<LocalDate> from, @RequestParam ("to") Optional<LocalDate> to) throws Exception {
+          @AuthenticationPrincipal ParkshipUserDetails user, @RequestParam ("from") Optional<LocalDate> from, @RequestParam ("to") Optional<LocalDate> to) {
       LocalDate fromDate ;
       LocalDate toDate;
       if (to.isPresent() || from.isPresent()) {
-          toDate = to.orElseGet(LocalDate::now);
-          fromDate = from.orElseGet(LocalDate::now);
+          if (to.isPresent() && from.isEmpty()){
+              toDate = to.get();
+              fromDate = MinDate;
+          }
+         else if (to.isEmpty()) {
+              toDate = MaxDate;
+              fromDate = from.get();
+         } else {
+              fromDate = from.get();
+              toDate = to.get();
+         }
       } else {
-          toDate = LocalDate.MAX;
+          toDate = MaxDate;
           fromDate = LocalDate.now();
       }
-      return reservationService.getByUserId(userId, fromDate, toDate);
+      return reservationService.getByUserId(user.getId(), fromDate, toDate);
   }
 
     /**

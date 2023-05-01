@@ -12,10 +12,6 @@ import ch.zhaw.parkship.util.UserGenerator;
 import ch.zhaw.parkship.util.generator.ParkingLotGenerator;
 import ch.zhaw.parkship.util.generator.ReservationGenerator;
 import ch.zhaw.parkship.user.UserRepository;
-import ch.zhaw.parkship.util.UserGenerator;
-import ch.zhaw.parkship.util.generator.ParkingLotGenerator;
-import ch.zhaw.parkship.util.generator.ReservationGenerator;
-import org.h2.engine.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,25 +33,17 @@ import static org.mockito.Mockito.*;
 class ReservationServiceTest {
     @Mock
     private ReservationRepository reservationRepository;
-
-    @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private ParkingLotRepository parkingLotRepository;
-
     @InjectMocks
     private ReservationService reservationService;
 
     // Sample data for testing
     private ReservationEntity reservationEntity;
-    private ParkingLotEntity parkingLotEntity;
     UserEntity userEntity = new UserEntity();
 
     @BeforeEach
     public void setUp() {
         userEntity = new UserEntity();
-        parkingLotEntity = new ParkingLotEntity();
+        ParkingLotEntity parkingLotEntity = new ParkingLotEntity();
         parkingLotEntity.setId(1L);
         parkingLotEntity.setOwner(userEntity);
         userEntity.setId(1L);
@@ -241,19 +229,10 @@ class ReservationServiceTest {
     }
 
     @Test
-    public void getReservationByUserTest() throws Exception {
-        when(reservationRepository.findAllByTenant(userEntity,LocalDate.now(),LocalDate.MAX)).thenReturn(new ArrayList<ReservationEntity>());
-        when(userRepository.findById(1L)).thenReturn(Optional.of(userEntity));
-
-        try {
-            reservationService.getByUserId(1L,LocalDate.now(),LocalDate.MAX);
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-
-        verify(reservationRepository,times(1)).findAllByTenant(userEntity,LocalDate.now(),LocalDate.MAX);
-        verify(userRepository,times(1)).findById(1L);
-
+    public void getReservationByUserTest() {
+        when(reservationRepository.findAllByTenant(1L,LocalDate.now(),LocalDate.MAX)).thenReturn(new ArrayList<>());
+        reservationService.getByUserId(1L,LocalDate.now(),LocalDate.MAX);
+        verify(reservationRepository,times(1)).findAllByTenant(1L,LocalDate.now(),LocalDate.MAX);
     }
 
 }
