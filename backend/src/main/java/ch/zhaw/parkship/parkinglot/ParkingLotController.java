@@ -2,7 +2,6 @@ package ch.zhaw.parkship.parkinglot;
 
 import ch.zhaw.parkship.common.PaginatedResponse;
 import ch.zhaw.parkship.user.ParkshipUserDetails;
-import ch.zhaw.parkship.user.UserEntity;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,7 +18,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * This class is a Rest Controller for managing ParkingLotDto objects
@@ -147,4 +146,14 @@ public class ParkingLotController {
         }
         return ResponseEntity.noContent().build();
     }
+
+    @Transactional
+    @Secured("ADMIN")
+    @PutMapping("/{id}/update-state/{state}")
+    public ResponseEntity<Void> updateParkingLotState(@PathVariable("id") Long id, @PathVariable("state") ParkingLotState newState) {
+        parkingLotService.updateState(id, newState);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 }

@@ -199,4 +199,11 @@ public class ParkingLotService {
         }
         return Optional.of(parkingLots.stream().map(ParkingLotDto::new).collect(Collectors.toSet()));
     }
+
+
+    public void updateState(Long parkingLotId, ParkingLotState newState) {
+        ParkingLotEntity entity = parkingLotRepository.getReferenceById(parkingLotId);
+        entity.setState(newState);
+        parkingLotRepository.save(entity);
+    }
 }
