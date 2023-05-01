@@ -102,6 +102,32 @@ public class ReservationController {
         Optional<ReservationDto> reservationDto = reservationService.getById(id);
         return reservationDto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+  /**
+   *
+   */
+  @GetMapping(value = "/user", produces = "application/json")
+  public List<ReservationDto> getUserReservations (
+          @AuthenticationPrincipal ParkshipUserDetails user, @RequestParam ("from") Optional<LocalDate> from, @RequestParam ("to") Optional<LocalDate> to) {
+      LocalDate fromDate ;
+      LocalDate toDate;
+      if (to.isPresent() || from.isPresent()) {
+          if (to.isPresent() && from.isEmpty()){
+              toDate = to.get();
+              fromDate = MinDate;
+          }
+         else if (to.isEmpty()) {
+              toDate = MaxDate;
+              fromDate = from.get();
+         } else {
+              fromDate = from.get();
+              toDate = to.get();
+         }
+      } else {
+          toDate = MaxDate;
+          fromDate = LocalDate.now();
+      }
+      return reservationService.getByUserId(user.getId(), fromDate, toDate);
+  }
 
     /**
      * This end-point retrieves all reservations.

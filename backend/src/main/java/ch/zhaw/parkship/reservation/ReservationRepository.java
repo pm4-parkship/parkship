@@ -17,10 +17,9 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     @Query (
             "SELECT r FROM ReservationEntity r WHERE r.tenant = ?1 AND r.from > ?2 AND r.to < ?3 ORDER BY r.from"
     )
-    List<ReservationEntity> findAllByTenant(UserEntity tenant, LocalDate from, LocalDate to);
-    public List<ReservationEntity> findAllWithOverlappingDates(Long id, LocalDate startDate, LocalDate endDate);
+    List<ReservationEntity> findAllByTenant(Long userId, LocalDate from, LocalDate to);
     @Query(
             "SELECT r FROM ReservationEntity r WHERE r.tenant.id = ?1"
     )
-    public List<ReservationEntity> findAllByUser(long userID);
+    List<ReservationEntity> findAllByUser(long userID);
 }
