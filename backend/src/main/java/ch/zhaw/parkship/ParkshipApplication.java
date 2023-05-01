@@ -1,5 +1,7 @@
 package ch.zhaw.parkship;
 
+import ch.zhaw.parkship.offer.OfferEntity;
+import ch.zhaw.parkship.offer.OfferRepository;
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
 import ch.zhaw.parkship.parkinglot.ParkingLotState;
@@ -28,12 +30,15 @@ import java.util.concurrent.TimeUnit;
 public class ParkshipApplication {
     private final ParkingLotRepository parkingLotRepository;
     private final ReservationRepository reservationRepository;
+    private final OfferRepository offerRepository;
 
 
     public ParkshipApplication(ParkingLotRepository parkingLotRepository,
-                               ReservationRepository reservationRepository) {
+                               ReservationRepository reservationRepository,
+                               OfferRepository offerRepository) {
         this.parkingLotRepository = parkingLotRepository;
         this.reservationRepository = reservationRepository;
+        this.offerRepository = offerRepository;
     }
 
     public static void main(String[] args) {
@@ -86,6 +91,21 @@ public class ParkshipApplication {
                 parkingLot.setOwner(i == 0 ? admin : user);
                 parkingLotRepository.save(parkingLot);
                 parkingLots.add(parkingLot);
+            }
+
+            for(ParkingLotEntity lot : parkingLots){
+                var offer = new OfferEntity();
+                offer.setFrom(LocalDate.of(2023,1,1));
+                offer.setTo(LocalDate.of(2023,12,31));
+                offer.setMonday(faker.random().nextBoolean());
+                offer.setTuesday(faker.random().nextBoolean());
+                offer.setWednesday(faker.random().nextBoolean());
+                offer.setThursday(faker.random().nextBoolean());
+                offer.setFriday(faker.random().nextBoolean());
+                offer.setSaturday(faker.random().nextBoolean());
+                offer.setSunday(faker.random().nextBoolean());
+                offer.setParkingLot(lot);
+                offerRepository.save(offer);
             }
 
             for (int i = 0; i < 9; i++) {
