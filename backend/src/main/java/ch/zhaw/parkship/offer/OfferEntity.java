@@ -15,6 +15,7 @@ import java.time.LocalDate;
 public class OfferEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Long id;
 
     @ManyToOne
@@ -29,23 +30,23 @@ public class OfferEntity {
     private LocalDate to;
 
     @Column(nullable = false)
-    private boolean monday;
+    private Boolean monday;
 
     @Column(nullable = false)
-    private boolean tuesday;
+    private Boolean tuesday;
 
     @Column(nullable = false)
-    private boolean wednesday;
+    private Boolean wednesday;
 
     @Column(nullable = false)
-    private boolean thursday;
+    private Boolean thursday;
 
     @Column(nullable = false)
-    private boolean friday;
+    private Boolean friday;
 
     @Column(nullable = false)
-    private boolean saturday;
+    private Boolean saturday;
 
     @Column(nullable = false)
-    private boolean sunday;
+    private Boolean sunday;
 }
