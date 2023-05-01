@@ -210,6 +210,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
         when(parkingLotRepository.isParkingLotAvailable(parkingLotEntity, startDate, endDate)).thenReturn(parkingLotEntity);
+        when(parkingLotRepository.isParkingLotOffered(parkingLotEntity, startDate, endDate, false, false, false, false, false, true, true)).thenReturn(parkingLotEntity);
 
         List<ParkingLotDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", startDate, endDate, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
