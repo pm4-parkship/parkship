@@ -13,18 +13,12 @@ import { RowDataType } from '../../src/components/table/table-row';
 import { toast } from 'react-toastify';
 import { User } from '../api/user';
 import { logger } from '../../src/logger';
-import { dummy } from '../../src/data/reservations';
+import ReservationStateIcon from 'src/components/my-reservation/reservation-state-icon';
+import { dummy } from 'src/mock-data/reservations-dummy';
 
 export interface ReservationFilterData {
   states: Set<ReservationState>;
 }
-const initFilter: ReservationFilterData = { states: new Set() };
-const initState = {
-  error: null,
-  loading: false,
-  result: Array<ReservationModel>()
-};
-
 const initFilter: ReservationFilterData = { states: new Set() };
 const initState = {
   error: null,

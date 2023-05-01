@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import {
+  Button,
   Drawer,
   IconButton,
   List,
@@ -13,6 +14,8 @@ import { Icon } from '@iconify/react';
 import LogoutIcon from '@mui/icons-material/Logout';
 import useUser from '../../../auth/use-user';
 import { ColorModeContext } from '../../../../context';
+
+// TODO Safiyya not used
 
 function DrawerComponent() {
   const classes = useStyles();
@@ -51,6 +54,7 @@ function DrawerComponent() {
       <IconButton onClick={() => setOpenDrawer(!openDrawer)}>
         <Icon icon="uil:bars" />
       </IconButton>
+
       <Typography
         variant="h6"
         className={classes.user}

@@ -29,7 +29,7 @@ export default function Login() {
         }
         if (issue.path.includes('password')) {
           return {
-            message: `Bitte sie Ihr Passwort ein!`
+            message: `Bitte geben Sie Ihr Passwort ein!`
           };
         }
       }

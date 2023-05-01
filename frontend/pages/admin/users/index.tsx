@@ -31,6 +31,7 @@ const MyParkingLotPage = () => {
 
   const createNewParkingLot = () => {
     if (user) {
+      ///backend/users/signup
       fetch('/backend/parking-lot', {
         method: 'POST',
         body: JSON.stringify(newParkingLot),

@@ -6,6 +6,7 @@ import user from '../../../pages/api/user';
 import { logger } from '../../logger';
 import useUser from '../../auth/use-user';
 import Navbar from '../navbar/navbar-user';
+import NavbarAdmin from '../navbar/navbar-admin';
 
 export type LayoutProps = {
   children: ReactNode;

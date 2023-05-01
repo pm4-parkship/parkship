@@ -8,9 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { format } from 'date-fns';
 import { styled } from '@mui/styles';
-import ParkingReservationConfirmationModal, {
-  ParkingLotAction
-} from '../parking-reservation-confirmation-modal/parking-reservation-confirmation-modal';
+import { ParkingLotAction } from '../parking-reservation-confirmation-modal/parking-reservation-confirmation-modal';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
