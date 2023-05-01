@@ -1,5 +1,6 @@
 package ch.zhaw.parkship.parkinglot;
 
+import ch.zhaw.parkship.offer.OfferEntity;
 import jakarta.persistence.LockModeType;
 
 import java.util.List;
@@ -52,6 +53,30 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLotEntity, Lo
             @Param("parkingLot") ParkingLotEntity parkingLotEntity,
             @Param("fromDate") LocalDate fromDate,
             @Param("toDate") LocalDate toDate);
+
+    @Query("SELECT p FROM ParkingLotEntity p " +
+            "WHERE p = :parkingLot AND " +
+            "EXISTS (SELECT o FROM OfferEntity o " +
+            "                  WHERE o.parkingLot = p " +
+            "                   AND (o.from <= :fromDate AND :toDate <= o.to) " +
+            "                   AND (o.monday OR NOT :monday = true) " +
+            "                   AND (o.tuesday OR NOT :tuesday = true) " +
+            "                   AND (o.wednesday OR NOT :wednesday = true) " +
+            "                   AND (o.thursday OR NOT :thursday = true) " +
+            "                   AND (o.friday OR NOT :friday = true) " +
+            "                   AND (o.saturday OR NOT :saturday = true) " +
+            "                   AND (o.sunday OR NOT :sunday = true))")
+    ParkingLotEntity isParkingLotOffered(
+            @Param("parkingLot") ParkingLotEntity parkingLotEntity,
+            @Param("fromDate") LocalDate fromDate,
+            @Param("toDate") LocalDate toDate,
+            @Param("monday") boolean monday,
+            @Param("tuesday") boolean tuesday,
+            @Param("wednesday") boolean wednesday,
+            @Param("thursday") boolean thursday,
+            @Param("friday") boolean friday,
+            @Param("saturday") boolean saturday,
+            @Param("sunday") boolean sunday);
 
     Set<ParkingLotEntity> findByOwnerId(Long userId);
 }
