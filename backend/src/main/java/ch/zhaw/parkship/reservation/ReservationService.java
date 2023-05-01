@@ -112,6 +112,26 @@ public class ReservationService {
     }
 
     /**
+     * This method deletes a reservation with the provided id.
+     *
+     * @param id The id of the reservation to be deleted.
+     * @return Optional<ReservationDto> Returns an Optional object containing the deleted reservation
+     * data in the ReservationDto format if deleted successfully, otherwise returns an empty
+     * Optional object.
+     */
+    @Transactional
+    public Optional<ReservationDto> deleteById(Long id) {
+        var optionalEntity = reservationRepository.findById(id);
+        if (optionalEntity.isPresent()) {
+            var reservationEntity = optionalEntity.get();
+            var ret = new ReservationDto(reservationEntity);
+            reservationRepository.delete(reservationEntity);
+            return Optional.of(ret);
+        }
+        return Optional.empty();
+    }
+
+    /**
      * Sets a reservation's state to canceled, if the reservation exists,
      * is not yet canceled and the reservation is before the CANCELATION_DEADLINE.
      *

@@ -127,7 +127,6 @@ public class ParkingLotController {
             @RequestParam(defaultValue = "") LocalDate endDate,
             @RequestParam(defaultValue = DEFAULT_PAGE_NUM) int page,
             @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
-
         return parkingLotService.getBySearchTerm(searchTerm, startDate, endDate, page, size);
 
     }
