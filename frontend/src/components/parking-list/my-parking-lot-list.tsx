@@ -11,14 +11,13 @@ const MyParkingLotList = ({ parkings }: { parkings: ParkingLotModel[] }) => {
     for (let i = 0; i < input.length; i++) {
       result += input.codePointAt(i) || 0;
     }
-    return result;
+    return Number(`0.${result}`);
   };
 
   const randomColor = (name: string): string => {
-    // TODO : update with random color
     const ascii = stringToAscii(name);
     const randomColor = Math.floor(ascii * 16777215).toString(16);
-    return '#' + randomColor;
+    return '#' + randomColor + 'b3';
   };
 
   return (
@@ -41,7 +40,9 @@ const useStyles = makeStyles(() => ({
   parkingList: {
     display: 'flex',
     flexDirection: 'row',
-    overflow: 'scroll'
+    overflow: 'scroll',
+    justifyContent: 'flex-start',
+    columnGap: '2rem'
   }
 }));
 

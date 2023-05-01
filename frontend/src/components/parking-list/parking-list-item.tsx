@@ -1,5 +1,4 @@
 import { Paper, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import { ParkingLotModel } from 'src/models';
 
 interface Props {
@@ -9,10 +8,16 @@ interface Props {
 
 const ParkingListItem = (props: Props) => {
   const { parking } = props;
-  const { listItem } = useStyles(props)();
-
   return (
-    <Paper elevation={1} className={listItem}>
+    <Paper
+      elevation={1}
+      style={{
+        backgroundColor: props.bcolor,
+        margin: 0,
+        width: 150,
+        height: 200
+      }}
+    >
       <Typography>Parkplatz {parking.nr}</Typography>
       <br />
       <Typography>{parking.floor}</Typography>
@@ -22,13 +27,5 @@ const ParkingListItem = (props: Props) => {
     </Paper>
   );
 };
-
-const useStyles = (props: Props) =>
-  makeStyles(() => ({
-    listItem: {
-      backgroundColor: props.bcolor,
-      margin: 10
-    }
-  }));
 
 export default ParkingListItem;

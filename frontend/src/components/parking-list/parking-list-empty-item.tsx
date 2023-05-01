@@ -20,8 +20,8 @@ const useStyles = makeStyles(() => ({
     verticalAlign: 'middle',
     backgroundColor: 'grey',
     margin: 10,
-    width: 130,
-    height: 165
+    width: 150,
+    height: 200
   }
 }));
 
