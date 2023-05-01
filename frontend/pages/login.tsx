@@ -61,17 +61,8 @@ export default function Login() {
       password: data.password
     };
 
-    if (body.email === 'test@mail.ch' && body.password === 'test') {
-      await mutateUser({
-        isLoggedIn: true,
-        role: UserRole.admin,
-        token: 'myuselesstoken',
-        username: 'lokalTestUser'
-      });
-    }
-
     try {
-      await fetch('/backend/auth/signin', {
+      await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
@@ -80,10 +71,15 @@ export default function Login() {
           const data = await res.json();
           await mutateUser({
             isLoggedIn: true,
-            role: data.roles[0],
-            token: data.token,
-            username: data.username
+            role: UserRole[data.user.role],
+            token: data.user.token,
+            username: data.user.username
           });
+          if (data.roles == UserRole.admin) {
+            router.push('/admin/parking-lots');
+          } else if (data.roles == UserRole.user) {
+            router.push('/search');
+          }
         }
       });
     } catch (error: any) {
@@ -106,11 +102,11 @@ export default function Login() {
             alignItems: 'center'
           }}
         >
-          <Typography component="h1" variant="h5" >
+          <Typography component="h1" variant="h5">
             Willkommen bei Parkship!
           </Typography>
           <form
-            style={{ display: 'grid', width: '25%', marginTop: '20px'}}
+            style={{ display: 'grid', width: '25%', marginTop: '20px' }}
             onSubmit={handleSubmit((data) => handleFormSubmit(data))}
           >
             <Paper elevation={3}>
@@ -143,7 +139,7 @@ export default function Login() {
                 variant={'contained'}
                 sx={{
                   width: '94%',
-                  marginTop: '30px',
+                  marginTop: '30px'
                 }}
               >
                 Einloggen
