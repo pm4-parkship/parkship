@@ -2,12 +2,9 @@ package ch.zhaw.parkship.offer;
 
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
-import ch.zhaw.parkship.reservation.ReservationDto;
-import ch.zhaw.parkship.reservation.ReservationEntity;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,10 +37,10 @@ public class OfferController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<OfferDto> createOffer(
-            @Valid @RequestBody OfferDto offerDto) {
+            @RequestBody OfferDto offerDto) {
             validateRequest(offerDto);
 
-        ParkingLotEntity parkingLot = parkingLotRepository.getByIdLocked(offerDto.getParkingLot().getId());
+        ParkingLotEntity parkingLot = parkingLotRepository.getByIdLocked(offerDto.getParkingLotId());
         Set<OfferEntity> currentOffers = parkingLot.getOfferEntitySet();
         LocalDate startDate = offerDto.getFrom();
         LocalDate endDate = offerDto.getTo();
@@ -133,7 +130,7 @@ public class OfferController {
         if (offerDto == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given object is null");
         }
-        if (offerDto.getParkingLot() == null || offerDto.getParkingLot().getId() == null) {
+        if (offerDto.getParkingLotId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given parkingLot is invalid");
         }
 

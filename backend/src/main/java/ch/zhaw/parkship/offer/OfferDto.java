@@ -14,8 +14,7 @@ import java.util.Objects;
 public class OfferDto implements Serializable {
     private Long id;
 
-    @NotNull
-    private ParkingLotDto parkingLot;
+    private Long parkingLotId;
 
     @NotNull
     private LocalDate from;
@@ -46,7 +45,7 @@ public class OfferDto implements Serializable {
 
     public OfferDto(OfferEntity offerEntity){
         this.id = offerEntity.getId();
-        this.parkingLot = new ParkingLotDto(offerEntity.getParkingLot());
+        this.parkingLotId = offerEntity.getParkingLot().getId();
         this.from = offerEntity.getFrom();
         this.to = offerEntity.getTo();
         this.monday = offerEntity.getMonday();
@@ -58,9 +57,13 @@ public class OfferDto implements Serializable {
         this.sunday = offerEntity.getSunday();
     }
 
+    public OfferDto(){
+
+    }
+
     @Override
     public String toString() {
-        return "ReservationDto{" + "id=" + id + ", parkingLot=" + parkingLot + ", from=" + from + ", to=" + to +
+        return "ReservationDto{" + "id=" + id + ", parkingLot=" + parkingLotId + ", from=" + from + ", to=" + to +
                 ", monday" + monday + ", tuesday" + tuesday + ", wednesday" + wednesday + ", thursday" + thursday +
                 ", friday" + friday + ", saturday" + saturday + ", sunday" + sunday + '}';
     }
