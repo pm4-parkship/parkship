@@ -9,7 +9,7 @@ export const middleware = async (req: NextRequest) => {
   const session = await getIronSession(req, res, sessionOptions);
   const { user } = session;
 
-  if (req.url.includes('admin') && user?.role !== UserRole.ADMIN) {
+  if (req.url.includes('admin') && user?.role === UserRole.ADMIN) {
     return NextResponse.redirect(new URL('/login', req.url));
   }
 

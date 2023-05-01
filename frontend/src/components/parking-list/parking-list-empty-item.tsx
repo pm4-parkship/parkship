@@ -1,11 +1,11 @@
 import { makeStyles } from '@mui/styles';
 import { Paper, Typography } from '@mui/material';
 
-const ParkingListEmptyItem = () => {
+const ParkingListEmptyItem = ({add} : {add : () => void}) => {
   const { listItem } = useStyles();
 
   return (
-    <Paper elevation={1} className={listItem}>
+    <Paper elevation={1} className={listItem} onClick={() => add}>
       <Typography>+</Typography>
     </Paper>
   );
