@@ -162,7 +162,7 @@ public class ParkingLotService {
     private Set<ParkingLotEntity> filterParkingLotsByDate(LocalDate startDate, LocalDate endDate, Set<ParkingLotEntity> parkingLots) {
         if (startDate != null && endDate != null) {
             parkingLots = parkingLots.stream()
-                    .filter(lot -> reservationService.isFreeInDateRange(lot.getId(), startDate, endDate))
+                    .filter(lot -> (parkingLotRepository.isParkingLotAvailable(lot, startDate, endDate) != null))
                     .collect(Collectors.toSet());
         }
         return parkingLots;

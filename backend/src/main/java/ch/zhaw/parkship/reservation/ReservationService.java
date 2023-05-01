@@ -122,10 +122,6 @@ public class ReservationService {
         return Optional.empty();
     }
 
-    public boolean isFreeInDateRange(Long id, LocalDate startDate, LocalDate endDate) {
-        return reservationRepository.findAllWithOverlappingDates(id, startDate, endDate).isEmpty();
-    }
-
     /**
      * Sets a reservation's state to canceled, if the reservation exists,
      * is not yet canceled and the reservation is before the CANCELATION_DEADLINE.

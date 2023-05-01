@@ -209,13 +209,10 @@ class ParkingLotServiceTest {
 
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
-        when(reservationService.isFreeInDateRange(1L, startDate, endDate)).thenReturn(true);
+        when(parkingLotRepository.isParkingLotAvailable(parkingLotEntity, startDate, endDate)).thenReturn(parkingLotEntity);
 
         List<ParkingLotDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", startDate, endDate, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
-
-        // Add assertions for other properties
-        verify(reservationService, times(1)).isFreeInDateRange(1L, startDate, endDate);
 
     }
 
@@ -229,13 +226,9 @@ class ParkingLotServiceTest {
 
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
-        when(reservationService.isFreeInDateRange(1L, startDate, endDate)).thenReturn(false);
 
         List<ParkingLotDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", startDate, endDate, 0, 100);
         assertTrue(actualReturnValue.isEmpty());
-
-        // Add assertions for other properties
-        verify(reservationService, times(1)).isFreeInDateRange(1L, startDate, endDate);
 
     }
 

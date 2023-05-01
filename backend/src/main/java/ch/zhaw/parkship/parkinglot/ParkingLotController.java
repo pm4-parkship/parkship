@@ -4,6 +4,7 @@ import ch.zhaw.parkship.user.UserEntity;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -111,8 +112,8 @@ public class ParkingLotController {
 
     @GetMapping("/searchTerm")
     public List<ParkingLotDto> searchParkingLot(@RequestParam(defaultValue = "") String searchTerm,
-                                                @RequestParam(defaultValue = "") LocalDate startDate,
-                                                @RequestParam(defaultValue = "") LocalDate endDate,
+                                                @RequestParam(defaultValue = "") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                                @RequestParam(defaultValue = "") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                                 @RequestParam(defaultValue = DEFAULT_PAGE_NUM) int page,
                                                 @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
         return parkingLotService.getBySearchTerm(searchTerm, startDate, endDate, page, size);
