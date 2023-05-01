@@ -17,7 +17,7 @@ public class OfferEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "parking_lot_id", nullable = false)
     @JsonBackReference
     private ParkingLotEntity parkingLot;

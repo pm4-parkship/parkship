@@ -50,6 +50,7 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLotEntity, Lo
             @Param("fromDate") LocalDate fromDate,
             @Param("toDate") LocalDate toDate);
 
-    
+
+
     Set<ParkingLotEntity> findByOwnerId(Long userId);
 }
