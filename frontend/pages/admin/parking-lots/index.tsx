@@ -35,7 +35,7 @@ const ParkingLotsPage = () => {
     if (!lot || !user) return;
     lot.state =
       lot.state == ParkingLotState.locked
-        ? ParkingLotState.released
+        ? ParkingLotState.active
         : ParkingLotState.locked;
 
     updateParkingLot(lot, user).then((result) => {
@@ -139,13 +139,16 @@ const updateParkingLot = async (
   parkingLot: ParkingLotModel,
   user: User
 ): Promise<boolean> => {
-  return await fetch(`/backend/parking-lot/${parkingLot.id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${user.token}`
+  return await fetch(
+    `/backend/parking-lot/${parkingLot.id}/update-state/${parkingLot.state}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`
+      }
     }
-  }).then((response) => {
+  ).then((response) => {
     return response.ok;
   });
 };
