@@ -26,14 +26,14 @@ const MyParkingLotPage = () => {
     <>
       <Loading loading={parkingLots.loading} />
 
-      {parkingLots.result.length > 0 && (
+      {parkingLots.result && parkingLots.result.length > 0 && (
         <MyParkingLotList parkings={parkingLots.result} />
       )}
     </>
   );
 };
 const fetchParkingLots = async (user: User): Promise<ParkingLotModel[]> => {
-  return await fetch('/backend/parking-lot', {
+  return await fetch('/backend/parking-lot/my-parkinglots', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ const fetchParkingLots = async (user: User): Promise<ParkingLotModel[]> => {
     if (response.ok) {
       const data = await response.json();
       logger.log(data);
-      return data.data;
+      return data;
     }
   });
 };

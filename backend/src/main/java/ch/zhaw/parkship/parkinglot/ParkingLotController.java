@@ -1,6 +1,7 @@
 package ch.zhaw.parkship.parkinglot;
 
 import ch.zhaw.parkship.common.PaginatedResponse;
+import ch.zhaw.parkship.user.ParkshipUserDetails;
 import ch.zhaw.parkship.user.UserEntity;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -139,7 +140,7 @@ public class ParkingLotController {
      * ResponseEntity if the user has no parking lots.
      */
     @GetMapping(value = "/my-parkinglots", produces = "application/json")
-    public ResponseEntity<Set<ParkingLotDto>> getOwnParkingLots(@AuthenticationPrincipal UserEntity user) {
+    public ResponseEntity<Set<ParkingLotDto>> getOwnParkingLots(@AuthenticationPrincipal ParkshipUserDetails user) {
         Optional<Set<ParkingLotDto>> parkingLots = parkingLotService.getParkingLotsByUserId(user.getId());
         if (parkingLots.isPresent()) {
             return ResponseEntity.ok(parkingLots.get());
