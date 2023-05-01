@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { UserRole } from '../src/models';
 import { useRouter } from 'next/router';
 import { User } from './api/user';
+import { logger } from 'src/logger';
 
 export default function Login() {
   const router = useRouter();

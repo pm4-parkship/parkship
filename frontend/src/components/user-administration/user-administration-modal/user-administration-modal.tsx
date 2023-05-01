@@ -7,7 +7,6 @@ import {
   InputLabel,
   MenuItem,
   Modal,
-  Paper,
   Select,
   SelectChangeEvent,
   Typography
@@ -21,10 +20,12 @@ import { Icon } from '@iconify/react';
 
 const UserAdministrationModal = ({
   showModal = true,
-  setShowModal
+  setShowModal,
+  onAddedUser
 }: {
   showModal: boolean;
   setShowModal: (value: boolean) => void;
+  onAddedUser: (value: any) => void;
 }) => {
   const classes = useStyles();
 
@@ -65,13 +66,15 @@ const UserAdministrationModal = ({
     return null;
   };
 
-  //Todo: Rolle von Backend erhalten mittels GET und dementsprechend anzeigen
   const [roles, setRoles] = React.useState<any[] | null>(() => getRoles());
   const [role, setRole] = React.useState<string>('');
 
   const customErrorMap = () => {
     return (issue: ZodIssueOptionalMessage, ctx: ErrorMapCtx) => {
-      if (issue.code === z.ZodIssueCode.invalid_string) {
+      if (
+        issue.code === z.ZodIssueCode.invalid_string ||
+        issue.code === z.ZodIssueCode.too_small
+      ) {
         if (issue.path.includes('firstname')) {
           return {
             message: `Bitte geben Sie einen gültigen Vornamen ein.`
@@ -84,7 +87,7 @@ const UserAdministrationModal = ({
         }
         if (issue.path.includes('email')) {
           return {
-            message: `Bitte geben Sie eine korrekte Email ein.`
+            message: `Bitte geben Sie eine gültige E-Mail ein.`
           };
         }
       }
@@ -111,21 +114,21 @@ const UserAdministrationModal = ({
     email: string;
   }) => {
     const body = {
-      firstname: data.firstname,
       lastname: data.lastname,
+      firstname: data.firstname,
       email: data.email,
       role: role
     };
 
     try {
-      // TODO Backend API endpoint hinzufügen und hier im frontend anpassen.
-      await fetch('/backend/user/add', {
+      await fetch('/backend/users/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       }).then(async (res: any) => {
         if (res.ok) {
           const data = await res.json();
+          onAddedUser(data);
         }
       });
     } catch (error: any) {
@@ -150,80 +153,74 @@ const UserAdministrationModal = ({
               />
             </div>
             <form onSubmit={handleSubmit((data) => handleFormSubmit(data))}>
-              <Paper>
-                <Typography align="center" component="h1" variant="h5">
-                  Benutzer hinzufügen
-                </Typography>
+              <Typography align="center" component="h1" variant="h5">
+                Benutzer hinzufügen
+              </Typography>
 
-                <TextFieldElement
+              <TextFieldElement
+                required
+                fullWidth
+                name="firstname"
+                label="Vorname"
+                id="firstname"
+                control={control}
+                autoFocus
+                style={{ marginTop: '20px' }}
+              />
+
+              <TextFieldElement
+                required
+                fullWidth
+                name="lastname"
+                label="Nachname"
+                id="lastname"
+                control={control}
+                autoFocus
+                style={{ marginTop: '20px' }}
+              />
+
+              <TextFieldElement
+                required
+                fullWidth
+                id="email"
+                placeholder="E-Mail"
+                label="E-Mail-Adresse"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                control={control}
+                style={{ marginTop: '20px' }}
+              />
+
+              <FormControl fullWidth>
+                <InputLabel required id="role-label" sx={{ marginTop: '20px' }}>
+                  Rolle
+                </InputLabel>
+                <Select
                   required
-                  fullWidth
-                  name="firstname"
-                  label="Vorname"
-                  id="firstname"
-                  control={control}
-                  autoFocus
-                  style={{ marginTop: '20px' }}
-                />
+                  labelId="role-label"
+                  id="role"
+                  label="Rolle"
+                  value={role}
+                  onChange={handleRoleChange}
+                  sx={{ width: '100%', marginTop: '20px' }}
+                >
+                  {roles}
+                </Select>
+              </FormControl>
 
-                <TextFieldElement
-                  required
-                  fullWidth
-                  name="lastname"
-                  label="Nachname"
-                  id="lastname"
-                  control={control}
-                  autoFocus
-                  style={{ marginTop: '20px' }}
-                />
-
-                <TextFieldElement
-                  required
-                  fullWidth
-                  id="email"
-                  placeholder="E-Mail"
-                  label="Email Addresse"
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                  control={control}
-                  style={{ marginTop: '20px' }}
-                />
-
-                <FormControl fullWidth>
-                  <InputLabel
-                    required
-                    id="role-label"
-                    sx={{ marginTop: '20px' }}
-                  >
-                    Rolle
-                  </InputLabel>
-                  <Select
-                    required
-                    labelId="role-label"
-                    id="role"
-                    label="Rolle"
-                    value={role}
-                    onChange={handleRoleChange}
-                    sx={{ width: '100%', marginTop: '20px' }}
-                  >
-                    {roles}
-                  </Select>
-                </FormControl>
-
-                <Grid container justifyContent="flex-end">
-                  <Button
-                    type={'submit'}
-                    variant={'contained'}
-                    sx={{
-                      width: '50%',
-                      marginTop: '20px'
-                    }}
-                  >
-                    Hinzufügen
-                  </Button>
-                </Grid>
-              </Paper>
+              <Grid container justifyContent="flex-end">
+                <Button
+                  type={'submit'}
+                  variant={'contained'}
+                  sx={{
+                    width: '50%',
+                    marginTop: '20px'
+                  }}
+                >
+                  Hinzufügen
+                </Button>
+              </Grid>
             </form>
           </Box>
         </Modal>
