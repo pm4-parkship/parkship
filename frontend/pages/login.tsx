@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import { TextFieldElement } from 'react-hook-form-mui';
 import { Box, Button, Paper, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
-import { logger } from '../src/logger';
 import { UserRole } from '../src/models';
 import { useRouter } from 'next/router';
 

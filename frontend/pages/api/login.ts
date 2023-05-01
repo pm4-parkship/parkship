@@ -12,7 +12,7 @@ export default withIronSessionApiRoute(async function loginRoute(req, res) {
       // get user from database then:
       req.session.user = {
         isLoggedIn: true,
-        role: 'user',
+        role: 'admin',
         token: data.token,
         username: data.username
       };
