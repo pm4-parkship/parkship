@@ -6,11 +6,13 @@ import ch.zhaw.parkship.user.UserDto;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
 import ch.zhaw.parkship.user.UserService;
+import ch.zhaw.parkship.util.UserGenerator;
+import ch.zhaw.parkship.util.generator.ParkingLotGenerator;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -39,6 +41,9 @@ class ParkingLotServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Captor
+    ArgumentCaptor<ParkingLotEntity> parkingLotEntityArgumentCaptor;
+
     @InjectMocks
     private ParkingLotService parkingLotService;
     // Sample data for testing
@@ -66,7 +71,7 @@ class ParkingLotServiceTest {
         parkingLotEntity.setLatitude(16.22);
         parkingLotEntity.setNr("11A");
         parkingLotEntity.setPrice(15.55);
-        parkingLotEntity.setState("State");
+        parkingLotEntity.setState(ParkingLotState.ACTIVE);
         parkingLotEntity.setAddress("Muster Street");
         parkingLotEntity.setAddressNr("44");
         parkingLotEntity.setDescription("next to the entrance");
@@ -81,7 +86,7 @@ class ParkingLotServiceTest {
         data.setLatitude(16.22);
         data.setNr("11A");
         data.setPrice(15.55);
-        data.setState("State");
+        data.setState(ParkingLotState.ACTIVE);
         data.setAddress("Muster Street");
         data.setAddressNr("44");
         data.setDescription("next to the entrance");
@@ -313,6 +318,27 @@ class ParkingLotServiceTest {
         assertTrue(result.isEmpty());
 
         verify(parkingLotRepository, times(1)).findByOwnerId(userEntity.getId());
+    }
+
+
+    @Test
+    void updateStateTest(){
+        // arrange
+        ParkingLotEntity entity = ParkingLotGenerator.generate(UserGenerator.generate());
+        entity.setId(1L);
+        entity.setState(ParkingLotState.INACTIVE);
+        when(parkingLotRepository.getReferenceById(1L)).thenReturn(entity);
+
+
+        // act
+        parkingLotService.updateState(1L, ParkingLotState.ACTIVE);
+
+
+        // assert
+        verify(parkingLotRepository, times(1)).getReferenceById(1L);
+        verify(parkingLotRepository).save(parkingLotEntityArgumentCaptor.capture());
+        ParkingLotEntity capture = parkingLotEntityArgumentCaptor.getValue();
+        Assertions.assertEquals(ParkingLotState.ACTIVE, capture.getState());
     }
 
 }

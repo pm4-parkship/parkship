@@ -2,6 +2,7 @@ package ch.zhaw.parkship;
 
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
+import ch.zhaw.parkship.parkinglot.ParkingLotState;
 import ch.zhaw.parkship.reservation.ReservationEntity;
 import ch.zhaw.parkship.reservation.ReservationRepository;
 import ch.zhaw.parkship.reservation.ReservationState;
@@ -78,7 +79,7 @@ public class ParkshipApplication {
                 parkingLot.setLatitude(Double.valueOf(faker.address().latitude()));
                 parkingLot.setNr(faker.address().buildingNumber());
                 parkingLot.setPrice(faker.number().randomDouble(2, 10, 300));
-                parkingLot.setState("released");
+                parkingLot.setState(ParkingLotState.ACTIVE);
                 parkingLot.setAddress(faker.address().streetAddress());
                 parkingLot.setAddressNr(faker.address().streetAddressNumber());
                 parkingLot.setDescription(faker.weather().description());

@@ -63,7 +63,7 @@ class ParkingLotControllerTest {
         parkingLotDto.setLatitude(11.22);
         parkingLotDto.setNr("11A");
         parkingLotDto.setPrice(444.4);
-        parkingLotDto.setState("State");
+        parkingLotDto.setState(ParkingLotState.ACTIVE);
         parkingLotDto.setAddress("Muster Street");
         parkingLotDto.setAddressNr("44");
         parkingLotDto.setDescription("next to the entrance");
