@@ -18,4 +18,5 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
             "SELECT r FROM ReservationEntity r WHERE r.tenant = ?1 AND r.from > ?2 AND r.to < ?3 ORDER BY r.from"
     )
     List<ReservationEntity> findAllByTenant(UserEntity tenant, LocalDate from, LocalDate to);
+    public List<ReservationEntity> findAllByUser(long userID);
 }

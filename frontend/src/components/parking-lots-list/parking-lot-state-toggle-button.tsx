@@ -38,13 +38,13 @@ const ParkingLotStateToggleButton = ({
 };
 
 const lockedText = (state: ParkingLotState) =>
-  state === ParkingLotState.locked ? (
+  ParkingLotState[state] === ParkingLotState.locked ? (
     <Typography>gesperrt</Typography>
   ) : (
     <Typography>sperren</Typography>
   );
 const releasedText = (state: ParkingLotState) =>
-  state === ParkingLotState.released ? (
+  ParkingLotState[state] === ParkingLotState.released ? (
     <Typography>freigegeben</Typography>
   ) : (
     <Typography>freigeben</Typography>

@@ -1,6 +1,7 @@
 package ch.zhaw.parkship.parkinglot;
 
 import ch.zhaw.parkship.common.PaginatedResponse;
+import ch.zhaw.parkship.user.ParkshipUserDetails;
 import ch.zhaw.parkship.user.UserEntity;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This class is a Rest Controller for managing ParkingLotDto objects
@@ -120,12 +122,15 @@ public class ParkingLotController {
     }
 
     @GetMapping("/searchTerm")
-    public List<ParkingLotDto> searchParkingLot(@RequestParam(defaultValue = "") String searchTerm,
-                                                @RequestParam(defaultValue = "") LocalDate startDate,
-                                                @RequestParam(defaultValue = "") LocalDate endDate,
-                                                @RequestParam(defaultValue = DEFAULT_PAGE_NUM) int page,
-                                                @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
+    public List<ParkingLotSearchDto> searchParkingLot(
+            @RequestParam(defaultValue = "") String searchTerm,
+            @RequestParam(defaultValue = "") LocalDate startDate,
+            @RequestParam(defaultValue = "") LocalDate endDate,
+            @RequestParam(defaultValue = DEFAULT_PAGE_NUM) int page,
+            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
+
         return parkingLotService.getBySearchTerm(searchTerm, startDate, endDate, page, size);
+
     }
 
     /**
@@ -135,7 +140,7 @@ public class ParkingLotController {
      * ResponseEntity if the user has no parking lots.
      */
     @GetMapping(value = "/my-parkinglots", produces = "application/json")
-    public ResponseEntity<Set<ParkingLotDto>> getOwnParkingLots(@AuthenticationPrincipal UserEntity user) {
+    public ResponseEntity<Set<ParkingLotDto>> getOwnParkingLots(@AuthenticationPrincipal ParkshipUserDetails user) {
         Optional<Set<ParkingLotDto>> parkingLots = parkingLotService.getParkingLotsByUserId(user.getId());
         if (parkingLots.isPresent()) {
             return ResponseEntity.ok(parkingLots.get());

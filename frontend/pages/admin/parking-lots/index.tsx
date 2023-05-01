@@ -9,7 +9,6 @@ import { RowDataType } from '../../../src/components/table/table-row';
 import ParkingLotsTable from '../../../src/components/parking-lots-list/parking-lots-table';
 import { User } from '../../api/user';
 import ParkingLotStateToggleButton from '../../../src/components/parking-lots-list/parking-lot-state-toggle-button';
-import { parkingLotDummyData } from '../../../src/mock-data/parking-lot-dummy';
 import { toast } from 'react-toastify';
 
 export interface ParkingLotsFilterData {
@@ -56,46 +55,47 @@ const ParkingLotsPage = () => {
 
   useEffect(() => {
     if (user) {
-    setParkingLots({ error: null, loading: true, result: [] });
-    fetchParkingLots(false, user)
-      .then((result) => {
-        if (result) {
-          setParkingLots({ error: null, loading: false, result: result });
-        }
-      })
-      .catch();
-      }
+      setParkingLots({ error: null, loading: true, result: [] });
+      fetchAllParkingLots(user)
+        .then((result) => {
+          if (result) {
+            setParkingLots({ error: null, loading: false, result: result });
+          }
+        })
+        .catch();
+    }
   }, []);
 
-  const filterParkingLot = (parkingLot: ParkingLotModel): boolean => {
+  const parkingLotFilter = (parkingLot: ParkingLotModel): boolean => {
     return (
       (filter.states.has(parkingLot.state) || !filter.states.size) &&
       (parkingLot.address.includes(filter.searchTerm) ||
-        parkingLot.id.includes(filter.searchTerm) ||
-        parkingLot.owner.includes(filter.searchTerm))
+        parkingLot.name.includes(filter.searchTerm) ||
+        parkingLot.owner.name.includes(filter.searchTerm) ||
+        parkingLot.owner.surname.includes(filter.searchTerm))
     );
   };
 
-  const filteredReservations: Array<RowDataType> = parkingLots.result
-    .filter((parkingLot) => filterParkingLot(parkingLot))
-    .map((parkingLot) => {
-      return [
-        `${parkingLot.id}`,
-        `${parkingLot.address} ${parkingLot.addressNr}`,
-        `${parkingLot.owner}`,
-        <ParkingLotStateToggleButton
-          parkingLot={parkingLot}
-          changeParkingLotState={changeParkingLotState}
-        />
-      ];
-    });
+  const filteredParkingLots: Array<RowDataType> =
+    parkingLots.result &&
+    parkingLots.result
+      .filter((parkingLot) => parkingLotFilter(parkingLot))
+      .map((parkingLot) => {
+        return [
+          `${parkingLot.id}`,
+          `${parkingLot.address} ${parkingLot.addressNr}`,
+          `${parkingLot.owner.name} ${parkingLot.owner.surname}`,
+          <ParkingLotStateToggleButton
+            parkingLot={parkingLot}
+            changeParkingLotState={changeParkingLotState}
+          />
+        ];
+      });
 
   return (
     <Grid padding={2}>
       <Grid item xs={12}>
-        <ParkingLotsFilter
-          updateFilter={setFilter}
-        />
+        <ParkingLotsFilter updateFilter={setFilter} />
       </Grid>
 
       <Grid item xs={12}>
@@ -103,9 +103,7 @@ const ParkingLotsPage = () => {
           <Loading loading={parkingLots.loading} />
 
           {parkingLots.result.length > 0 ? (
-            <ParkingLotsTable
-              parkingLots={filteredReservations}
-            />
+            <ParkingLotsTable parkingLots={filteredParkingLots} />
           ) : (
             <NoData size={parkingLots.result.length} />
           )}
@@ -118,33 +116,30 @@ const ParkingLotsPage = () => {
 const NoData = ({ size }) =>
   size > 0 ? <Typography>Keine Parkplätze gefunden :(</Typography> : null;
 
-const fetchParkingLots = async (
-  useApi: boolean,
-  user: User
-): Promise<ParkingLotModel[]> => {
-  if (useApi) {
-    return await fetch('/backend/reservation', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${user.token}`
-      }
-    }).then(async (response) => {
+const fetchAllParkingLots = async (user: User): Promise<ParkingLotModel[]> => {
+  const query = new URLSearchParams({
+    page: '1',
+    size: '100'
+  });
+  return await fetch('/backend/parking-lot?' + query, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${user.token}`
+    }
+  }).then(async (response) => {
+    if (response.ok) {
       const data = await response.json();
       logger.log(data);
-      return data;
-    });
-  } else {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(parkingLotDummyData), 2000);
-    });
-  }
+      return data.data;
+    }
+  });
 };
 const updateParkingLot = async (
   parkingLot: ParkingLotModel,
   user: User
 ): Promise<boolean> => {
-  return await fetch(`/backend/parking-lots/${parkingLot.id}`, {
+  return await fetch(`/backend/parking-lot/${parkingLot.id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

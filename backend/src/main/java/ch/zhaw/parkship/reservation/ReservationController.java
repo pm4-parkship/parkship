@@ -5,6 +5,7 @@ import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
 import ch.zhaw.parkship.reservation.exceptions.ReservationCanNotBeCanceledException;
 import ch.zhaw.parkship.reservation.exceptions.ReservationNotFoundException;
+import ch.zhaw.parkship.user.ParkshipUserDetails;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -12,6 +13,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,21 +31,22 @@ import java.util.Optional;
  * and exposes various API end-points for CRUD operations.
  */
 @RestController
-@RequestMapping("/reservation")
+@RequestMapping("/reservations")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Bearer Authentication")
 public class ReservationController {
 
 
     private final ReservationService reservationService;
-    private final UserRepository userRepository;
     private final ParkingLotRepository parkingLotRepository;
     private final AvailabilityService availabilityService;
+
+    private final UserRepository userRepository;
 
     /**
      * This end-point creates a new reservation with the provided reservation data.
      *
-     * @param reservationDto The reservation data to be saved.
+     * @param createReservationDto The reservation data to be saved.
      * @return ResponseEntity<ReservationDto> Returns the saved reservation data in the HTTP response
      * body with a status code of 201 if created successfully, otherwise returns a bad request
      * status code.
@@ -50,18 +56,37 @@ public class ReservationController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<ReservationDto> createReservation(
-            @Valid @RequestBody ReservationDto reservationDto) {
-        validateRequest(reservationDto);
+            @Valid @RequestBody CreateReservationDto createReservationDto,
+            @AuthenticationPrincipal ParkshipUserDetails user) {
 
-        ParkingLotEntity parkingLot = parkingLotRepository.getByIdLocked(reservationDto.getParkingLot().getId());
-        UserEntity tenant = userRepository.getReferenceById(reservationDto.getTenant().id());
-        if (!availabilityService.isParkingLotAvailable(parkingLot, reservationDto.getFrom(), reservationDto.getTo())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "ParkingLot has pending Reservation during given time");
+        validateCreateReservationRequest(createReservationDto);
+
+        ParkingLotEntity parkingLot = parkingLotRepository.getByIdLocked(createReservationDto.parkingLotID());
+
+        if (!availabilityService.isParkingLotAvailable(parkingLot, createReservationDto.from(), createReservationDto.to())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "ParkingLot is not available");
         }
-
-        ReservationEntity reservationEntity = reservationService.create(parkingLot, tenant, reservationDto);
+        UserEntity tenant = userRepository.getReferenceById(user.getId());
+        ReservationEntity reservationEntity = reservationService.create(parkingLot, tenant, createReservationDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new ReservationDto(reservationEntity));
+    }
+
+    private void validateCreateReservationRequest(CreateReservationDto reservationDto) {
+        if (reservationDto == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given object is null");
+        }
+        if (reservationDto.parkingLotID() == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given parkingLot is invalid");
+        }
+
+        if (!isDateRangeValid(reservationDto.from(), reservationDto.to())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a valid date range");
+        }
+
+        if (!areDatesInFuture(reservationDto.from(), reservationDto.to())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given Range should be in the future");
+        }
     }
 
 
@@ -75,10 +100,7 @@ public class ReservationController {
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<ReservationDto> getReservationById(@PathVariable Long id) {
         Optional<ReservationDto> reservationDto = reservationService.getById(id);
-        if (reservationDto.isPresent()) {
-            return ResponseEntity.ok(reservationDto.get());
-        }
-        return ResponseEntity.notFound().build();
+        return reservationDto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
   /**
    *
@@ -106,8 +128,11 @@ public class ReservationController {
      * code.
      */
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<ReservationDto>> getAllReservations() {
-        List<ReservationDto> reservationDtos = reservationService.getAll();
+    public ResponseEntity<List<ReservationDto>> getAllReservations(
+            @AuthenticationPrincipal ParkshipUserDetails user
+    ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<ReservationDto> reservationDtos = reservationService.getAllByUser(user.getId());
         if (reservationDtos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -124,80 +149,38 @@ public class ReservationController {
      * not found status code.
      */
     @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<ReservationDto> updateReservation(@PathVariable Long id,
-                                                            @Valid @RequestBody ReservationDto reservationDto) {
-        reservationDto.setId(id);
+    public ResponseEntity<ReservationDto> updateReservation(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateReservationDto reservationDto) {
+        reservationDto = new UpdateReservationDto(reservationDto.parkingLotID(), id, reservationDto.from(), reservationDto.to());
         Optional<ReservationDto> updatedReservation = reservationService.update(reservationDto);
-        if (updatedReservation.isPresent()) {
-            return ResponseEntity.ok(updatedReservation.get());
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    /**
-     * This end-point deletes a reservation with the provided id.
-     *
-     * @param id The id of the reservation to be deleted.
-     * @return ResponseEntity<Void> Returns a no content status code if deleted successfully,
-     * otherwise returns a not found status code.
-     */
-    @DeleteMapping(value = "/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        Optional<ReservationDto> deletedReservation = reservationService.deleteById(id);
-        if (deletedReservation.isPresent()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        return updatedReservation.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     /**
      * Cancels a reservation, if the reservation exists, is not yet canceled and the reservation
      * is before the cancelataion deadline.
      *
-     * @param id
+     * @param id reservation ID
      * @throws ReservationNotFoundException         if the reservation does not exist
      * @throws ReservationCanNotBeCanceledException if the reservation either is too late or the reservation is already canceled.
      */
-    @PostMapping(value = "/{id}/cancel")
-    public void cancelReservation(@PathVariable("id") Long id) throws ReservationNotFoundException, ReservationCanNotBeCanceledException {
-        reservationService.cancelReservation(id);
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity cancelReservation(@PathVariable("id") Long id) throws ReservationNotFoundException, ReservationCanNotBeCanceledException {
+        return ResponseEntity.ok(reservationService.cancelReservation(id));
     }
 
 
-    protected void validateRequest(ReservationDto reservationDto) {
-
-        if (reservationDto == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given object is null");
-        }
-        if (reservationDto.getParkingLot() == null || reservationDto.getParkingLot().getId() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given parkingLot is invalid");
-        }
-
-        if (reservationDto.getTenant() == null || reservationDto.getTenant().id() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given tenant is invalid");
-        }
-
-        if (!isDateRangeValid(reservationDto)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a valid date range");
-        }
-
-        if (!areDatesInFuture(reservationDto)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given Range should be in the future");
-        }
-    }
-
-
-    private boolean areDatesInFuture(ReservationDto reservationDto) {
+    private boolean areDatesInFuture(LocalDate from, LocalDate to) {
         LocalDate today = LocalDate.now();
-        return !today.isBefore(reservationDto.getFrom()) && !today.isBefore(reservationDto.getTo());
+        return from.isAfter(today) && to.isAfter(today);
     }
 
-    private boolean isDateRangeValid(ReservationDto reservationDto) {
-        if (reservationDto.getFrom() == null || reservationDto.getTo() == null) {
+    private boolean isDateRangeValid(LocalDate from, LocalDate to) {
+        if (from == null || to == null) {
             return false;
         }
-        return reservationDto.getFrom().isBefore(reservationDto.getTo());
+        return from.isBefore(to);
     }
 
 

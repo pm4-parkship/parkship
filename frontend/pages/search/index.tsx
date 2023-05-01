@@ -5,24 +5,24 @@ import { TagData } from '../../src/components/search-bar/tag-bar';
 import SearchParkingLotTable from '../../src/components/search-parking-lot/search-parking-lot-table';
 import ParkingDetailModal from '../../src/components/parking-detail-modal/parking-detail-modal';
 import { ParkingLotModel } from '../../src/models';
-import { searchDummyData } from '../../src/mock-data/search-dummy';
 import { formatDate } from '../../src/date/date-formatter';
 import { format } from 'date-fns';
 import { logger } from '../../src/logger';
 import { toast } from 'react-toastify';
 import useUser from '../../src/auth/use-user';
 import { User } from '../api/user';
-import {
-  mapSearchResultToParkingLot,
-  SearchResultModel
-} from '../../src/models/search/search-result.model';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
 import { RowDataType } from '../../src/components/table/table-row';
+import { SearchResultModel } from '../../src/models/search/search-result.model';
+import {
+  CreateReservationModel,
+  ReservationModel
+} from '../../src/models/reservation/reservation.model';
 
 export interface SearchParameters {
   searchTerm: string;
-  fromDate: string;
-  toDate: string;
+  fromDate: Date;
+  toDate: Date;
   tags: TagData[];
 }
 
@@ -36,22 +36,45 @@ const SearchPage = () => {
   };
 
   const [searchResult, setSearchResult] = useState(initState);
+  const [searchParameters, setSearchParameters] = useState<SearchParameters>();
 
   const [showDetails, setShowDetails] = useState(false);
   const [selectedParkingLot, setSelectedParkingLot] =
     useState<ParkingLotModel>();
 
   const onSelectParkingLot = (data: string[]) => {
-    const id = data[0];
-    const parkingLot = searchResult.result.find((value) => value.id == id);
-    setSelectedParkingLot(() => mapSearchResultToParkingLot(parkingLot!));
-    setShowDetails(true);
+    const name = data[0];
+    const selected = searchResult.result.find((value) =>
+      value.name.includes(name)
+    );
+    if (selected && user) {
+      fetchParkingSpot(selected.id, user).then((result) => {
+        setSelectedParkingLot(() => result);
+        setShowDetails(true);
+      });
+    }
+  };
+
+  const createReservation = () => {
+    if (selectedParkingLot && searchParameters) {
+      createReservationCall(
+        {
+          from: format(searchParameters.fromDate, 'yyy-MM-dd'),
+          to: format(searchParameters.toDate, 'yyy-MM-dd'),
+          parkingLotID: selectedParkingLot.id
+        },
+        user
+      )
+        .then((response) => toast.success('Buchung erfolgreich ' + response.id))
+        .catch((reject) => toast.error(reject.message));
+    }
   };
 
   const makeOnSearch = (searchParameters: SearchParameters) => {
     if (!user) return;
+    setSearchParameters(searchParameters);
     setSearchResult({ error: null, loading: true, result: [] });
-    fetchParkingSpots(searchParameters, true, user)
+    fetchSearch(searchParameters, user)
       .then((result) => {
         setSearchResult({ error: null, loading: false, result: result });
       })
@@ -60,10 +83,10 @@ const SearchPage = () => {
 
   const mappedResult: Array<RowDataType> = searchResult.result.map((item) => {
     return [
-      `${item.id}`,
-      `${item.address} ${item.addressNr}`,
-      `${item.owner.name} ${item.owner.surname}`,
-      `${formatDate(new Date())} - ${formatDate(new Date())}`,
+      `${item.name}`,
+      `${item.address}`,
+      `${item.owner}`,
+      `${formatDate(new Date(item.from))} - ${formatDate(new Date(item.to))}`,
       `reservieren`
     ];
   });
@@ -89,37 +112,74 @@ const SearchPage = () => {
           showModal={showDetails}
           setShowModal={setShowDetails}
           parkingLotModel={selectedParkingLot}
+          createReservation={createReservation}
         />
       ) : null}
     </Grid>
   );
 };
-
-const fetchParkingSpots = async (
+const fetchSearch = async (
   searchParameters: SearchParameters,
-  useApi = false,
   user: User
 ): Promise<SearchResultModel[]> => {
-  if (useApi) {
-    const query = new URLSearchParams({
-      searchTerm: searchParameters.searchTerm,
-      startDate: format(new Date(searchParameters.fromDate), 'yyy-MM-dd'),
-      endDate: format(new Date(searchParameters.toDate), 'yyy-MM-dd')
-    });
+  const query = new URLSearchParams({
+    searchTerm: searchParameters.searchTerm,
+    startDate: format(searchParameters.fromDate, 'yyy-MM-dd'),
+    endDate: format(searchParameters.toDate, 'yyy-MM-dd')
+  });
 
-    return fetch('/backend/parking-lot/searchTerm?' + query, {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${user.token}` }
-    }).then(async (response) => {
+  return fetch('/backend/parking-lot/searchTerm?' + query, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${user.token}` }
+  }).then(
+    async (response) => {
       const data = await response.json();
       logger.log(data);
       return data;
-    });
-  } else {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(searchDummyData), 2000);
-    });
-  }
+    },
+    (reject) => {
+      return reject.message;
+    }
+  );
+};
+const createReservationCall = async (
+  body: CreateReservationModel,
+  user: User
+): Promise<ReservationModel> => {
+  return fetch('/backend/reservations', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${user.token}`,
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  }).then(
+    async (response) => {
+      if (response.ok) {
+        const data = await response.json();
+        logger.log(data);
+        return data;
+      }
+    },
+    async (reject) => {
+      const data = await reject.json();
+      return data.message;
+    }
+  );
+};
+
+const fetchParkingSpot = async (
+  id: number,
+  user: User
+): Promise<ParkingLotModel> => {
+  return fetch('/backend/parking-lot/' + id, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${user.token}` }
+  }).then(async (response) => {
+    const data = await response.json();
+    logger.log(data);
+    return data;
+  });
 };
 
 export default SearchPage;

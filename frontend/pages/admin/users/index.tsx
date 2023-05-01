@@ -14,7 +14,8 @@ const MyParkingLotPage = () => {
   const { user } = useUser();
 
   const newParkingLot: ParkingLotModel = {
-    id: 'new parking',
+    id: 1,
+    name: 'new parking',
     latitude: 0,
     longitude: 0,
     nr: '',
@@ -22,7 +23,13 @@ const MyParkingLotPage = () => {
     addressNr: '123',
     description: 'This is my most favourite parking lot',
     floor: 123,
-    owner: '4',
+    owner: {
+      id: '1',
+      name: 'Smith',
+      surname: 'John ',
+      email: 'adfasf@.asfom.com',
+      role: UserRole.USER
+    },
     pictures: [],
     price: 19999,
     state: ParkingLotState.locked,

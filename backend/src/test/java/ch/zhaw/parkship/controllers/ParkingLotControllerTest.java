@@ -1,10 +1,10 @@
 package ch.zhaw.parkship.controllers;
 
-import ch.zhaw.parkship.parkinglot.ParkingLotController;
-import ch.zhaw.parkship.parkinglot.ParkingLotDto;
-import ch.zhaw.parkship.parkinglot.ParkingLotService;
+import ch.zhaw.parkship.parkinglot.*;
+import ch.zhaw.parkship.user.ParkshipUserDetails;
 import ch.zhaw.parkship.user.UserDto;
 import ch.zhaw.parkship.user.UserEntity;
+import ch.zhaw.parkship.util.UserGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -54,10 +55,10 @@ class ParkingLotControllerTest {
     }
 
 
-    private ParkingLotDto createBasicParkingLotDto() {
-        ParkingLotDto parkingLotDto = new ParkingLotDto();
+    private ParkingLotEntity createBasicParkingLotEntity() {
+        ParkingLotEntity parkingLotDto = new ParkingLotEntity();
         parkingLotDto.setId(1L);
-        parkingLotDto.setOwner(new UserDto(2L, null, null, null, null, null));
+        parkingLotDto.setOwner(UserGenerator.generate());
         parkingLotDto.setLongitude(15.2);
         parkingLotDto.setLatitude(11.22);
         parkingLotDto.setNr("11A");
@@ -67,6 +68,10 @@ class ParkingLotControllerTest {
         parkingLotDto.setAddressNr("44");
         parkingLotDto.setDescription("next to the entrance");
         return parkingLotDto;
+    }
+
+    private ParkingLotDto createBasicParkingLotDto() {
+        return new ParkingLotDto(createBasicParkingLotEntity());
     }
 
     @MockitoSettings(strictness = Strictness.WARN)
@@ -137,7 +142,7 @@ class ParkingLotControllerTest {
 
     @Test
     public void updateParkingLotNotFoundTest() throws Exception {
-        ParkingLotDto parkingLotDto = createBasicParkingLotDto();
+        ParkingLotEntity parkingLotDto = createBasicParkingLotEntity();
         parkingLotDto.setId(1L);
 
         when(parkingLotService.update(parkingLotDtoCaptor.capture())).thenReturn(Optional.empty());
@@ -162,9 +167,9 @@ class ParkingLotControllerTest {
 
     @Test
     public void searchParkingLotTest() throws Exception {
-        ParkingLotDto parkingLotDto = createBasicParkingLotDto();
-        List<ParkingLotDto> expectedReturnValue = new ArrayList<ParkingLotDto>();
-        expectedReturnValue.add(parkingLotDto);
+        ParkingLotEntity parkingLotEntity = createBasicParkingLotEntity();
+        List<ParkingLotSearchDto> expectedReturnValue = new ArrayList<>();
+        expectedReturnValue.add(new ParkingLotSearchDto(parkingLotEntity, parkingLotEntity.getOwner()));
         when(parkingLotService.getBySearchTerm("entrance", null, null, 0, 100)).thenReturn(expectedReturnValue);
 
         mockMvc.perform(get("/parking-lot/searchTerm")
@@ -177,8 +182,7 @@ class ParkingLotControllerTest {
 
     @Test
     public void getOwnParkingLotsTest() throws Exception {
-        UserEntity user = new UserEntity();
-        user.setId(1L);
+        ParkshipUserDetails user = createParkshipUserDetails(UserGenerator.generate(1L));
 
         ParkingLotDto parkingLotDto1 = new ParkingLotDto();
         ParkingLotDto parkingLotDto2 = new ParkingLotDto();
@@ -197,12 +201,16 @@ class ParkingLotControllerTest {
 
     @Test
     public void getOwnParkingLotsNoContentTest() throws Exception {
-        UserEntity user = new UserEntity();
-        user.setId(1L);
+        ParkshipUserDetails user = createParkshipUserDetails(UserGenerator.generate(1L));
+
         when(parkingLotService.getParkingLotsByUserId(eq(user.getId()))).thenReturn(Optional.empty());
         var response = parkingLotController.getOwnParkingLots(user);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        assertEquals(null, response.getBody());
+        assertNull(response.getBody());
         verify(parkingLotService, times(1)).getParkingLotsByUserId(user.getId());
+    }
+
+    ParkshipUserDetails createParkshipUserDetails(UserEntity user) {
+        return new ParkshipUserDetails(user.getId(), user.getEmail(), user.getUsername(), user.getName(), user.getSurname(), user.getPassword(), user.getUserRole(), user.getUserState());
     }
 }

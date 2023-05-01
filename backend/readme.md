@@ -147,13 +147,13 @@ public class AuthTestController {
     //@PreAuthorize("hasAnyAuthority('USER', 'ADMIN')") // works
     @Secured("USER") // works
     //@Secured({ "USER", "ADMIN" }) // works
-    public ApplicationUser allowUser(@AuthenticationPrincipal UserEntity user) {
+    public ApplicationUser allowUser(@AuthenticationPrincipal UserEntityInfo user) {
         return user;
     }
 
     @GetMapping("/admin")
     @Secured("ADMIN")
-    public ApplicationUser allowAdmin(@AuthenticationPrincipal UserEntity user) {
+    public ApplicationUser allowAdmin(@AuthenticationPrincipal UserEntityInfo user) {
         return user;
     }
 }

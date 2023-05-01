@@ -23,11 +23,13 @@ import Checkbox from '@mui/material/Checkbox';
 const ParkingDetailModal = ({
   showModal = true,
   setShowModal,
-  parkingLotModel
+  parkingLotModel,
+  createReservation
 }: {
   showModal: boolean;
   setShowModal: (value: boolean) => void;
   parkingLotModel: ParkingLotModel;
+  createReservation: () => void;
 }) => {
   const classes = useStyles();
 
@@ -66,7 +68,7 @@ const ParkingDetailModal = ({
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       <Typography component={'span'} variant="body1">
-                        {parkingLotModel.owner}
+                        {`${parkingLotModel.owner.name} ${parkingLotModel.owner.surname}`}
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -212,7 +214,11 @@ const ParkingDetailModal = ({
                 </div>
               ))}
           </Stack>
-          <Button className={classes.button} variant="outlined">
+          <Button
+            className={classes.button}
+            variant="outlined"
+            onClick={createReservation}
+          >
             reservieren
           </Button>
         </div>

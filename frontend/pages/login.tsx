@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { logger } from '../src/logger';
 import { UserRole } from '../src/models';
 import { useRouter } from 'next/router';
+import { User } from './api/user';
 
 export default function Login() {
   const router = useRouter();
@@ -16,12 +17,18 @@ export default function Login() {
   const { mutateUser, user } = useUser();
 
   useEffect(() => {
-    if (user?.isLoggedIn && user?.role == UserRole.admin) {
+    redirectUser(user);
+  }, [user]);
+
+  const redirectUser = (user: User) => {
+    // logger.log(user);
+    if (user.isLoggedIn && user.role == UserRole.ADMIN) {
+      logger.log(user);
       router.push('/admin/parking-lots');
-    } else if (user?.isLoggedIn && user?.role == UserRole.user) {
+    } else if (user.isLoggedIn && user.role == UserRole.USER) {
       router.push('/search');
     }
-  }, [user]);
+  };
 
   const formSchema = z.object({
     email: z.string().email(),
@@ -61,17 +68,8 @@ export default function Login() {
       password: data.password
     };
 
-    if (body.email === 'test@mail.ch' && body.password === 'test') {
-      await mutateUser({
-        isLoggedIn: true,
-        role: UserRole.admin,
-        token: 'myuselesstoken',
-        username: 'lokalTestUser'
-      });
-    }
-
     try {
-      await fetch('/backend/auth/signin', {
+      await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
@@ -80,10 +78,10 @@ export default function Login() {
           const data = await res.json();
           await mutateUser({
             isLoggedIn: true,
-            role: data.roles[0],
-            token: data.token,
-            username: data.username
-          });
+            role: UserRole[data.user.role],
+            token: data.user.token,
+            username: data.user.username
+          }).then((user) => user && redirectUser(user));
         }
       });
     } catch (error: any) {
@@ -106,11 +104,11 @@ export default function Login() {
             alignItems: 'center'
           }}
         >
-          <Typography component="h1" variant="h5" >
+          <Typography component="h1" variant="h5">
             Willkommen bei Parkship!
           </Typography>
           <form
-            style={{ display: 'grid', width: '25%', marginTop: '20px'}}
+            style={{ display: 'grid', width: '25%', marginTop: '20px' }}
             onSubmit={handleSubmit((data) => handleFormSubmit(data))}
           >
             <Paper elevation={3}>
@@ -143,7 +141,7 @@ export default function Login() {
                 variant={'contained'}
                 sx={{
                   width: '94%',
-                  marginTop: '30px',
+                  marginTop: '30px'
                 }}
               >
                 Einloggen
