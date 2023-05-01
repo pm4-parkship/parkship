@@ -120,18 +120,18 @@ const ParkingReservationConfirmationModal = ({
 
             <Grid container columnSpacing={1}>
               <Grid item xs={2}>
-                <Typography variant="subtitle2">von:</Typography>
+                <Typography variant="body2">von:</Typography>
               </Grid>
 
               <Grid item xs={4}>
-                <Typography variant="body2">{from}</Typography>
+                <Typography variant="body1">{from}</Typography>
               </Grid>
 
               <Grid item xs={2}>
-                <Typography variant="subtitle2">bis:</Typography>
+                <Typography variant="body2">bis:</Typography>
               </Grid>
               <Grid item xs={4}>
-                <Typography variant="body2">{to}</Typography>
+                <Typography variant="body1">{to}</Typography>
               </Grid>
             </Grid>
 
