@@ -24,9 +24,11 @@ public class OfferEntity {
     private ParkingLotEntity parkingLot;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private LocalDate from;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private LocalDate to;
 
     @Column(nullable = false)
