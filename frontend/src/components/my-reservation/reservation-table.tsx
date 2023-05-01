@@ -1,6 +1,5 @@
 import TableComponent from '../table/table-component';
 import { logger } from '../../logger';
-import { toast } from 'react-toastify';
 import { RowDataType } from '../table/table-row';
 
 interface reservationTableProps {

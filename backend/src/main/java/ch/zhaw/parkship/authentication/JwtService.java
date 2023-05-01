@@ -1,7 +1,8 @@
 package ch.zhaw.parkship.authentication;
 
 import ch.zhaw.parkship.configuration.JwtConfiguration;
-import ch.zhaw.parkship.user.UserEntity;
+import ch.zhaw.parkship.user.ParkshipUserDetails;
+import ch.zhaw.parkship.user.UserRole;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
@@ -10,12 +11,9 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service for generating and verifying JWTs.
@@ -31,19 +29,16 @@ public class JwtService {
     /**
      * Generates and configures a JWT for a specific user.
      *
-     * @param userEntity the JWT is generated for
+     * @param parkshipUserDetails the JWT is generated for
      * @return a signed JWT
      */
-    public String generateToken(UserEntity userEntity) {
-        List<String> roles = userEntity.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+    public String generateToken(ParkshipUserDetails parkshipUserDetails) {
+        UserRole roles = UserRole.ADMIN;
 
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .subject(userEntity.getId() + "")
-                .claim("username", userEntity.getUsername())
-                .claim("roles", roles)
+                .subject(parkshipUserDetails.getId() + "")
+                .claim("username", parkshipUserDetails.getUsername())
+                .claim("role", roles)
                 .expirationTime(new Date(new Date().getTime() + jwtConfiguration.getExpiration()))
                 .build();
 

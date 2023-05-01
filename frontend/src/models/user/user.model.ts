@@ -5,7 +5,8 @@ export interface UserModel {
   role: UserRole;
   email: string;
 }
+
 export enum UserRole {
-  user = 'USER',
-  admin = 'ADMIN'
+  USER = 'USER',
+  ADMIN = 'ADMIN'
 }

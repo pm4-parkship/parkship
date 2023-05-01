@@ -2,6 +2,7 @@ package ch.zhaw.parkship.parkinglot;
 
 import ch.zhaw.parkship.tag.TagDto;
 import ch.zhaw.parkship.user.UserDto;
+import ch.zhaw.parkship.user.UserState;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class ParkingLotDto implements Serializable {
 
     private Long id;
+    private String name;
 
     @NotNull
     private UserDto owner;
@@ -46,11 +48,11 @@ public class ParkingLotDto implements Serializable {
     @NotNull
     private Double price;
 
-    @NotBlank
-    private String state;
+    private ParkingLotState state;
 
     public ParkingLotDto(ParkingLotEntity parkingLotEntity) {
         this.id = parkingLotEntity.getId();
+        this.name = parkingLotEntity.getName();
         this.owner = new UserDto(parkingLotEntity.getOwner());
         this.description = parkingLotEntity.getDescription();
         this.tags = parkingLotEntity.getTags().stream().map(TagDto::new).collect(Collectors.toSet());
@@ -71,7 +73,7 @@ public class ParkingLotDto implements Serializable {
 
     @Override
     public String toString() {
-        return "ParkingLotDto{" + "id=" + id + ", owner=" + owner + ", description='" + description
+        return "ParkingLotDto{" + "id=" + id + ",name=" + name + ", owner=" + owner + ", description='" + description
                 + '\'' + ", tags=" + tags + ", longitude=" + longitude + ", latitude=" + latitude
                 + ", address='" + address + '\'' + ", addressNr='" + addressNr + '\'' + ", floor=" + floor
                 + ", nr='" + nr + '\'' + ", price=" + price + ", state='" + state + '\'' + '}';

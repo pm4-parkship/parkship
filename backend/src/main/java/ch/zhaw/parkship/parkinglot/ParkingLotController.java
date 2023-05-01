@@ -1,7 +1,7 @@
 package ch.zhaw.parkship.parkinglot;
 
 import ch.zhaw.parkship.common.PaginatedResponse;
-import ch.zhaw.parkship.user.UserEntity;
+import ch.zhaw.parkship.user.ParkshipUserDetails;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -120,12 +121,15 @@ public class ParkingLotController {
     }
 
     @GetMapping("/searchTerm")
-    public List<ParkingLotDto> searchParkingLot(@RequestParam(defaultValue = "") String searchTerm,
-                                                @RequestParam(defaultValue = "") LocalDate startDate,
-                                                @RequestParam(defaultValue = "") LocalDate endDate,
-                                                @RequestParam(defaultValue = DEFAULT_PAGE_NUM) int page,
-                                                @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
+    public List<ParkingLotSearchDto> searchParkingLot(
+            @RequestParam(defaultValue = "") String searchTerm,
+            @RequestParam(defaultValue = "") LocalDate startDate,
+            @RequestParam(defaultValue = "") LocalDate endDate,
+            @RequestParam(defaultValue = DEFAULT_PAGE_NUM) int page,
+            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
+
         return parkingLotService.getBySearchTerm(searchTerm, startDate, endDate, page, size);
+
     }
 
     /**
@@ -135,11 +139,21 @@ public class ParkingLotController {
      * ResponseEntity if the user has no parking lots.
      */
     @GetMapping(value = "/my-parkinglots", produces = "application/json")
-    public ResponseEntity<Set<ParkingLotDto>> getOwnParkingLots(@AuthenticationPrincipal UserEntity user) {
+    public ResponseEntity<Set<ParkingLotDto>> getOwnParkingLots(@AuthenticationPrincipal ParkshipUserDetails user) {
         Optional<Set<ParkingLotDto>> parkingLots = parkingLotService.getParkingLotsByUserId(user.getId());
         if (parkingLots.isPresent()) {
             return ResponseEntity.ok(parkingLots.get());
         }
         return ResponseEntity.noContent().build();
     }
+
+    @Transactional
+    @Secured("ADMIN")
+    @PutMapping("/{id}/update-state/{state}")
+    public ResponseEntity<Void> updateParkingLotState(@PathVariable("id") Long id, @PathVariable("state") ParkingLotState newState) {
+        parkingLotService.updateState(id, newState);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 }

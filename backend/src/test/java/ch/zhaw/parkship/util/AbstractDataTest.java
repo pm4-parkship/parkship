@@ -1,12 +1,12 @@
 package ch.zhaw.parkship.util;
 
+import ch.zhaw.parkship.parkinglot.ParkingLotState;
+import ch.zhaw.parkship.user.UserRole;
 import ch.zhaw.parkship.util.generator.ReservationGenerator;
 import ch.zhaw.parkship.ParkshipApplication;
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
 import ch.zhaw.parkship.reservation.ReservationRepository;
-import ch.zhaw.parkship.role.RoleEntity;
-import ch.zhaw.parkship.role.RoleRepository;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
 import ch.zhaw.parkship.user.UserService;
@@ -27,9 +27,6 @@ public abstract class AbstractDataTest {
     protected UserRepository userRepository;
 
     @Autowired
-    protected RoleRepository roleRepository;
-
-    @Autowired
     protected UserService userService;
 
     @Autowired
@@ -39,24 +36,11 @@ public abstract class AbstractDataTest {
     protected ReservationRepository reservationRepository;
 
     protected void doSeed() {
-        if (roleRepository.findByName("ADMIN") != null) {
-            return;
-        }
 
-        RoleEntity userRoleEntity = new RoleEntity("USER");
-        RoleEntity adminRoleEntity = new RoleEntity("ADMIN");
-
-        roleRepository.saveAll(Set.of(userRoleEntity, adminRoleEntity));
-
-        UserEntity user = userService.signUp("user", "user@parkship.ch", "user");
-        UserEntity secondUser = userService.signUp("second", "second@parkship.ch", "second");
-        UserEntity thirdUser = userService.signUp("thirdUser", "thirdUser@parkship.ch", "thirdUser");
-        UserEntity admin = userService.signUp("admin", "admin@parkship.ch", "admin");
-
-        user.getRoleEntities().add(userRoleEntity);
-        secondUser.getRoleEntities().add(userRoleEntity);
-        thirdUser.getRoleEntities().add(userRoleEntity);
-        admin.getRoleEntities().add(adminRoleEntity);
+        UserEntity user = userService.signUp("user", "userSurname", "user@parkship.ch", "user",  UserRole.USER);
+        UserEntity secondUser = userService.signUp("second", "secondSurname",  "second@parkship.ch","second",  UserRole.USER);
+        UserEntity thirdUser = userService.signUp("thirdUser", "thirdUserSurname",  "thirdUser@parkship.ch","thirdUser",  UserRole.USER);
+        UserEntity admin = userService.signUp("admin", "adminSurname",  "admin@parkship.ch","admin", UserRole.ADMIN);
 
         userService.save(user);
         userService.save(secondUser);
@@ -70,11 +54,12 @@ public abstract class AbstractDataTest {
         for (int i = 0; i < 5; i++) {
             var parkingLot = new ParkingLotEntity();
             parkingLot.setId(i + 1L);
+            parkingLot.setName(faker.funnyName().name());
             parkingLot.setLongitude(Double.valueOf(faker.address().longitude()));
             parkingLot.setLatitude(Double.valueOf(faker.address().latitude()));
             parkingLot.setNr(faker.address().buildingNumber());
             parkingLot.setPrice(faker.number().randomDouble(2, 10, 300));
-            parkingLot.setState(faker.address().state());
+            parkingLot.setState(ParkingLotState.ACTIVE);
             parkingLot.setAddress(faker.address().streetAddress());
             parkingLot.setAddressNr(faker.address().streetAddressNumber());
             parkingLot.setDescription(faker.weather().description());

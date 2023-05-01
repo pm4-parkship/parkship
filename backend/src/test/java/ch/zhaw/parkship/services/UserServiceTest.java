@@ -41,6 +41,7 @@ public class UserServiceTest {
     assertEquals("testUser", userDtoList.get(0).username());
     assertEquals("Test", userDtoList.get(0).name());
     assertEquals("User", userDtoList.get(0).surname());
-    assertEquals(0, userDtoList.get(0).roles().size());
   }
+
+
 }

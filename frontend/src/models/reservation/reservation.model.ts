@@ -13,6 +13,22 @@ export interface ReservationModel {
 }
 
 export enum ReservationState {
-  OK = 'definitiv',
-  XX = 'storniert'
+  ACTIVE = 'ACTIVE',
+  CANCELED = 'CANCELED'
+}
+
+export const ReservationStateToString = (state: ReservationState) =>
+  state == ReservationState.ACTIVE ? 'definitiv' : 'storniert';
+
+export interface CreateReservationModel {
+  parkingLotID: number;
+  from: string;
+  to: string;
+}
+
+export interface UpdateReservationModel {
+  parkingLotID: string;
+  reservationID: number;
+  from: Date;
+  to: Date;
 }

@@ -1,6 +1,7 @@
 package ch.zhaw.parkship.configuration;
 
 import ch.zhaw.parkship.authentication.UserConverter;
+import ch.zhaw.parkship.user.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,11 +46,14 @@ public class ApplicationConfiguration {
 
     private Environment env;
     private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
 
     @Autowired
-    public ApplicationConfiguration(UserDetailsService userDetailsService, Environment env) {
+    public ApplicationConfiguration(UserDetailsService userDetailsService, Environment env,
+                                    UserRepository userRepository) {
         this.userDetailsService = userDetailsService;
         this.env = env;
+        this.userRepository = userRepository;
     }
 
     @Bean
@@ -60,7 +64,7 @@ public class ApplicationConfiguration {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authorization Failed : " + authException.getMessage());
         });
         http.oauth2ResourceServer().jwt(c -> {
-            c.jwtAuthenticationConverter(new UserConverter());
+            c.jwtAuthenticationConverter(new UserConverter(userRepository));
         });
         http.anonymous();
         http.cors().configurationSource(corsConfigurationSource());

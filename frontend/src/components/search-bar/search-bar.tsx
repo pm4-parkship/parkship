@@ -23,8 +23,8 @@ const SearchBar = (props: {
   const onSubmit = () => {
     const searchParam: SearchParameters = {
       searchTerm: searchTerm,
-      fromDate: fromDate?.toISOString() || '',
-      toDate: toDate?.toISOString() || '',
+      fromDate: fromDate,
+      toDate: toDate,
       tags: selectedTags
     };
     props.makeOnSearch(searchParam);

@@ -21,6 +21,8 @@ public class ParkingLotEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String name;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity owner;
@@ -58,7 +60,7 @@ public class ParkingLotEntity {
     private Double price;
 
     @Column(nullable = false)
-    private String state;
+    private ParkingLotState state;
 
     @OneToMany(mappedBy = "parkingLot", fetch = FetchType.LAZY, cascade = {CascadeType.ALL},
             orphanRemoval = true)

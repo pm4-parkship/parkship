@@ -13,7 +13,6 @@ import { RowDataType } from '../../src/components/table/table-row';
 import { toast } from 'react-toastify';
 import { User } from '../api/user';
 import { logger } from '../../src/logger';
-import { dummy } from '../../src/mock-data/reservations-dummy';
 import ReservationStateIcon from '../../src/components/my-reservation/reservation-state-icon';
 
 export interface ReservationFilterData {
@@ -26,6 +25,11 @@ const initState = {
   loading: false,
   result: Array<ReservationModel>()
 };
+const minCancelDate = () => {
+  const today = new Date();
+  today.setDate(today.getDate() + 2);
+  return today;
+};
 
 const MyReservationPage = () => {
   const { user } = useUser();
@@ -33,23 +37,43 @@ const MyReservationPage = () => {
   const [filter, setFilter] = useState<ReservationFilterData>(initFilter);
   const [reservations, setReservations] = useState(initState);
 
-  const cancelReservation = (e: ReservationModel) => {
-    toast.success('🦄 Wow so easy! ID: ' + e.id);
+  const openReservationModal = (reservation: ReservationModel) => {
+    cancelReservation(reservation.id, user)
+      .then((result) => {
+        result &&
+          toast.success('Stornierung von ' + reservation.id + ' erfolgreich');
+
+        reservation.reservationState = result.reservationState;
+        reservation.cancelDate = result.cancelDate;
+
+        reservations.result.map((obj) =>
+          obj.id == reservation.id ? reservation : obj
+        );
+        setReservations({
+          error: null,
+          loading: false,
+          result: reservations.result
+        });
+      })
+      .catch((reject) => toast.error(reject.message));
   };
+
   const makeCancelCell = (item: ReservationModel): string | JSX.Element => {
-    return item.cancelDate ? (
-      `${formatDate(new Date(item.cancelDate))}`
-    ) : (
-      <Link href="#" onClick={() => cancelReservation(item)}>
+    if (new Date(item.from) <= minCancelDate()) {
+      return <span></span>;
+    } else if (item.cancelDate) {
+      return `${formatDate(new Date(item.cancelDate))}`;
+    }
+    return (
+      <Link href="#" onClick={() => openReservationModal(item)}>
         <Typography variant={'body2'}>{'stornieren'}</Typography>
       </Link>
     );
   };
 
   useEffect(() => {
-    if (!user) return;
     setReservations({ error: null, loading: true, result: [] });
-    fetchReservations(false, user)
+    fetchReservations(user)
       .then((result) => {
         if (result) {
           setReservations({ error: null, loading: false, result: result });
@@ -100,26 +124,36 @@ const MyReservationPage = () => {
 const NoData = ({ size }) =>
   size > 0 ? <Typography>Keine Reservationen gefunden :(</Typography> : null;
 
-const fetchReservations = async (
-  useApi: boolean,
-  user: User
-): Promise<ReservationModel[]> => {
-  if (useApi) {
-    return await fetch('/backend/reservation', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${user.token}`
-      }
-    }).then(async (response) => {
+const fetchReservations = async (user: User): Promise<ReservationModel[]> => {
+  return await fetch('/backend/reservations', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${user.token}`
+    }
+  }).then(async (response) => {
+    if (response.ok) {
       const data = await response.json();
       logger.log(data);
       return data;
-    });
-  } else {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(dummy), 2000);
-    });
-  }
+    }
+  });
+};
+
+const cancelReservation = async (
+  reservationID: number,
+  user: User
+): Promise<ReservationModel> => {
+  return await fetch(`/backend/reservations/${reservationID}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${user.token}`
+    }
+  }).then(async (response) => {
+    if (response.ok) {
+      return await response.json();
+    }
+  });
 };
 export default MyReservationPage;

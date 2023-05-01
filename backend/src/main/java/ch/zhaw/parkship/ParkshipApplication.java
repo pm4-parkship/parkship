@@ -2,16 +2,15 @@ package ch.zhaw.parkship;
 
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
+import ch.zhaw.parkship.parkinglot.ParkingLotState;
 import ch.zhaw.parkship.reservation.ReservationEntity;
 import ch.zhaw.parkship.reservation.ReservationRepository;
 import ch.zhaw.parkship.reservation.ReservationState;
-import ch.zhaw.parkship.role.RoleEntity;
-import ch.zhaw.parkship.role.RoleRepository;
 import ch.zhaw.parkship.user.UserEntity;
+import ch.zhaw.parkship.user.UserRole;
 import ch.zhaw.parkship.user.UserService;
 import com.github.javafaker.Faker;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -44,41 +43,43 @@ public class ParkshipApplication {
     @Bean
     @Profile({"dev", "production"})
     @Transactional
-    CommandLineRunner initTemplate(@Autowired RoleRepository roleRepository,
-                                   UserService userService) {
+    CommandLineRunner initTemplate(UserService userService) {
         return args -> {
-            RoleEntity userRoleEntity = new RoleEntity("USER");
-            RoleEntity adminRoleEntity = new RoleEntity("ADMIN");
+            Faker faker = new Faker();
 
-            roleRepository.saveAll(Set.of(userRoleEntity, adminRoleEntity));
+            UserEntity user = userService.signUp("user", "userSurname",  "user@parkship.ch", "user", UserRole.USER);
+            user.setName(faker.name().lastName());
+            user.setSurname(faker.name().firstName());
+            UserEntity secondUser = userService.signUp("second", "secondSurname",  "second@parkship.ch", "second", UserRole.USER);
+            secondUser.setName(faker.name().lastName());
+            secondUser.setSurname(faker.name().firstName());
+            UserEntity thirdUser = userService.signUp("thirdUser", "thirdUserSurname",  "thirdUser@parkship.ch", "thirdUser", UserRole.USER);
+            thirdUser.setName(faker.name().lastName());
+            thirdUser.setSurname(faker.name().firstName());
+            UserEntity admin = userService.signUp("admin", "adminSurname", "admin@parkship.ch","admin", UserRole.ADMIN);
+            admin.setName(faker.name().lastName());
+            admin.setSurname(faker.name().firstName());
 
-            UserEntity user = userService.signUp("user", "user@parkship.ch", "user");
-            UserEntity secondUser = userService.signUp("second", "second@parkship.ch", "second");
-            UserEntity thirdUser = userService.signUp("thirdUser", "thirdUser@parkship.ch", "thirdUser");
-            UserEntity admin = userService.signUp("admin", "admin@parkship.ch", "admin");
 
-            user.getRoleEntities().add(userRoleEntity);
-            secondUser.getRoleEntities().add(userRoleEntity);
-            thirdUser.getRoleEntities().add(userRoleEntity);
-            admin.getRoleEntities().add(adminRoleEntity);
-
+            //admin.setUserRole(UserRole.ADMIN);
             userService.save(user);
             userService.save(secondUser);
             userService.save(thirdUser);
             userService.save(admin);
             List<UserEntity> users = List.of(user, secondUser, thirdUser, admin);
-            Faker faker = new Faker();
+
 
             List<ParkingLotEntity> parkingLots = new ArrayList<>();
 
             for (int i = 0; i < 5; i++) {
                 var parkingLot = new ParkingLotEntity();
                 parkingLot.setId(i + 1L);
+                parkingLot.setName(faker.funnyName().name());
                 parkingLot.setLongitude(Double.valueOf(faker.address().longitude()));
                 parkingLot.setLatitude(Double.valueOf(faker.address().latitude()));
                 parkingLot.setNr(faker.address().buildingNumber());
                 parkingLot.setPrice(faker.number().randomDouble(2, 10, 300));
-                parkingLot.setState(faker.address().state());
+                parkingLot.setState(ParkingLotState.ACTIVE);
                 parkingLot.setAddress(faker.address().streetAddress());
                 parkingLot.setAddressNr(faker.address().streetAddressNumber());
                 parkingLot.setDescription(faker.weather().description());
@@ -95,7 +96,19 @@ public class ParkshipApplication {
                 reservation.setTo(LocalDate.of(to.getYear() + 1900, to.getMonth() + 1, to.getDay() + 1));
                 reservation.setParkingLot(parkingLots.get((i + 1) % 5));
                 reservation.setTenant(users.get(((i + 1) % 4)));
+                reservation.setState(ReservationState.ACTIVE);
+                reservationRepository.save(reservation);
+            }
+            for (int i = 0; i < 9; i++) {
+                var reservation = new ReservationEntity();
+                Date from = faker.date().future(2, 1, TimeUnit.DAYS);
+                reservation.setFrom(LocalDate.of(from.getYear() + 1900, from.getMonth() + 1, from.getDay() + 1));
+                Date to = faker.date().future(2, 1, TimeUnit.DAYS);
+                reservation.setTo(LocalDate.of(to.getYear() + 1900, to.getMonth() + 1, to.getDay() + 1));
+                reservation.setParkingLot(parkingLots.get((i + 1) % 5));
+                reservation.setTenant(users.get(((i + 1) % 4)));
                 reservation.setState(ReservationState.CANCELED);
+                reservation.setCancelDate(LocalDate.of(from.getYear() + 1900, from.getMonth() + 1, from.getDay() + 1));
                 reservationRepository.save(reservation);
             }
         };
