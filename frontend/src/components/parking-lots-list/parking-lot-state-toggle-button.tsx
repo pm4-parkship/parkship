@@ -1,6 +1,7 @@
 import { ParkingLotModel, ParkingLotState } from '../../models';
 import { ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import React from 'react';
+import { logger } from '../../logger';
 
 interface parkingLotStateToggleButtonProps {
   parkingLot: ParkingLotModel;
@@ -18,9 +19,9 @@ const ParkingLotStateToggleButton = ({
       onChange={() => changeParkingLotState(parkingLot)}
     >
       <ToggleButton
-        value={ParkingLotState.released}
+        value={ParkingLotState.active}
         color={'success'}
-        disabled={parkingLot.state == ParkingLotState.released}
+        disabled={parkingLot.state == ParkingLotState.active}
         style={{ minWidth: 150 }}
       >
         {releasedText(parkingLot.state)}
@@ -43,10 +44,12 @@ const lockedText = (state: ParkingLotState) =>
   ) : (
     <Typography>sperren</Typography>
   );
-const releasedText = (state: ParkingLotState) =>
-  ParkingLotState[state] === ParkingLotState.released ? (
+const releasedText = (state: ParkingLotState) => {
+  return ParkingLotState[state] === ParkingLotState.active ? (
     <Typography>freigegeben</Typography>
   ) : (
     <Typography>freigeben</Typography>
   );
+};
+
 export default ParkingLotStateToggleButton;

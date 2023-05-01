@@ -18,6 +18,7 @@ export interface ParkingLotModel {
 }
 
 export enum ParkingLotState {
-  released = 'released',
-  locked = 'locked'
+  active = 'ACTIVE',
+  locked = 'LOCKED',
+  inactive = 'INACTIVE'
 }
