@@ -176,7 +176,9 @@ public class ParkingLotService {
             Boolean[] relevantDays = getRelevantDays(startDate,endDate);
             parkingLots = parkingLots.stream()
                     .filter(lot -> (parkingLotRepository.isParkingLotAvailable(lot, startDate, endDate) != null))
-                    .filter(lot -> (parkingLotRepository.isParkingLotOffered(lot, startDate, endDate, relevantDays[0], relevantDays[1], relevantDays[2], relevantDays[3], relevantDays[4], relevantDays[5], relevantDays[6]) != null))
+                    .filter(lot -> (parkingLotRepository.isParkingLotOffered(lot, startDate, endDate,
+                            relevantDays[0], relevantDays[1], relevantDays[2], relevantDays[3],
+                            relevantDays[4], relevantDays[5], relevantDays[6]) != null))
                     .collect(Collectors.toSet());
         }
         return parkingLots;
