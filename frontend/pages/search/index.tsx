@@ -112,7 +112,8 @@ const SearchPage = () => {
           showModal={showDetails}
           setShowModal={setShowDetails}
           parkingLotModel={selectedParkingLot}
-          createReservation={createReservation}
+          fromDate={searchParameters?.fromDate || new Date()}
+          toDate={searchParameters?.toDate || new Date()}
         />
       ) : null}
     </Grid>
