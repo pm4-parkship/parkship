@@ -6,6 +6,7 @@ import { ParkingLotModel, UserRole } from '../../models';
 import { logger } from '../../logger';
 import useUser from '../../auth/use-user';
 import { toast } from 'react-toastify';
+import { formatDate } from '../../date/date-formatter';
 
 export const enum ParkingLotAction {
   RESERVIEREN = 'reservieren',
@@ -24,8 +25,8 @@ const ParkingReservationConfirmationModal = ({
   setShowModal: (value: boolean) => void;
   parkingLot: ParkingLotModel;
   requestType: ParkingLotAction;
-  from: string;
-  to: string;
+  from: Date;
+  to: Date;
 }) => {
   const { user } = useUser();
   const classes = useStyles();
@@ -46,13 +47,13 @@ const ParkingReservationConfirmationModal = ({
       parkingLot,
       tenant: {
         id: 'id',
-        role: UserRole.user,
+        role: UserRole.USER,
         surname: 'test',
         name: 'test',
         email: 'test@test'
       },
-      from: new Date(from),
-      to: new Date(to)
+      from: from,
+      to: to
     };
 
     if (user) {
@@ -114,24 +115,20 @@ const ParkingReservationConfirmationModal = ({
             <Typography align="center" variant="h4">
               {parkingLot.id}
             </Typography>
-            {/* <Typography align="center" variant="h5">
-            {requestType}
-          </Typography> */}
-
             <Grid container columnSpacing={1}>
               <Grid item xs={2}>
                 <Typography variant="body2">von:</Typography>
               </Grid>
 
               <Grid item xs={4}>
-                <Typography variant="body1">{from}</Typography>
+                <Typography variant="body1">{formatDate(from)}</Typography>
               </Grid>
 
               <Grid item xs={2}>
                 <Typography variant="body2">bis:</Typography>
               </Grid>
               <Grid item xs={4}>
-                <Typography variant="body1">{to}</Typography>
+                <Typography variant="body1">{formatDate(to)}</Typography>
               </Grid>
             </Grid>
 

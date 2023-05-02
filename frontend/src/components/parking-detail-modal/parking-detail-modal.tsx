@@ -33,8 +33,8 @@ const ParkingDetailModal = ({
   showModal: boolean;
   setShowModal: (value: boolean) => void;
   parkingLotModel: ParkingLotModel;
-  fromDate: string;
-  toDate: string;
+  fromDate: Date;
+  toDate: Date;
 }) => {
   const classes = useStyles();
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
