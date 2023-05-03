@@ -23,8 +23,7 @@ const initState = {
   result: Array<ParkingLotModel>()
 };
 
-const ParkingLotsPage = () => {
-  const { user } = useUser();
+const ParkingLotsPage = ({ user }) => {
 
   const [filter, setFilter] = useState<ParkingLotsFilterData>(initFilter);
   const [parkingLots, setParkingLots] = useState(initState);

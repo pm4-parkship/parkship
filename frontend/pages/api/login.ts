@@ -1,5 +1,5 @@
 import { withIronSessionApiRoute } from 'iron-session/next';
-import { sessionOptions } from '../../src/auth/session';
+import { sessionOptions } from '../../src/auth/sessionconfig';
 import { logger } from '../../src/logger';
 
 export default withIronSessionApiRoute(async function loginRoute(req, res) {

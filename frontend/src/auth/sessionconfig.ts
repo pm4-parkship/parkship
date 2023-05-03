@@ -7,7 +7,9 @@ export const sessionOptions: IronSessionOptions = {
   cookieName: 'loginCookieParkship',
   // secure: true should be used in production (HTTPS) but can't be used in development (HTTP)
   cookieOptions: {
-    secure: process.env.NODE_ENV === 'production'
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: "lax"
   }
 };
 
