@@ -16,7 +16,7 @@ import { useRouter } from 'next/router';
 
 function DrawerComponent({ user, signOut }) {
   const classes = useStyles();
-  const router = useRouter()
+  const router = useRouter();
   const [openDrawer, setOpenDrawer] = useState(false);
   const colorMode = useContext(ColorModeContext);
   return (
@@ -41,9 +41,9 @@ function DrawerComponent({ user, signOut }) {
           <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
             <a href="/logout" onClick={async (e) => {
-                  e.preventDefault()
-                  await signOut()
-                  router.push("/login")
+                  e.preventDefault();
+                  await signOut();
+                  router.push("/login");
                 }}>
                   <LogoutIcon />
                   Abmelden

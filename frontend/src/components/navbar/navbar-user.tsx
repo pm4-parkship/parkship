@@ -13,7 +13,7 @@ function NavbarUser({ user, signOut }: { user?: User, signOut: () => Promise<voi
   const colorMode = useContext(ColorModeContext);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const router = useRouter()
+  const router = useRouter();
   return (
     <AppBar position="static">
       <Toolbar>
@@ -40,9 +40,9 @@ function NavbarUser({ user, signOut }: { user?: User, signOut: () => Promise<voi
                 </Typography>
 
                 <a href="/logout" onClick={async (e) => {
-                  e.preventDefault()
-                  await signOut()
-                  router.push("/")
+                  e.preventDefault();
+                  await signOut();
+                  router.push("/");
                 }}>
                   <LogoutIcon />
                 </a>

@@ -36,9 +36,9 @@ function DrawerComponent({ user, signOut }) {
           <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
             <a href="/logout" onClick={async (e) => {
-                  e.preventDefault()
-                  await signOut()
-                  router.push("/login")
+                  e.preventDefault();
+                  await signOut();
+                  router.push("/login");
                 }}>
                   <LogoutIcon />
                   Abmelden
