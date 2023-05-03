@@ -33,6 +33,7 @@ function NavbarUser({
               <div className={classes.navlinks}>
                 <Link href="/admin/parking-lots">Parkplatzverwaltung</Link>
                 <Link href="/admin/users">Benutzerverwaltung</Link>
+                <Link href="/admin/my-parking-lots">Meine Parkplätze</Link>
               </div>
               <div className={classes.logout}>
                 <Typography
