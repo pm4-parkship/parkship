@@ -18,7 +18,7 @@ function NavbarUser({ user, signOut }: { user?: User, signOut: () => Promise<voi
     <AppBar position="static">
       <Toolbar>
         {isMobile ? (
-          <DrawerComponent />
+          <DrawerComponent user={user} signOut={signOut}/>
         ) : (
           user?.isLoggedIn && (
             <>

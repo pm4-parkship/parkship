@@ -7,7 +7,6 @@ import {
 } from '../../src/models/reservation/reservation.model';
 import { Link, Typography } from '@mui/material';
 import { formatDate } from '../../src/date/date-formatter';
-import useUser from '../../src/auth/use-user';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
 import { RowDataType } from '../../src/components/table/table-row';
 import { toast } from 'react-toastify';
@@ -31,9 +30,7 @@ const minCancelDate = () => {
   return today;
 };
 
-const MyReservationPage = () => {
-  const { user } = useUser();
-
+const MyReservationPage = ({ user }) => {
   const [filter, setFilter] = useState<ReservationFilterData>(initFilter);
   const [reservations, setReservations] = useState(initState);
 

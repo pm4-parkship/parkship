@@ -9,7 +9,6 @@ import { formatDate } from '../../src/date/date-formatter';
 import { format } from 'date-fns';
 import { logger } from '../../src/logger';
 import { toast } from 'react-toastify';
-import useUser from '../../src/auth/use-user';
 import { User } from '../api/user';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
 import { RowDataType } from '../../src/components/table/table-row';
@@ -26,9 +25,7 @@ export interface SearchParameters {
   tags: TagData[];
 }
 
-const SearchPage = () => {
-  const { user } = useUser();
-
+const SearchPage = ({ user }) => {
   const initState = {
     error: null,
     loading: false,

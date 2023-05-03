@@ -11,17 +11,14 @@ import Link from '../../link/link';
 import { makeStyles } from '@mui/styles';
 import { Icon } from '@iconify/react';
 import LogoutIcon from '@mui/icons-material/Logout';
-import useUser from '../../../auth/use-user';
 import { ColorModeContext } from '../../../../context';
+import { useRouter } from 'next/router';
 
-function DrawerComponent() {
+function DrawerComponent({ user, signOut }) {
   const classes = useStyles();
+  const router = useRouter()
   const [openDrawer, setOpenDrawer] = useState(false);
   const colorMode = useContext(ColorModeContext);
-  const { user } = useUser({
-    redirectTo: '/login',
-    redirectIfFound: false
-  });
   return (
     <div className={classes.root}>
       <Drawer open={openDrawer} onClose={() => setOpenDrawer(false)}>
@@ -43,12 +40,14 @@ function DrawerComponent() {
           </ListItem>
           <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
-              <Link href="/logout">
-                <span className={classes.logout}>
+            <a href="/logout" onClick={async (e) => {
+                  e.preventDefault()
+                  await signOut()
+                  router.push("/login")
+                }}>
                   <LogoutIcon />
                   Abmelden
-                </span>
-              </Link>
+                </a>
             </ListItemText>
           </ListItem>
         </List>

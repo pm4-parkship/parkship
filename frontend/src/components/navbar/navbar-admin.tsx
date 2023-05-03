@@ -19,7 +19,7 @@ function NavbarUser({ user, signOut }: { user?: User, signOut: () => Promise<voi
     <AppBar position="static">
       <Toolbar>
         {isMobile ? (
-          <DrawerComponent />
+          <DrawerComponent user={user} signOut={signOut}/>
         ) : (
           user?.isLoggedIn && (
             <>
@@ -43,7 +43,7 @@ function NavbarUser({ user, signOut }: { user?: User, signOut: () => Promise<voi
                 <a href="/logout" onClick={async (e) => {
                   e.preventDefault()
                   await signOut()
-                  router.push("/")
+                  router.push("/login")
                 }}>
                   <LogoutIcon />
                 </a>

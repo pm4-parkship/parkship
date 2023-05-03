@@ -4,7 +4,6 @@ import { makeStyles } from '@mui/styles';
 import { Icon } from '@iconify/react';
 import { ParkingLotModel, UserRole } from '../../models';
 import { logger } from '../../logger';
-import useUser from '../../auth/use-user';
 import { toast } from 'react-toastify';
 import { formatDate } from '../../date/date-formatter';
 
@@ -28,7 +27,6 @@ const ParkingReservationConfirmationModal = ({
   from: Date;
   to: Date;
 }) => {
-  const { user } = useUser();
   const classes = useStyles();
 
   const executeReservation = (parkingLot: ParkingLotModel) => {

@@ -27,7 +27,7 @@ export function Layout({ user, signOut, children }: LayoutProps) {
       </main>
       <div className={classes.bottomBar}>
         <Typography variant="body2" color="primary" align="center">
-          {'Created with ❤️ '}
+          {'Created with ❤️'}
         </Typography>
         <Typography variant="body2" color="textPrimary" align="center">
           {' by Parkship © '}
