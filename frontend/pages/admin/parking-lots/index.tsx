@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Loading } from '../../../src/components/loading-buffer/loading-buffer';
 import { Grid, Typography } from '@mui/material';
 import { logger } from '../../../src/logger';
-import useUser from '../../../src/auth/use-user';
 import { ParkingLotModel, ParkingLotState } from '../../../src/models';
 import ParkingLotsFilter from '../../../src/components/parking-lots-list/parking-lots-filter';
 import { RowDataType } from '../../../src/components/table/table-row';

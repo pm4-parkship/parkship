@@ -1,6 +1,5 @@
 import { useEffect } from "react"
 import { useRouter } from "next/router"
-import useSession from "./use-session"
 
 export function useAuthRedirect(pageProps: any, userData: any) {
     const router = useRouter()

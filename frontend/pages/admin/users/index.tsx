@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import useUser from '../../../src/auth/use-user';
 import {
   ParkingLotModel,
   ParkingLotState,
@@ -10,9 +9,7 @@ import { toast } from 'react-toastify';
 import { User } from '../../api/user';
 import { Button, MenuItem, Select } from '@mui/material';
 
-const MyParkingLotPage = () => {
-  const { user } = useUser();
-
+const MyParkingLotPage = ({ user }) => {
   const newParkingLot: ParkingLotModel = {
     id: 1,
     name: 'new parking',

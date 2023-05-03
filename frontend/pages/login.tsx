@@ -129,3 +129,11 @@ export default function Login({ signIn }) {
     </div>
   );
 }
+
+export async function getStaticProps() {
+  return {
+    props: {
+      publicPage: true
+    }
+  }
+}

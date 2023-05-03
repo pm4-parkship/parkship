@@ -35,6 +35,7 @@ const App = ({
 }: AppPropsWithApm) => {
   const { isInitialized, isSignedIn, user, signIn, signOut } = useSession()
   useAuthRedirect(pageProps, { isInitialized, isSignedIn, user })
+
   const [mode, setMode] = useState<string>('light');
   const [mounted, setMounted] = useState<boolean>(false);
 
@@ -94,9 +95,10 @@ const App = ({
                   dateAdapter={AdapterDateFns}
                   adapterLocale={enGB}
                 >
-                  <Layout user={user} signOut={signOut}>
+                  {/* To avoid flashes when accessing an unauthorized page */}
+                  {(pageProps.publicPage || user?.isLoggedIn) && <Layout user={user} signOut={signOut}>
                     <Component {...newPageProps} />
-                  </Layout>
+                  </Layout>}
                 </LocalizationProvider>
               </CssBaseline>
             </ThemeProvider>

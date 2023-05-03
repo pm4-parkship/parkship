@@ -7,13 +7,10 @@ import { UserRole } from './src/models';
 export const middleware = async (req: NextRequest) => {
   const res = NextResponse.next();
   const session = await getIronSession(req, res, sessionOptions);
-  // do anything with session here:
   const { user } = session;
 
-  // Kick out user if not admin
-  if (req.url.includes('admin') && user?.role != UserRole.ADMIN) {
-    // todo does not work. user is always undefined
-    return new NextResponse(null, { status: 403 }); // unauthorized to see pages inside admin/
+  if (req.url.includes('admin') && user?.role !== UserRole.ADMIN) {
+      return NextResponse.redirect(new URL("/login", req.url))
   }
 
   return res;

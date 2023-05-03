@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import MyParkingLotList from '../../src/components/parking-list/my-parking-lot-list';
 import { ParkingLotModel } from '../../src/models';
-import useUser from '../../src/auth/use-user';
 import { User } from '../api/user';
 import { logger } from '../../src/logger';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
@@ -12,8 +11,7 @@ const initState = {
   result: Array<ParkingLotModel>()
 };
 
-const MyParkingLotPage = () => {
-  const { user } = useUser();
+const MyParkingLotPage = ({ user }) => {
   const [parkingLots, setParkingLots] = useState(initState);
 
   useEffect(() => {
