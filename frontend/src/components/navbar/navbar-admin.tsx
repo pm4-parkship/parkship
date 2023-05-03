@@ -9,7 +9,7 @@ import { User } from '../../../pages/api/user';
 import { useRouter } from 'next/router';
 
 function NavbarUser({ user, signOut }: { user?: User, signOut: () => Promise<void> }) {
-  const router = useRouter()
+  const router = useRouter();
   const classes = useStyles();
   const colorMode = useContext(ColorModeContext);
   const theme = useTheme();
@@ -41,9 +41,9 @@ function NavbarUser({ user, signOut }: { user?: User, signOut: () => Promise<voi
 
 
                 <a href="/logout" onClick={async (e) => {
-                  e.preventDefault()
-                  await signOut()
-                  router.push("/login")
+                  e.preventDefault();
+                  await signOut();
+                  router.push("/login");
                 }}>
                   <LogoutIcon />
                 </a>

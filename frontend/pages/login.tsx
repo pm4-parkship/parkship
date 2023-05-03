@@ -61,7 +61,7 @@ export default function Login({ signIn }) {
             role: UserRole[data.user.role],
             token: data.user.token,
             username: data.user.username
-          }
+          };
           signIn(userData);
           router.push(userData.role === UserRole.ADMIN ? "/admin/parking-lots" : "/search");
         }
@@ -135,5 +135,5 @@ export async function getStaticProps() {
     props: {
       publicPage: true
     }
-  }
+  };
 }

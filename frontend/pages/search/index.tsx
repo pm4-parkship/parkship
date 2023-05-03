@@ -106,6 +106,7 @@ const SearchPage = ({ user }) => {
       </Grid>
       {selectedParkingLot ? (
         <ParkingDetailModal
+          user={user}
           showModal={showDetails}
           setShowModal={setShowDetails}
           parkingLotModel={selectedParkingLot}

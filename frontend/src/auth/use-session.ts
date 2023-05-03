@@ -1,44 +1,44 @@
-import { useRef, useState, useEffect } from "react"
+import { useRef, useState, useEffect } from "react";
 import { User } from '../../pages/api/user';
 
 export async function fetchSession() {
-    const response = await fetch("/api/user")
+    const response = await fetch("/api/user");
 
     if (!response.ok) {
-        return Promise.reject()
+        return Promise.reject();
     }
 
-    const data = await response.json()
-    return data
+    const data = await response.json();
+    return data;
 }
 
 export default function useSession() {
-    const initRef = useRef<boolean>()
-    const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [session, setSession] = useState<User | undefined>()
+    const initRef = useRef<boolean>();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [session, setSession] = useState<User | undefined>();
 
     useEffect(() => {
-        if (initRef.current) return
-        initRef.current = true
-        setIsLoading(true)
+        if (initRef.current) return;
+        initRef.current = true;
+        setIsLoading(true);
         const loadSession = async () => {
             try {
-                const data = await fetchSession()
-                setSession(data)
+                const data = await fetchSession();
+                setSession(data);
             } catch (e) {
-                console.error("Not logged in!")
+                //console.error("Not logged in!");
             } finally {
-                setIsLoading(false)
+                setIsLoading(false);
             }
-        }
-        loadSession()
-    }, [])
+        };
+        loadSession();
+    }, []);
 
-    const signIn = (data) => setSession(data)
+    const signIn = (data) => setSession(data);
     const signOut = async () => {
-        await fetch("/api/logout")
-        setSession(undefined)
-    }
+        await fetch("/api/logout");
+        setSession(undefined);
+    };
 
     return {
         isInitialized: isLoading === false,
@@ -46,6 +46,6 @@ export default function useSession() {
         user: session,
         signIn,
         signOut
-    }
+    };
 
 }

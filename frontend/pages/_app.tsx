@@ -33,8 +33,8 @@ const App = ({
   pageProps,
   emotionCache = clientSideEmotionCache
 }: AppPropsWithApm) => {
-  const { isInitialized, isSignedIn, user, signIn, signOut } = useSession()
-  useAuthRedirect(pageProps, { isInitialized, isSignedIn, user })
+  const { isInitialized, isSignedIn, user, signIn, signOut } = useSession();
+  useAuthRedirect(pageProps, { isInitialized, isSignedIn, user });
 
   const [mode, setMode] = useState<string>('light');
   const [mounted, setMounted] = useState<boolean>(false);
@@ -61,7 +61,7 @@ const App = ({
     user,
     signIn,
     signOut
-  }
+  };
 
   return (
     <React.Fragment>

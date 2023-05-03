@@ -6,6 +6,7 @@ import { ParkingLotModel, UserRole } from '../../models';
 import { logger } from '../../logger';
 import { toast } from 'react-toastify';
 import { formatDate } from '../../date/date-formatter';
+import { User } from 'pages/api/user';
 
 export const enum ParkingLotAction {
   RESERVIEREN = 'reservieren',
@@ -13,6 +14,7 @@ export const enum ParkingLotAction {
 }
 
 const ParkingReservationConfirmationModal = ({
+  user,
   showModal = true,
   setShowModal,
   parkingLot,
@@ -20,6 +22,7 @@ const ParkingReservationConfirmationModal = ({
   from,
   to
 }: {
+  user: User,
   showModal: boolean;
   setShowModal: (value: boolean) => void;
   parkingLot: ParkingLotModel;
