@@ -8,7 +8,13 @@ import { ColorModeContext } from '../../../context';
 import { User } from '../../../pages/api/user';
 import { useRouter } from 'next/router';
 
-function NavbarUser({ user, signOut }: { user?: User, signOut: () => Promise<void> }) {
+function NavbarUser({
+  user,
+  signOut
+}: {
+  user?: User;
+  signOut: () => Promise<void>;
+}) {
   const classes = useStyles();
   const colorMode = useContext(ColorModeContext);
   const theme = useTheme();
@@ -18,7 +24,7 @@ function NavbarUser({ user, signOut }: { user?: User, signOut: () => Promise<voi
     <AppBar position="static">
       <Toolbar>
         {isMobile ? (
-          <DrawerComponent user={user} signOut={signOut}/>
+          <DrawerComponent user={user} signOut={signOut} />
         ) : (
           user?.isLoggedIn && (
             <>
@@ -39,13 +45,17 @@ function NavbarUser({ user, signOut }: { user?: User, signOut: () => Promise<voi
                   Willkommen {user?.username}
                 </Typography>
 
-                <a href="/logout" onClick={async (e) => {
-                  e.preventDefault();
-                  await signOut();
-                  router.push("/");
-                }}>
-                  <LogoutIcon />
-                </a>
+                <Link href="/logout">
+                  <span
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      await signOut();
+                      router.push('/');
+                    }}
+                  >
+                    <LogoutIcon />
+                  </span>
+                </Link>
               </div>
             </>
           )

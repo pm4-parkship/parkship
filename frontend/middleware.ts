@@ -10,7 +10,7 @@ export const middleware = async (req: NextRequest) => {
   const { user } = session;
 
   if (req.url.includes('admin') && user?.role !== UserRole.ADMIN) {
-      return NextResponse.redirect(new URL("/login", req.url))
+    return NextResponse.redirect(new URL('/login', req.url));
   }
 
   return res;

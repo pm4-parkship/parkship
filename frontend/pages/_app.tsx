@@ -96,9 +96,11 @@ const App = ({
                   adapterLocale={enGB}
                 >
                   {/* To avoid flashes when accessing an unauthorized page */}
-                  {(pageProps.publicPage || user?.isLoggedIn) && <Layout user={user} signOut={signOut}>
-                    <Component {...newPageProps} />
-                  </Layout>}
+                  {(pageProps.publicPage || user?.isLoggedIn) && (
+                    <Layout user={user} signOut={signOut}>
+                      <Component {...newPageProps} />
+                    </Layout>
+                  )}
                 </LocalizationProvider>
               </CssBaseline>
             </ThemeProvider>
@@ -112,5 +114,5 @@ const App = ({
 export default App;
 
 declare module '@mui/styles/defaultTheme' {
-  interface DefaultTheme extends Theme { }
+  interface DefaultTheme extends Theme {}
 }

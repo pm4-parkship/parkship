@@ -23,7 +23,6 @@ const initState = {
 };
 
 const ParkingLotsPage = ({ user }) => {
-
   const [filter, setFilter] = useState<ParkingLotsFilterData>(initFilter);
   const [parkingLots, setParkingLots] = useState(initState);
 

@@ -35,14 +35,19 @@ function DrawerComponent({ user, signOut }) {
           </ListItem>
           <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
-            <a href="/logout" onClick={async (e) => {
-                  e.preventDefault();
-                  await signOut();
-                  router.push("/login");
-                }}>
+              <Link href="/logout">
+                <span
+                  className={classes.logout}
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    await signOut();
+                    router.push('/login');
+                  }}
+                >
                   <LogoutIcon />
                   Abmelden
-                </a>
+                </span>
+              </Link>
             </ListItemText>
           </ListItem>
         </List>
