@@ -10,7 +10,7 @@ const Index = ({ user }) => {
     <div className={classes.superRoot}>
       <Grid container justifyContent="center" display="flex">
         <Grid item xs={12}>
-          { user?.isLoggedIn && <SearchPage user={user}/> }
+          {user?.isLoggedIn && <SearchPage user={user} />}
         </Grid>
       </Grid>
     </div>

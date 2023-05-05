@@ -22,7 +22,7 @@ const ParkingReservationConfirmationModal = ({
   from,
   to
 }: {
-  user: User,
+  user: User;
   showModal: boolean;
   setShowModal: (value: boolean) => void;
   parkingLot: ParkingLotModel;

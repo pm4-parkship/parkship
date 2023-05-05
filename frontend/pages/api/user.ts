@@ -1,7 +1,6 @@
 import { withIronSessionApiRoute } from 'iron-session/next';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sessionOptions } from '../../src/auth/sessionconfig';
-import { logger } from '../../src/logger';
 
 export interface User {
   isLoggedIn: boolean;

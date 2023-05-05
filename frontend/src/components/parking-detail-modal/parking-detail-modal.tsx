@@ -32,7 +32,7 @@ const ParkingDetailModal = ({
   fromDate,
   toDate
 }: {
-  user: User,
+  user: User;
   showModal: boolean;
   setShowModal: (value: boolean) => void;
   parkingLotModel: ParkingLotModel;

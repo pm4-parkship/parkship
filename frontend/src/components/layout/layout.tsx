@@ -7,9 +7,9 @@ import NavbarUser from '../navbar/navbar-user';
 import { User } from 'pages/api/user';
 
 export type LayoutProps = {
-  children: ReactNode,
-  user?: User,
-  signOut: () => Promise<void>
+  children: ReactNode;
+  user?: User;
+  signOut: () => Promise<void>;
 };
 
 export function Layout({ user, signOut, children }: LayoutProps) {

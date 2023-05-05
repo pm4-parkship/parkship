@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { TextFieldElement } from 'react-hook-form-mui';
 import { toast } from 'react-toastify';
-import { ErrorMapCtx, ZodIssueOptionalMessage, z } from 'zod';
+import { ErrorMapCtx, z, ZodIssueOptionalMessage } from 'zod';
 import { UserRole } from '../src/models';
 
 export default function Login({ signIn }) {
@@ -63,7 +63,9 @@ export default function Login({ signIn }) {
             username: data.user.username
           };
           signIn(userData);
-          router.push(userData.role === UserRole.ADMIN ? "/admin/parking-lots" : "/search");
+          router.push(
+            userData.role === UserRole.ADMIN ? '/admin/parking-lots' : '/search'
+          );
         }
       });
     } catch (error: any) {
