@@ -1,8 +1,10 @@
 package ch.zhaw.parkship.parkinglot;
 
 import jakarta.persistence.LockModeType;
+
 import java.util.List;
 import java.util.Set;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -30,7 +32,8 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLotEntity, Lo
     List<ParkingLotEntity> findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase(String name, String surname);
 
     @Query("SELECT p FROM ParkingLotEntity p " +
-            "WHERE NOT EXISTS (SELECT r FROM ReservationEntity r " +
+            "WHERE p.state = ch.zhaw.parkship.parkinglot.ParkingLotState.ACTIVE AND " +
+            "NOT EXISTS (SELECT r FROM ReservationEntity r " +
             "                  WHERE r.parkingLot = p " +
             "                  AND (r.from >= :fromDate AND r.from < :toDate " +
             "                       OR r.to > :fromDate AND r.to <= :toDate))")
@@ -40,7 +43,7 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLotEntity, Lo
 
 
     @Query("SELECT p FROM ParkingLotEntity p " +
-            "WHERE p = :parkingLot AND " +
+            "WHERE p = :parkingLot AND p.state = ch.zhaw.parkship.parkinglot.ParkingLotState.ACTIVE AND " +
             "NOT EXISTS (SELECT r FROM ReservationEntity r " +
             "                  WHERE r.parkingLot = p " +
             "                  AND (r.from >= :fromDate AND r.from < :toDate " +
@@ -50,6 +53,6 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLotEntity, Lo
             @Param("fromDate") LocalDate fromDate,
             @Param("toDate") LocalDate toDate);
 
-    
+
     Set<ParkingLotEntity> findByOwnerId(Long userId);
 }

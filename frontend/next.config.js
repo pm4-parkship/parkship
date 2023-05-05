@@ -15,10 +15,10 @@ module.exports = {
     return isProduction
       ? []
       : [
-            {
-              source: '/backend/:path*',
-              destination: 'http://localhost:8080/backend/:path*'
-            }
+          {
+            source: '/backend/:path*',
+            destination: 'http://localhost:8080/backend/:path*'
+          }
         ];
   }
 };

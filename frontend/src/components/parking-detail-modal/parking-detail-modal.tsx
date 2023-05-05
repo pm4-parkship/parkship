@@ -12,26 +12,35 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import { ParkingLotModel } from '../../models';
 import { Icon } from '@iconify/react';
 import ImageCustom from '../image/image-custom';
 import { nanoid } from 'nanoid';
 import Checkbox from '@mui/material/Checkbox';
+import ParkingReservationConfirmationModal, {
+  ParkingLotAction
+} from '../parking-reservation-confirmation-modal/parking-reservation-confirmation-modal';
+import { User } from 'pages/api/user';
 
 const ParkingDetailModal = ({
+  user,
   showModal = true,
   setShowModal,
   parkingLotModel,
-  createReservation
+  fromDate,
+  toDate
 }: {
+  user: User;
   showModal: boolean;
   setShowModal: (value: boolean) => void;
   parkingLotModel: ParkingLotModel;
-  createReservation: () => void;
+  fromDate: Date;
+  toDate: Date;
 }) => {
   const classes = useStyles();
+  const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
 
   return (
     <>
@@ -215,14 +224,23 @@ const ParkingDetailModal = ({
               ))}
           </Stack>
           <Button
+            onClick={() => setOpenConfirmationModal(true)}
             className={classes.button}
             variant="outlined"
-            onClick={createReservation}
           >
             reservieren
           </Button>
         </div>
       </Modal>
+      <ParkingReservationConfirmationModal
+        user={user}
+        showModal={openConfirmationModal}
+        setShowModal={setOpenConfirmationModal}
+        from={fromDate}
+        to={toDate}
+        parkingLot={parkingLotModel}
+        requestType={ParkingLotAction.RESERVIEREN}
+      />
     </>
   );
 };

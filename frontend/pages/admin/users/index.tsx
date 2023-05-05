@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import useUser from '../../../src/auth/use-user';
 import {
   ParkingLotModel,
   ParkingLotState,
