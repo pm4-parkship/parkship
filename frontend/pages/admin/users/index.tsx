@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
-import {
-  ParkingLotModel,
-  ParkingLotState,
-  UserRole
-} from '../../../src/models';
 import { logger } from '../../../src/logger';
-import { toast } from 'react-toastify';
-import { User } from '../../api/user';
-import { Button, MenuItem, Select } from '@mui/material';
+import user, { User } from '../../api/user';
+import { Button } from '@mui/material';
 import UserAdministrationModal from 'src/components/user-administration/user-administration-modal/user-administration-modal';
 
-const UserAdministrationPage = () => {
+const UserAdministrationPage = ({ user }) => {
   const [openUserAdministrationModal, setOpenUserAdministrationModal] =
     useState(false);
 
@@ -31,6 +25,7 @@ const UserAdministrationPage = () => {
         showModal={openUserAdministrationModal}
         setShowModal={setOpenUserAdministrationModal}
         onAddedUser={handleAddedUser}
+        user={user}
       />
     </div>
   );

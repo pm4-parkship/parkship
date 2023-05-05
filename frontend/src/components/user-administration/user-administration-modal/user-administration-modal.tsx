@@ -11,21 +11,25 @@ import {
   SelectChangeEvent,
   Typography
 } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import { TextFieldElement, useForm } from 'react-hook-form-mui';
 import { toast } from 'react-toastify';
 import { z, ZodIssueOptionalMessage, ErrorMapCtx } from 'zod';
 import { makeStyles } from '@mui/styles';
 import { Icon } from '@iconify/react';
+import { User } from 'pages/api/user';
+import ShowPasswordModal from './show-password-modal';
 
 const UserAdministrationModal = ({
   showModal = true,
   setShowModal,
-  onAddedUser
+  onAddedUser,
+  user
 }: {
   showModal: boolean;
   setShowModal: (value: boolean) => void;
   onAddedUser: (value: any) => void;
+  user: User;
 }) => {
   const classes = useStyles();
 
@@ -36,6 +40,7 @@ const UserAdministrationModal = ({
   });
 
   const rolesMocked = ['Admin', 'Benutzer'];
+  const passwordMocked = 'myPassword';
 
   const getRoles = (): string[] | null => {
     // Frage an Rabus: Wohin damit?
@@ -66,8 +71,10 @@ const UserAdministrationModal = ({
     return null;
   };
 
-  const [roles, setRoles] = React.useState<any[] | null>(() => getRoles());
-  const [role, setRole] = React.useState<string>('');
+  const [roles, setRoles] = useState<any[] | null>(() => getRoles());
+  const [role, setRole] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [openShowPasswordModal, setOpenShowPasswordModal] = useState(false);
 
   const customErrorMap = () => {
     return (issue: ZodIssueOptionalMessage, ctx: ErrorMapCtx) => {
@@ -123,13 +130,21 @@ const UserAdministrationModal = ({
     try {
       await fetch('/backend/users/signup', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`
+        },
         body: JSON.stringify(body)
       }).then(async (res: any) => {
         if (res.ok) {
           const data = await res.json();
           onAddedUser(data);
         }
+
+        // move inside if(res.ok)
+        setPassword(passwordMocked); // replace with data.password
+        setOpenShowPasswordModal(true);
+        //-----------------------------------------------------
       });
     } catch (error: any) {
       toast.error(error.message);
@@ -224,6 +239,12 @@ const UserAdministrationModal = ({
             </form>
           </Box>
         </Modal>
+
+        <ShowPasswordModal
+          showModal={openShowPasswordModal}
+          setShowModal={setOpenShowPasswordModal}
+          password={password}
+        />
       </div>
     </>
   );
