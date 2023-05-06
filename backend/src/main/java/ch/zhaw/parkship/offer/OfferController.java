@@ -37,7 +37,7 @@ public class OfferController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<OfferDto> createOffer(
-            @RequestBody OfferDto offerDto) {
+            @Valid @RequestBody OfferDto offerDto) {
             validateRequest(offerDto);
 
         ParkingLotEntity parkingLot = parkingLotRepository.getByIdLocked(offerDto.getParkingLotId());
@@ -117,6 +117,7 @@ public class OfferController {
     @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<OfferDto> updateOffer(@PathVariable Long id,
                                                             @Valid @RequestBody OfferDto offerDto) {
+        validateRequest(offerDto);
         offerDto.setId(id);
         Optional<OfferDto> updatedOffer = offerService.update(offerDto);
         if (updatedOffer.isPresent()) {
@@ -126,11 +127,7 @@ public class OfferController {
     }
 
     protected void validateRequest(OfferDto offerDto) {
-
-        if (offerDto == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given object is null");
-        }
-        if (offerDto.getParkingLotId() == null) {
+        if (offerDto.getParkingLotId() == null || parkingLotRepository.getByIdLocked(offerDto.getParkingLotId()) == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given parkingLot is invalid");
         }
 
@@ -154,7 +151,7 @@ public class OfferController {
 
     private boolean areDatesInFuture(OfferDto offerDto) {
         LocalDate today = LocalDate.now();
-        return today.isBefore(offerDto.getFrom()) && today.isBefore(offerDto.getTo());
+        return today.isBefore(offerDto.getFrom().plusDays(1)) && today.isBefore(offerDto.getTo().plusDays(1));
     }
 
     private boolean isAtLeastOneDayAvailable(OfferDto offerDto){
@@ -176,7 +173,7 @@ public class OfferController {
         if (offerDto.getFrom() == null || offerDto.getTo() == null) {
             return false;
         }
-        return offerDto.getFrom().isBefore(offerDto.getTo());
+        return offerDto.getFrom().isBefore(offerDto.getTo().plusDays(1));
     }
 
 

@@ -86,7 +86,8 @@ public class ParkshipApplication {
                 parkingLot.setState(ParkingLotState.ACTIVE);
                 parkingLot.setAddress(faker.address().streetName());
                 parkingLot.setAddressNr(faker.address().streetAddressNumber());
-                parkingLot.setDescription(faker.hitchhikersGuideToTheGalaxy().quote());
+                String description = faker.hitchhikersGuideToTheGalaxy().quote();
+                parkingLot.setDescription(description.length() > 255 ? description.substring(0,255) : description);
                 parkingLot.setOwner(i == 0 ? admin : user);
                 parkingLotRepository.save(parkingLot);
                 parkingLots.add(parkingLot);

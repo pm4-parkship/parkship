@@ -1,11 +1,9 @@
 package ch.zhaw.parkship.parkinglot;
 
-import ch.zhaw.parkship.offer.OfferEntity;
 import ch.zhaw.parkship.reservation.ReservationService;
 import ch.zhaw.parkship.user.UserRepository;
 import ch.zhaw.parkship.user.UserService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.type.descriptor.java.LocalDateJavaType;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -45,7 +43,7 @@ public class ParkingLotService {
      * Optional object.
      */
     public Optional<ParkingLotDto> create(ParkingLotDto data) {
-        var owner = userRepository.findById(data.getOwner().id());
+        var owner = userRepository.findById(data.getOwnerId());
         if (owner.isPresent()) {
             var parkingLotEntity = new ParkingLotEntity();
             parkingLotEntity.setOwner(owner.get());

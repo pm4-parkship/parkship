@@ -14,6 +14,7 @@ import java.util.Objects;
 public class OfferDto implements Serializable {
     private Long id;
 
+    @NotNull
     private Long parkingLotId;
 
     @NotNull

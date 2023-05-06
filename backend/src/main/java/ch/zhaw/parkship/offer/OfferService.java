@@ -60,6 +60,7 @@ public class OfferService {
         var offerEntity = new OfferEntity();
         BeanUtils.copyProperties(data, offerEntity);
         offerEntity.setParkingLot(parkingLotEntity);
+        offerEntity.setId(null);
         return offerRepository.save(offerEntity);
     }
 
