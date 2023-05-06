@@ -9,10 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -51,23 +48,24 @@ class ParkingLotControllerTest {
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(parkingLotController).build();
+        MockitoAnnotations.initMocks(this);
         objectMapper = new ObjectMapper();
     }
 
 
     private ParkingLotEntity createBasicParkingLotEntity() {
-        ParkingLotEntity parkingLotDto = new ParkingLotEntity();
-        parkingLotDto.setId(1L);
-        parkingLotDto.setOwner(UserGenerator.generate());
-        parkingLotDto.setLongitude(15.2);
-        parkingLotDto.setLatitude(11.22);
-        parkingLotDto.setNr("11A");
-        parkingLotDto.setPrice(444.4);
-        parkingLotDto.setState(ParkingLotState.ACTIVE);
-        parkingLotDto.setAddress("Muster Street");
-        parkingLotDto.setAddressNr("44");
-        parkingLotDto.setDescription("next to the entrance");
-        return parkingLotDto;
+        ParkingLotEntity parkingLotEntity = new ParkingLotEntity();
+        parkingLotEntity.setId(1L);
+        parkingLotEntity.setOwner(UserGenerator.generate(1L));
+        parkingLotEntity.setLongitude(15.2);
+        parkingLotEntity.setLatitude(11.22);
+        parkingLotEntity.setNr("11A");
+        parkingLotEntity.setPrice(444.4);
+        parkingLotEntity.setState(ParkingLotState.ACTIVE);
+        parkingLotEntity.setAddress("Muster Street");
+        parkingLotEntity.setAddressNr("44");
+        parkingLotEntity.setDescription("next to the entrance");
+        return parkingLotEntity;
     }
 
     private ParkingLotDto createBasicParkingLotDto() {
@@ -108,7 +106,7 @@ class ParkingLotControllerTest {
         ParkingLotDto parkingLotDto = createBasicParkingLotDto();
         parkingLotDto.setId(1L);
 
-        when(parkingLotService.update(parkingLotDtoCaptor.capture()))
+        when(parkingLotService.update(parkingLotDto))
                 .thenReturn(Optional.of(parkingLotDto));
 
         mockMvc
@@ -142,7 +140,7 @@ class ParkingLotControllerTest {
 
     @Test
     public void updateParkingLotNotFoundTest() throws Exception {
-        ParkingLotEntity parkingLotDto = createBasicParkingLotEntity();
+        ParkingLotDto parkingLotDto = createBasicParkingLotDto();
         parkingLotDto.setId(1L);
 
         when(parkingLotService.update(parkingLotDtoCaptor.capture())).thenReturn(Optional.empty());

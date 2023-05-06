@@ -80,7 +80,7 @@ class ParkingLotServiceTest {
     private ParkingLotDto createParkingLotDto() {
         ParkingLotDto data = new ParkingLotDto();
         var owner = new UserDto(userEntity);
-        data.setOwner(owner);
+        data.setOwnerId(owner.id());
         data.setId(1L);
         data.setLongitude(15.5);
         data.setLatitude(16.22);
@@ -294,7 +294,7 @@ class ParkingLotServiceTest {
             Optional<ParkingLotEntity> correspondingEntity = parkingLots.stream()
                     .filter(entity -> entity.getId().equals(parkingLotDto.getId())).findFirst();
             assertTrue(correspondingEntity.isPresent());
-            assertEquals(correspondingEntity.get().getOwner().getId(), parkingLotDto.getOwner().id());
+            assertEquals(correspondingEntity.get().getOwner().getId(), parkingLotDto.getOwnerId());
         });
 
         verify(parkingLotRepository, times(1)).findByOwnerId(userEntity.getId());

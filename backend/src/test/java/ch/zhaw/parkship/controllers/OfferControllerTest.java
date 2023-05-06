@@ -6,6 +6,8 @@ import ch.zhaw.parkship.offer.OfferEntity;
 import ch.zhaw.parkship.offer.OfferService;
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
+import ch.zhaw.parkship.util.UserGenerator;
+import ch.zhaw.parkship.util.generator.ParkingLotGenerator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,25 +41,13 @@ public class OfferControllerTest {
     }
 
     private OfferDto createBasicOfferDto(){
-        OfferDto offerDto = new OfferDto();
-        offerDto.setId(1L);
-        offerDto.setParkingLotId(1L);
-        offerDto.setFrom(LocalDate.of(2023, 1, 1));
-        offerDto.setTo(LocalDate.of(2023, 12, 31));
-        offerDto.setMonday(true);
-        offerDto.setTuesday(true);
-        offerDto.setWednesday(true);
-        offerDto.setThursday(true);
-        offerDto.setFriday(true);
-        offerDto.setSaturday(true);
-        offerDto.setSunday(true);
-        return offerDto;
+        return new OfferDto(createBasicOfferEntity());
     }
 
     private OfferEntity createBasicOfferEntity(){
         OfferEntity offerEntity = new OfferEntity();
         offerEntity.setId(1L);
-        offerEntity.setParkingLot(new ParkingLotEntity());
+        offerEntity.setParkingLot(ParkingLotGenerator.generate(UserGenerator.generate()));
         offerEntity.setFrom(LocalDate.of(2023, 1, 1));
         offerEntity.setTo(LocalDate.of(2023, 12, 31));
         offerEntity.setMonday(true);
@@ -104,7 +94,7 @@ public class OfferControllerTest {
         // assert
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
         Assertions.assertNotNull(result.getBody());
-        Assertions.assertEquals(1L, result.getBody().get(1).getId());
+        Assertions.assertEquals(1L, result.getBody().get(0).getId());
         verify(offerService, times(1)).getAll();
     }
 
