@@ -19,6 +19,7 @@ import { makeStyles } from '@mui/styles';
 import { Icon } from '@iconify/react';
 import { User } from 'pages/api/user';
 import ShowPasswordModal from './show-password-modal';
+import { UserDto } from 'src/models/user/user.model';
 
 const UserAdministrationModal = ({
   showModal = true,
@@ -31,31 +32,25 @@ const UserAdministrationModal = ({
   onAddedUser: (value: any) => void;
   user: User;
 }) => {
-  const classes = useStyles();
-
   const formSchema = z.object({
     firstname: z.string().min(3),
     lastname: z.string().min(1),
     email: z.string().email()
   });
 
-  const rolesMocked = ['Admin', 'Benutzer'];
-  const passwordMocked = 'myPassword';
-
   const getRoles = (): string[] | null => {
-    // Frage an Rabus: Wohin damit?
     try {
       fetch('/backend/users/roles', {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`
+        }
       }).then(async (response) => {
-        // const rolesData = await response.json();
-        // logger.log(rolesData);
-
+        const rolesData = await response.json();
         const tempRoles: any[] = [];
 
-        rolesMocked.forEach((role) => {
-          // replace rolesMocked with rolesData from response (Safiyya)
+        rolesData.forEach((role) => {
           tempRoles.push(
             <MenuItem value={role} key={role}>
               {role}
@@ -70,11 +65,6 @@ const UserAdministrationModal = ({
     }
     return null;
   };
-
-  const [roles, setRoles] = useState<any[] | null>(() => getRoles());
-  const [role, setRole] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [openShowPasswordModal, setOpenShowPasswordModal] = useState(false);
 
   const customErrorMap = () => {
     return (issue: ZodIssueOptionalMessage, ctx: ErrorMapCtx) => {
@@ -121,8 +111,8 @@ const UserAdministrationModal = ({
     email: string;
   }) => {
     const body = {
-      lastname: data.lastname,
-      firstname: data.firstname,
+      name: data.firstname,
+      surname: data.lastname,
       email: data.email,
       role: role
     };
@@ -137,14 +127,11 @@ const UserAdministrationModal = ({
         body: JSON.stringify(body)
       }).then(async (res: any) => {
         if (res.ok) {
-          const data = await res.json();
+          const data: UserDto = await res.json();
           onAddedUser(data);
+          setPassword(data.password);
+          setOpenShowPasswordModal(true);
         }
-
-        // move inside if(res.ok)
-        setPassword(passwordMocked); // replace with data.password
-        setOpenShowPasswordModal(true);
-        //-----------------------------------------------------
       });
     } catch (error: any) {
       toast.error(error.message);
@@ -155,14 +142,26 @@ const UserAdministrationModal = ({
     setRole(event.target.value);
   };
 
+  const closePasswordModal = () => {
+    control._reset();
+    setRole(null);
+    setShowModal(false);
+  };
+
+  const [roles, setRoles] = useState<any[] | null>(() => getRoles());
+  const [role, setRole] = useState<string | null>('');
+  const [password, setPassword] = useState<string>('');
+  const [openShowPasswordModal, setOpenShowPasswordModal] = useState(false);
+  const classes = useStyles();
+
   return (
     <>
       <div>
-        <Modal open={showModal} onClose={() => setShowModal(false)}>
+        <Modal open={showModal} onClose={() => closePasswordModal()}>
           <Box sx={style}>
             <div className={classes.closeIconOnHeader}>
               <Icon
-                onClick={() => setShowModal(false)}
+                onClick={() => closePasswordModal()}
                 className={classes.closeIcon}
                 icon="ci:close-big"
               />
