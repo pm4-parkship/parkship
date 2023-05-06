@@ -7,7 +7,7 @@ export type RowDataType = Array<string | JSX.Element>;
 
 interface CustomTableRowProps {
   rowKey: number;
-  onRowClick?: (row: unknown) => void;
+  onRowClick?: (row: RowDataType) => void;
   data: RowDataType;
 }
 
