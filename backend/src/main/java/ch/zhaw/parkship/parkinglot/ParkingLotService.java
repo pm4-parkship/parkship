@@ -49,6 +49,7 @@ public class ParkingLotService {
             parkingLotEntity.setOwner(owner.get());
             BeanUtils.copyProperties(data, parkingLotEntity);
             parkingLotEntity.setId(null);
+            parkingLotEntity.setState(ParkingLotState.PENDING);
             var savedEntity = parkingLotRepository.save(parkingLotEntity);
             return Optional.of(new ParkingLotDto(savedEntity));
         }

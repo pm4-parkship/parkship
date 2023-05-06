@@ -1,5 +1,6 @@
 package ch.zhaw.parkship.parkinglot;
 
+import ch.zhaw.parkship.offer.OfferDto;
 import ch.zhaw.parkship.tag.TagDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
