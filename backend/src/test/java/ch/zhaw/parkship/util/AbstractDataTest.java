@@ -1,6 +1,5 @@
 package ch.zhaw.parkship.util;
 
-
 import ch.zhaw.parkship.parkinglot.ParkingLotState;
 import ch.zhaw.parkship.user.UserRole;
 import ch.zhaw.parkship.offer.OfferRepository;

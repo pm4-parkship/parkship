@@ -65,13 +65,13 @@ public class ParkshipApplication {
             admin.setName(faker.name().lastName());
             admin.setSurname(faker.name().firstName());
 
-
             //admin.setUserRole(UserRole.ADMIN);
             userService.save(user);
             userService.save(secondUser);
             userService.save(thirdUser);
             userService.save(admin);
             List<UserEntity> users = List.of(user, secondUser, thirdUser, admin);
+
 
             List<ParkingLotEntity> parkingLots = new ArrayList<>();
 
@@ -83,7 +83,6 @@ public class ParkshipApplication {
                 parkingLot.setLatitude(Double.valueOf(faker.address().latitude()));
                 parkingLot.setNr(faker.address().buildingNumber());
                 parkingLot.setPrice(faker.number().randomDouble(2, 10, 300));
-
                 parkingLot.setState(ParkingLotState.ACTIVE);
                 parkingLot.setAddress(faker.address().streetName());
                 parkingLot.setAddressNr(faker.address().streetAddressNumber());

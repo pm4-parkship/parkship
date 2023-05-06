@@ -184,7 +184,6 @@ public class ParkingLotService {
         return parkingLots;
     }
 
-
     private Boolean[] getRelevantDays(LocalDate startDate, LocalDate endDate){
         Boolean relevantDays[] = {false,false,false,false,false,false,false};
         LocalDate current = LocalDate.of(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth());
@@ -197,7 +196,6 @@ public class ParkingLotService {
 
 
     private List<ParkingLotSearchDto> getParkingLotSearchDtoPage(int page, int size, List<ParkingLotSearchDto> parkingLotDtos) {
-
         int maxIndex = (page + 1) * size;
         int lowestIndex = maxIndex - size;
         int numOfResults = parkingLotDtos.size();
