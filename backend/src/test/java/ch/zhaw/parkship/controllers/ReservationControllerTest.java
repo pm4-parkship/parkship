@@ -39,7 +39,6 @@ class ReservationControllerTest {
     private ReservationService reservationService;
     @Mock
     private AvailabilityService availabilityService;
-
     @Mock
     private ParkingLotRepository parkingLotRepository;
 
