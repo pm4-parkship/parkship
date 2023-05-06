@@ -89,6 +89,23 @@ public class OfferController {
     }
 
     /**
+     * This end-point retrieves all offers for a specific parking lot by the lot id.
+     *
+     * @return ResponseEntity<List<OfferDto>> Returns a list of offer data in the HTTP
+     * response body with a status code of 200 if found, otherwise returns a no content status
+     * code.
+     */
+    @GetMapping(value = "/parking-lot/{id}", produces = "application/json")
+    public ResponseEntity<List<OfferDto>> getOffersByParkingLotId(@PathVariable Long id){
+        List<OfferDto> offerDtos = offerService.getByParkingLotId(id);
+        if (offerDtos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(offerDtos);
+    }
+
+
+    /**
      * This end-point deletes an offer with the provided id.
      *
      * @param id The id of the offer to be deleted.

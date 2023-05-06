@@ -49,6 +49,15 @@ public class OfferService {
         return offerDtos;
     }
 
+    public List<OfferDto> getByParkingLotId(Long id) {
+        var offerEntities = offerRepository.findAllByParkingLot_Id(id);
+        List<OfferDto> offerDtos = new ArrayList<>();
+        for (OfferEntity entity : offerEntities) {
+            offerDtos.add(new OfferDto(entity));
+        }
+        return offerDtos;
+    }
+
     /**
      * This method creates a new offer with the provided offer data.
      *
