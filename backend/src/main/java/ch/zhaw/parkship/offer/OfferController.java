@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -36,24 +37,31 @@ public class OfferController {
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<OfferDto> createOffer(
-            @Valid @RequestBody OfferDto offerDto) {
+    public ResponseEntity<List<OfferDto>> createOffer(
+            @Valid @RequestBody List<OfferDto> offerDtos) {
+        for (OfferDto offerDto : offerDtos) {
             validateRequest(offerDto);
+            ParkingLotEntity parkingLot = parkingLotRepository.getByIdLocked(offerDto.getParkingLotId());
+            Set<OfferEntity> currentOffers = parkingLot.getOfferEntitySet();
+            LocalDate startDate = offerDto.getFrom();
+            LocalDate endDate = offerDto.getTo();
+            for(OfferEntity o: currentOffers){
 
-        ParkingLotEntity parkingLot = parkingLotRepository.getByIdLocked(offerDto.getParkingLotId());
-        Set<OfferEntity> currentOffers = parkingLot.getOfferEntitySet();
-        LocalDate startDate = offerDto.getFrom();
-        LocalDate endDate = offerDto.getTo();
-        for(OfferEntity o: currentOffers){
-
-            if( (startDate.isBefore(o.getFrom().plusDays(1) )&& o.getTo().isBefore(endDate.plusDays(1))) ||
-                    (o.getFrom().isBefore(startDate.plusDays(1)) &&  startDate.isBefore(o.getTo().plusDays(1))) ||
-                    (o.getFrom().isBefore(endDate.plusDays(1)) &&  endDate.isBefore(o.getTo().plusDays(1)))) {
+                if( (startDate.isBefore(o.getFrom().plusDays(1) )&& o.getTo().isBefore(endDate.plusDays(1))) ||
+                        (o.getFrom().isBefore(startDate.plusDays(1)) &&  startDate.isBefore(o.getTo().plusDays(1))) ||
+                        (o.getFrom().isBefore(endDate.plusDays(1)) &&  endDate.isBefore(o.getTo().plusDays(1)))) {
                     throw new ResponseStatusException(HttpStatus.CONFLICT, "ParkingLot already has Offer during given time");
+                }
             }
         }
-        OfferEntity offerEntity = offerService.create(parkingLot, offerDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new OfferDto(offerEntity));
+
+        List<OfferDto> returnOfferDots = new ArrayList<>();
+        for (OfferDto offerDto : offerDtos){
+            ParkingLotEntity parkingLot = parkingLotRepository.getByIdLocked(offerDto.getParkingLotId());
+            returnOfferDots.add(new OfferDto(offerService.create(parkingLot, offerDto)));
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(returnOfferDots);
     }
 
     /**
