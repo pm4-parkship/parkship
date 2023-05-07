@@ -248,16 +248,35 @@ class ParkingLotServiceTest {
     }
 
     @Test
+    public void testGetBySearchTermInactive(){
+        List<ParkingLotEntity> expectedReturnValue = new ArrayList<ParkingLotEntity>();
+        ParkingLotEntity p1 = new ParkingLotEntity();
+        p1.setId(1L);
+        p1.setState(ParkingLotState.INACTIVE);
+        p1.setDescription("near the entrance");
+        p1.setOwner(userEntity);
+        expectedReturnValue.add(p1);
+
+        // Mock the necessary ParkingLotRepository and ReservationRepository behavior
+        when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
+
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", null, null, 0, 100);
+        assertTrue(actualReturnValue.isEmpty());
+      }
+
+    @Test
     public void testGetBySearchTermPageOneEntry() {
         List<ParkingLotEntity> expectedReturnValue = new ArrayList<ParkingLotEntity>();
         ParkingLotEntity p1 = new ParkingLotEntity();
         p1.setId(1L);
+        p1.setState(ParkingLotState.ACTIVE);
         p1.setDescription("near the entrance");
         p1.setOwner(userEntity);
         expectedReturnValue.add(p1);
 
         ParkingLotEntity p2 = new ParkingLotEntity();
         p2.setId(2L);
+        p2.setState(ParkingLotState.ACTIVE);
         p2.setDescription("right next to the entrance");
         p2.setOwner(userEntity);
         expectedReturnValue.add(p2);

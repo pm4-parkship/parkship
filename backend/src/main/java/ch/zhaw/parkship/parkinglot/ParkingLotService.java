@@ -167,6 +167,8 @@ public class ParkingLotService {
             parkingLots.addAll(parkingLotRepository.findAllByAddressNrContainsIgnoreCase(term));
             parkingLots.addAll(parkingLotRepository.findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase(term, term));
         }
+        parkingLots = parkingLots.stream().filter(lot -> lot.getState() == ParkingLotState.ACTIVE).collect(Collectors.toSet());
+
         return parkingLots;
     }
 
