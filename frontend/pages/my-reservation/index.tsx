@@ -5,7 +5,7 @@ import {
   ReservationModel,
   ReservationState
 } from '../../src/models/reservation/reservation.model';
-import { Link, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { formatDate } from '../../src/date/date-formatter';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
 import { RowDataType } from '../../src/components/table/table-row';
@@ -14,6 +14,7 @@ import { logger } from '../../src/logger';
 import ReservationStateIcon from '../../src/components/my-reservation/reservation-state-icon';
 import CancelReservationModal from '../../src/components/reservation/cancel-reservation-modal';
 import ModifyReservationModal from '../../src/components/reservation/modify-reservation-modal';
+import CancelCell from '../../src/components/my-reservation/reservation-cancel-cell';
 
 export interface ReservationFilterData {
   states: Set<ReservationState>;
@@ -25,11 +26,6 @@ const initState = {
   loading: false,
   result: Array<ReservationModel>()
 };
-const minCancelDate = () => {
-  const today = new Date();
-  today.setDate(today.getDate() + 2);
-  return today;
-};
 
 const MyReservationPage = ({ user }) => {
   const [filter, setFilter] = useState<ReservationFilterData>(initFilter);
@@ -38,7 +34,7 @@ const MyReservationPage = ({ user }) => {
     useState<ReservationModel | null>(null);
   const [selectedModifyReservation, setSelectedModifyReservation] =
     useState<ReservationModel | null>(null);
-  const [open, setOpen] = useState(false);
+  const [, setOpen] = useState(false);
   const handleClose = () => {
     setSelectedModifyReservation(null);
     setSelectedCancelReservation(null);
@@ -66,24 +62,6 @@ const MyReservationPage = ({ user }) => {
       return;
     setSelectedModifyReservation(reservation);
   };
-  const makeCancelCell = (item: ReservationModel): string | JSX.Element => {
-    if (new Date(item.from) <= minCancelDate()) {
-      return <span></span>;
-    } else if (item.cancelDate) {
-      return `${formatDate(new Date(item.cancelDate))}`;
-    }
-    return (
-      <Link
-        href="#"
-        onClick={(e) => {
-          e.stopPropagation();
-          setSelectedCancelReservation(item);
-        }}
-      >
-        <Typography variant={'body2'}>{'stornieren'}</Typography>
-      </Link>
-    );
-  };
 
   useEffect(() => {
     setReservations({ error: null, loading: true, result: [] });
@@ -110,7 +88,10 @@ const MyReservationPage = ({ user }) => {
         `${item.parkingLot.address} ${item.parkingLot.addressNr}`,
         `${item.tenant.name} ${item.tenant.surname}`,
         `${formatDate(new Date(item.from))} - ${formatDate(new Date(item.to))}`,
-        makeCancelCell(item)
+        CancelCell({
+          reservation: item,
+          onClick: () => setSelectedCancelReservation(item)
+        })
       ];
     });
 

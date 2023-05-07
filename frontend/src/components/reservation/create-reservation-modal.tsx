@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
 
-interface CreateReservationConfirmationModalData
+export interface CreateReservationConfirmationModalData
   extends ReservationConfirmationModalData {
   parkingLotID: number;
 }
@@ -20,9 +20,14 @@ interface CreateReservationConfirmationModalData
 interface CreateReservationProps {
   user: User;
   data: CreateReservationConfirmationModalData;
+  onClose: () => void;
 }
 
-const CreateReservationModal = ({ user, data }: CreateReservationProps) => {
+const CreateReservationModal = ({
+  user,
+  data,
+  onClose
+}: CreateReservationProps) => {
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
 
   const createReservation = (
@@ -37,7 +42,10 @@ const CreateReservationModal = ({ user, data }: CreateReservationProps) => {
       },
       user
     )
-      .then((response) => toast.success('Buchung erfolgreich ' + response.id))
+      .then((response) => {
+        toast.success('Buchung erfolgreich ' + response.id);
+        close();
+      })
       .catch((reject) => toast.error(reject.message));
   };
 
@@ -45,10 +53,14 @@ const CreateReservationModal = ({ user, data }: CreateReservationProps) => {
     setOpenConfirmationModal(true);
   }, [data]);
 
+  const close = () => {
+    onClose();
+    setOpenConfirmationModal(false);
+  };
   return (
     <ConfirmationModal
       showModal={openConfirmationModal}
-      setShowModal={setOpenConfirmationModal}
+      setShowModal={close}
       data={data}
       action={ReservationAction.CREATE}
       onConfirm={() => createReservation(user, data)}
@@ -68,11 +80,12 @@ const createReservationCall = async (
     body: JSON.stringify(body)
   }).then(
     async (response) => {
+      const data = await response.json();
       if (response.ok) {
-        const data = await response.json();
         logger.log(data);
         return data;
       }
+      return Promise.reject(new Error(data.message.match(/"(.*)"/)[1]));
     },
     async (reject) => {
       const data = await reject.json();

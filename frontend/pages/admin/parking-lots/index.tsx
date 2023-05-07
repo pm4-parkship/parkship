@@ -80,6 +80,7 @@ const ParkingLotsPage = ({ user }) => {
       .map((parkingLot) => {
         return [
           `${parkingLot.id}`,
+          `${parkingLot.name}`,
           `${parkingLot.address} ${parkingLot.addressNr}`,
           `${parkingLot.owner.name} ${parkingLot.owner.surname}`,
           <ParkingLotStateToggleButton

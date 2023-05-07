@@ -1,6 +1,6 @@
 import SearchBar from '../../src/components/search-bar/search-bar';
 import React, { useState } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Link, Typography } from '@mui/material';
 import { TagData } from '../../src/components/search-bar/tag-bar';
 import SearchParkingLotTable from '../../src/components/search-parking-lot/search-parking-lot-table';
 import ParkingDetailModal from '../../src/components/parking-detail-modal/parking-detail-modal';
@@ -13,7 +13,9 @@ import { User } from '../api/user';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
 import { RowDataType } from '../../src/components/table/table-row';
 import { SearchResultModel } from '../../src/models/search/search-result.model';
-import CreateReservationModal from '../../src/components/reservation/create-reservation-modal';
+import CreateReservationModal, {
+  CreateReservationConfirmationModalData
+} from '../../src/components/reservation/create-reservation-modal';
 
 export interface SearchParameters {
   searchTerm: string;
@@ -42,6 +44,8 @@ const SearchPage = ({ user }) => {
     useState<boolean>(false);
   const [selectedParkingLot, setSelectedParkingLot] =
     useState<ParkingLotModel>();
+  const [createReservationData, setCreateReservationData] =
+    useState<CreateReservationConfirmationModalData>();
 
   const onSelectParkingLot = (data: string[]) => {
     const name = data[0];
@@ -51,6 +55,12 @@ const SearchPage = ({ user }) => {
     if (selected) {
       fetchParkingSpot(selected.id, user).then((result) => {
         setSelectedParkingLot(() => result);
+        setCreateReservationData({
+          parkingLotID: selected.id,
+          id: selected.name,
+          fromDate: searchParameters.fromDate,
+          toDate: searchParameters.toDate
+        });
         setShowDetails(true);
       });
     }
@@ -70,13 +80,31 @@ const SearchPage = ({ user }) => {
       .catch((error) => toast.error(error.message));
   };
 
+  const bookNowLink = (searchItem: SearchResultModel) => (
+    <Link
+      href="#"
+      onClick={(e) => {
+        e.stopPropagation();
+        setCreateReservationData({
+          parkingLotID: searchItem.id,
+          id: searchItem.name,
+          fromDate: searchParameters.fromDate,
+          toDate: searchParameters.toDate
+        });
+        setRequestConfirmation(true);
+      }}
+    >
+      <Typography variant={'body2'}>{'reservieren'}</Typography>
+    </Link>
+  );
+
   const mappedResult: Array<RowDataType> = searchResult.result.map((item) => {
     return [
       `${item.name}`,
       `${item.address}`,
       `${item.owner}`,
       `${formatDate(new Date(item.from))} - ${formatDate(new Date(item.to))}`,
-      `reservieren`
+      bookNowLink(item)
     ];
   });
 
@@ -95,22 +123,29 @@ const SearchPage = ({ user }) => {
           <Loading loading={searchResult.loading} />
         )}
       </Grid>
-      {selectedParkingLot ? (
+      {selectedParkingLot && showDetails ? (
         <ParkingDetailModal
           showModal={showDetails}
           setShowModal={closeDetails}
           parkingLotModel={selectedParkingLot}
-          makeOnAction={() => setRequestConfirmation(true)}
+          makeOnAction={() => {
+            setCreateReservationData({
+              parkingLotID: selectedParkingLot.id,
+              id: selectedParkingLot.name,
+              fromDate: searchParameters.fromDate,
+              toDate: searchParameters.toDate
+            });
+            setRequestConfirmation(true);
+          }}
         />
       ) : null}
-      {requestConfirmation && selectedParkingLot ? (
+      {requestConfirmation && createReservationData ? (
         <CreateReservationModal
           user={user}
-          data={{
-            fromDate: searchParameters.fromDate,
-            toDate: searchParameters.toDate,
-            id: selectedParkingLot.name,
-            parkingLotID: selectedParkingLot.id
+          data={createReservationData}
+          onClose={() => {
+            setRequestConfirmation(false);
+            setCreateReservationData(undefined);
           }}
         />
       ) : null}

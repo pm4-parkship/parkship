@@ -105,7 +105,7 @@ const ConfirmationModal = ({
               {data.id}
             </Typography>
             <Typography align="center">{HeaderText.get(action)}</Typography>
-            <Grid container rowSpacing={6} flex={1} xs={12}>
+            <Grid container rowSpacing={4} flex={1} xs={12}>
               {DateRange(fromDate, 'von:', setFromDate, data.fromDate)}
               {DateRange(toDate, 'bis:', setToDate, fromDate)}
             </Grid>
@@ -135,7 +135,8 @@ const useStyles = makeStyles((theme) => ({
     height: '20px',
     width: '20px',
     '&:hover': {
-      opacity: '50%'
+      opacity: '50%',
+      cursor: 'pointer'
     }
   },
   boxRoot: {

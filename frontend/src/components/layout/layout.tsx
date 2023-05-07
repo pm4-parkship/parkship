@@ -22,7 +22,7 @@ export function Layout({ user, signOut, children }: LayoutProps) {
       ) : user?.role === UserRole.ADMIN ? (
         <NavbarAdmin user={user} signOut={signOut} />
       ) : null}
-      <main>
+      <main style={{ paddingTop: '1rem' }}>
         <div className={classes.root}>{children}</div>
       </main>
       <div className={classes.bottomBar}>
@@ -42,8 +42,10 @@ const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: '1600px',
     minHeight: '87vh',
-    margin: '1rem auto',
-    background: theme.palette.background.default
+    margin: '0 auto',
+    background: theme.palette.background.default,
+    display: 'flex',
+    flexDirection: 'column'
   },
   topBarBottom: {
     display: 'flex',
