@@ -1,14 +1,8 @@
-import {
-  Box,
-  Button,
-  ClickAwayListener,
-  Grid,
-  Modal,
-  Tooltip,
-  Typography
-} from '@mui/material';
-import React from 'react';
+import { Box, Button, Grid, Modal, Typography } from '@mui/material';
 import { Icon } from '@iconify/react';
+
+import React from 'react';
+import { toast } from 'react-toastify';
 
 const ShowPasswordModal = ({
   showModal = true,
@@ -19,17 +13,8 @@ const ShowPasswordModal = ({
   setShowModal: (value: boolean) => void;
   password: string;
 }) => {
-  const [open, setOpen] = React.useState(false);
-
-  const handleTooltipClose = () => {
-    setOpen(false);
-  };
-
-  const handleTooltipOpen = async () => {
-    navigator.clipboard.writeText(password);
-    setOpen(true);
-    await delay(5000);
-    setOpen(false);
+  const showToast = async () => {
+    toast.success('Password copied');
   };
 
   return (
@@ -47,27 +32,7 @@ const ShowPasswordModal = ({
             style={{ marginTop: '20px' }}
           >
             {password}
-
-            <ClickAwayListener onClickAway={handleTooltipClose}>
-              <div>
-                <Tooltip
-                  PopperProps={{
-                    disablePortal: true
-                  }}
-                  onClose={handleTooltipClose}
-                  open={open}
-                  disableFocusListener
-                  disableHoverListener
-                  disableTouchListener
-                  title="Kopiert!"
-                >
-                  <Icon
-                    icon="ic:outline-content-copy"
-                    onClick={handleTooltipOpen}
-                  />
-                </Tooltip>
-              </div>
-            </ClickAwayListener>
+            <Icon icon="ic:outline-content-copy" onClick={showToast} />
           </Grid>
 
           <Grid container justifyContent="center">
@@ -97,12 +62,9 @@ const style = {
   width: 400,
   bgcolor: 'white',
   border: '2px solid #000',
+  borderRadius: 4,
   boxShadow: 24,
   p: 4
 };
-
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 export default ShowPasswordModal;

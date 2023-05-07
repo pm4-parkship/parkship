@@ -19,7 +19,7 @@ import { makeStyles } from '@mui/styles';
 import { Icon } from '@iconify/react';
 import { User } from 'pages/api/user';
 import ShowPasswordModal from './show-password-modal';
-import { UserDto } from 'src/models/user/user.model';
+import { UserDto, UserRole } from 'src/models/user/user.model';
 
 const UserAdministrationModal = ({
   showModal = true,
@@ -29,7 +29,7 @@ const UserAdministrationModal = ({
 }: {
   showModal: boolean;
   setShowModal: (value: boolean) => void;
-  onAddedUser: (value: any) => void;
+  onAddedUser: (value: UserDto) => void;
   user: User;
 }) => {
   const formSchema = z.object({
@@ -38,7 +38,7 @@ const UserAdministrationModal = ({
     email: z.string().email()
   });
 
-  const getRoles = (): string[] | null => {
+  const getRoles = (): UserRole[] | null => {
     try {
       fetch('/backend/users/roles', {
         method: 'GET',
@@ -148,7 +148,7 @@ const UserAdministrationModal = ({
     setShowModal(false);
   };
 
-  const [roles, setRoles] = useState<any[] | null>(() => getRoles());
+  const [roles, setRoles] = useState<UserRole[] | null>(() => getRoles());
   const [role, setRole] = useState<string | null>('');
   const [password, setPassword] = useState<string>('');
   const [openShowPasswordModal, setOpenShowPasswordModal] = useState(false);
@@ -272,6 +272,7 @@ const style = {
   bgcolor: 'white',
   border: '2px solid #000',
   boxShadow: 24,
+  borderRadius: 4,
   p: 4
 };
 
