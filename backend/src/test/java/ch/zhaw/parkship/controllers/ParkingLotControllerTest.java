@@ -4,6 +4,7 @@ import ch.zhaw.parkship.parkinglot.*;
 import ch.zhaw.parkship.user.ParkshipUserDetails;
 import ch.zhaw.parkship.user.UserDto;
 import ch.zhaw.parkship.user.UserEntity;
+import ch.zhaw.parkship.user.UserRepository;
 import ch.zhaw.parkship.util.UserGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +37,9 @@ class ParkingLotControllerTest {
 
     @Mock
     private ParkingLotService parkingLotService;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private ParkingLotController parkingLotController;
@@ -86,6 +90,38 @@ class ParkingLotControllerTest {
                 .andExpect(status().isCreated()).andExpect(jsonPath("$.id").value(1));
 
         verify(parkingLotService, times(1)).create(parkingLotDtoCaptor.capture());
+    }
+
+    @MockitoSettings(strictness = Strictness.WARN)
+    @Test
+    public void createParkingLotInvalidPriceTest() throws Exception {
+        ParkingLotDto parkingLotDto = createBasicParkingLotDto();
+        parkingLotDto.setPrice(-15D);
+
+        String json = objectMapper.writeValueAsString(parkingLotDto);
+
+        when(parkingLotService.create(parkingLotDtoCaptor.capture()))
+                .thenReturn(Optional.of(parkingLotDto));
+
+        mockMvc.perform(post("/parking-lot").contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isBadRequest());
+
+    }
+
+    @MockitoSettings(strictness = Strictness.WARN)
+    @Test
+    public void createParkingLotInvalidCoordinatesTest() throws Exception {
+        ParkingLotDto parkingLotDto = createBasicParkingLotDto();
+        parkingLotDto.setLatitude(-91D);
+
+        String json = objectMapper.writeValueAsString(parkingLotDto);
+
+        when(parkingLotService.create(parkingLotDtoCaptor.capture()))
+                .thenReturn(Optional.of(parkingLotDto));
+
+        mockMvc.perform(post("/parking-lot").contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isBadRequest());
+
     }
 
     @Test

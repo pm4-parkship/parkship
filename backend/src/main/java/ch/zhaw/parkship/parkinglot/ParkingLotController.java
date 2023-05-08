@@ -162,6 +162,10 @@ public class ParkingLotController {
     }
 
     protected void validateRequest(ParkingLotDto parkingLotDto){
+        if(parkingLotDto == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given object is null");
+        }
+
         if(parkingLotDto.getLatitude() < -90 || parkingLotDto.getLatitude() > 90
         || parkingLotDto.getLongitude() < -180 || parkingLotDto.getLongitude() > 180){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given coordinates are invalid");
