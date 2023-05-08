@@ -1,5 +1,6 @@
 package ch.zhaw.parkship.parkinglot;
 
+import ch.zhaw.parkship.offer.OfferEntity;
 import ch.zhaw.parkship.reservation.ReservationEntity;
 import ch.zhaw.parkship.tag.TagEntity;
 import ch.zhaw.parkship.user.UserEntity;
@@ -66,6 +67,11 @@ public class ParkingLotEntity {
             orphanRemoval = true)
     @JsonManagedReference
     private Set<ReservationEntity> reservationEntitySet;
+
+    @OneToMany(mappedBy = "parkingLot", fetch = FetchType.LAZY, cascade = {CascadeType.ALL},
+            orphanRemoval = true)
+    @JsonManagedReference
+    private Set<OfferEntity> offerEntitySet;
 
     public ParkingLotEntity() {
         this.tags = new HashSet<>();

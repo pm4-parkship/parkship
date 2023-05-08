@@ -80,7 +80,7 @@ class ParkingLotServiceTest {
     private ParkingLotDto createParkingLotDto() {
         ParkingLotDto data = new ParkingLotDto();
         var owner = new UserDto(userEntity);
-        data.setOwner(owner);
+        data.setOwnerId(owner.id());
         data.setId(1L);
         data.setLongitude(15.5);
         data.setLatitude(16.22);
@@ -211,13 +211,11 @@ class ParkingLotServiceTest {
 
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
-        when(reservationService.isFreeInDateRange(1L, startDate, endDate)).thenReturn(true);
+        when(parkingLotRepository.isParkingLotAvailable(parkingLotEntity, startDate, endDate)).thenReturn(parkingLotEntity);
+        when(parkingLotRepository.isParkingLotOffered(parkingLotEntity, startDate, endDate, false, false, false, false, false, true, true)).thenReturn(parkingLotEntity);
 
         List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", startDate, endDate, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
-
-        // Add assertions for other properties
-        verify(reservationService, times(1)).isFreeInDateRange(1L, startDate, endDate);
 
     }
 
@@ -231,13 +229,9 @@ class ParkingLotServiceTest {
 
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
-        when(reservationService.isFreeInDateRange(1L, startDate, endDate)).thenReturn(false);
 
         List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", startDate, endDate, 0, 100);
         assertTrue(actualReturnValue.isEmpty());
-
-        // Add assertions for other properties
-        verify(reservationService, times(1)).isFreeInDateRange(1L, startDate, endDate);
 
     }
 
@@ -254,16 +248,35 @@ class ParkingLotServiceTest {
     }
 
     @Test
+    public void testGetBySearchTermInactive(){
+        List<ParkingLotEntity> expectedReturnValue = new ArrayList<ParkingLotEntity>();
+        ParkingLotEntity p1 = new ParkingLotEntity();
+        p1.setId(1L);
+        p1.setState(ParkingLotState.INACTIVE);
+        p1.setDescription("near the entrance");
+        p1.setOwner(userEntity);
+        expectedReturnValue.add(p1);
+
+        // Mock the necessary ParkingLotRepository and ReservationRepository behavior
+        when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
+
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", null, null, 0, 100);
+        assertTrue(actualReturnValue.isEmpty());
+      }
+
+    @Test
     public void testGetBySearchTermPageOneEntry() {
         List<ParkingLotEntity> expectedReturnValue = new ArrayList<ParkingLotEntity>();
         ParkingLotEntity p1 = new ParkingLotEntity();
         p1.setId(1L);
+        p1.setState(ParkingLotState.ACTIVE);
         p1.setDescription("near the entrance");
         p1.setOwner(userEntity);
         expectedReturnValue.add(p1);
 
         ParkingLotEntity p2 = new ParkingLotEntity();
         p2.setId(2L);
+        p2.setState(ParkingLotState.ACTIVE);
         p2.setDescription("right next to the entrance");
         p2.setOwner(userEntity);
         expectedReturnValue.add(p2);
@@ -300,7 +313,7 @@ class ParkingLotServiceTest {
             Optional<ParkingLotEntity> correspondingEntity = parkingLots.stream()
                     .filter(entity -> entity.getId().equals(parkingLotDto.getId())).findFirst();
             assertTrue(correspondingEntity.isPresent());
-            assertEquals(correspondingEntity.get().getOwner().getId(), parkingLotDto.getOwner().id());
+            assertEquals(correspondingEntity.get().getOwner().getId(), parkingLotDto.getOwnerId());
         });
 
         verify(parkingLotRepository, times(1)).findByOwnerId(userEntity.getId());

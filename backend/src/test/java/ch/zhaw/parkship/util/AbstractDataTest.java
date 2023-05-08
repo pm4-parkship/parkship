@@ -2,6 +2,7 @@ package ch.zhaw.parkship.util;
 
 import ch.zhaw.parkship.parkinglot.ParkingLotState;
 import ch.zhaw.parkship.user.UserRole;
+import ch.zhaw.parkship.offer.OfferRepository;
 import ch.zhaw.parkship.util.generator.ReservationGenerator;
 import ch.zhaw.parkship.ParkshipApplication;
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
@@ -34,6 +35,9 @@ public abstract class AbstractDataTest {
 
     @Autowired
     protected ReservationRepository reservationRepository;
+
+    @Autowired
+    protected OfferRepository offerRepository;
 
     protected void doSeed() {
 

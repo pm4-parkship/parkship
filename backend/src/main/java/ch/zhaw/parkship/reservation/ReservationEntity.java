@@ -30,9 +30,11 @@ public class ReservationEntity {
     private UserEntity tenant;
 
     @Column(nullable = false, name = "\"from\"")
+    @Temporal(TemporalType.DATE)
     private LocalDate from;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private LocalDate to;
 
     @Column(nullable = false)

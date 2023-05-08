@@ -1,5 +1,6 @@
 package ch.zhaw.parkship.controllers;
 
+import ch.zhaw.parkship.offer.OfferEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.util.AbstractDataRollbackTest;
 import ch.zhaw.parkship.util.generator.ParkingLotGenerator;
@@ -33,6 +34,9 @@ class ParkingLotRepositoryTest extends AbstractDataRollbackTest {
     ParkingLotEntity parkingLot;
     ReservationEntity reservationEntity1;
     ReservationEntity reservationEntity2;
+    
+    OfferEntity offerEntity1;
+    OfferEntity offerEntity2;
 
 
     static class ReservationArgument implements ArgumentsProvider {
@@ -49,6 +53,7 @@ class ParkingLotRepositoryTest extends AbstractDataRollbackTest {
             );
         }
     }
+
 
     @ParameterizedTest
     @ArgumentsSource(ReservationArgument.class)
@@ -77,6 +82,29 @@ class ParkingLotRepositoryTest extends AbstractDataRollbackTest {
             Assertions.assertNull(result);
         }
     }
+    
+    void hasParkingLotOffer_offered() {
+        LocalDate from = LocalDate.of(2023,5,1);
+        LocalDate to = LocalDate.of(2023,5,2);
+
+        // act
+        ParkingLotEntity result = parkingLotRepository.isParkingLotOffered(parkingLot, from, to, true, true, false, false, false, false, false);
+
+        // assert
+        Assertions.assertNotNull(result);
+    }
+
+    void hasParkingLotOffer_notoffered() {
+        LocalDate from = LocalDate.of(2024,5,1);
+        LocalDate to = LocalDate.of(2024,5,2);
+
+        // act
+        ParkingLotEntity result = parkingLotRepository.isParkingLotOffered(parkingLot, from, to, true, true, false, false, false, false, false);
+
+        // assert
+        Assertions.assertNull(result);
+    }
+    
 
 
     @BeforeEach
@@ -85,6 +113,8 @@ class ParkingLotRepositoryTest extends AbstractDataRollbackTest {
         tenant1 = UserGenerator.generate();
         tenant2 = UserGenerator.generate();
         parkingLot = ParkingLotGenerator.generate(owner);
+        offerEntity1 = new OfferEntity();
+        offerEntity2 = new OfferEntity();
 
         reservationEntity1 = ReservationGenerator.generate(parkingLot, tenant1);
         reservationEntity1.setFrom(LocalDate.now());
@@ -94,10 +124,34 @@ class ParkingLotRepositoryTest extends AbstractDataRollbackTest {
         reservationEntity2.setFrom(LocalDate.now().plusDays(10));
         reservationEntity2.setTo(LocalDate.now().plusDays(12));
 
+        offerEntity1.setFrom(LocalDate.of(2023,1,1));
+        offerEntity1.setTo(LocalDate.of(2023,12,31));
+        offerEntity1.setMonday(true);
+        offerEntity1.setTuesday(true);
+        offerEntity1.setWednesday(true);
+        offerEntity1.setThursday(true);
+        offerEntity1.setFriday(true);
+        offerEntity1.setSaturday(true);
+        offerEntity1.setSunday(true);
+        offerEntity1.setParkingLot(parkingLot);
+
+        offerEntity2.setFrom(LocalDate.of(2024,1,1));
+        offerEntity2.setTo(LocalDate.of(2024,12,31));
+        offerEntity2.setMonday(false);
+        offerEntity2.setTuesday(false);
+        offerEntity2.setWednesday(false);
+        offerEntity2.setThursday(false);
+        offerEntity2.setFriday(false);
+        offerEntity2.setSaturday(false);
+        offerEntity2.setSunday(false);
+        offerEntity2.setParkingLot(parkingLot);
+        
         userRepository.saveAll(List.of(owner, tenant1, tenant2));
         parkingLotRepository.save(parkingLot);
         reservationRepository.save(reservationEntity1);
         reservationRepository.save(reservationEntity2);
+        offerRepository.save(offerEntity1);
+        offerRepository.save(offerEntity2);
     }
 
 
