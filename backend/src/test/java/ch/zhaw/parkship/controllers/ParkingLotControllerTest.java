@@ -1,6 +1,7 @@
 package ch.zhaw.parkship.controllers;
 
 import ch.zhaw.parkship.parkinglot.*;
+import ch.zhaw.parkship.tag.TagEntity;
 import ch.zhaw.parkship.user.ParkshipUserDetails;
 import ch.zhaw.parkship.user.UserDto;
 import ch.zhaw.parkship.user.UserEntity;
@@ -170,15 +171,17 @@ class ParkingLotControllerTest {
         ParkingLotEntity parkingLotEntity = createBasicParkingLotEntity();
         List<ParkingLotSearchDto> expectedReturnValue = new ArrayList<>();
         expectedReturnValue.add(new ParkingLotSearchDto(parkingLotEntity, parkingLotEntity.getOwner()));
-        when(parkingLotService.getBySearchTerm("entrance", null, null, 0, 100)).thenReturn(expectedReturnValue);
+        when(parkingLotService.getBySearchTerm("entrance", List.of(), null, null, 0, 100)).thenReturn(expectedReturnValue);
 
         mockMvc.perform(get("/parking-lot/searchTerm")
                         .param("searchTerm", "entrance"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].id").value(1));
 
-        verify(parkingLotService, times(1)).getBySearchTerm("entrance", null, null, 0, 100);
+        verify(parkingLotService, times(1)).getBySearchTerm("entrance",List.of(), null, null, 0, 100);
     }
+
+
 
     @Test
     public void getOwnParkingLotsTest() throws Exception {

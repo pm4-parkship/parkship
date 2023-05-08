@@ -126,7 +126,7 @@ const fetchSearch = async (
     startDate: format(searchParameters.fromDate, 'yyy-MM-dd'),
     endDate: format(searchParameters.toDate, 'yyy-MM-dd')
   });
-
+  searchParameters.tags.forEach(tag => query.append('tagList', tag.label));
   return fetch('/backend/parking-lot/searchTerm?' + query, {
     method: 'GET',
     headers: { Authorization: `Bearer ${user.token}` }
