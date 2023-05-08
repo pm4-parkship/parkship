@@ -38,7 +38,7 @@ const UserAdministrationModal = ({
     email: z.string().email()
   });
 
-  const getRoles = (): UserRole[] | null => {
+  const getRoles = (): UserRole[] | UserRole.USER => {
     try {
       fetch('/backend/users/roles', {
         method: 'GET',
@@ -61,9 +61,9 @@ const UserAdministrationModal = ({
       });
     } catch (error: any) {
       toast.error(error.message);
-      return null;
+      return UserRole.USER;
     }
-    return null;
+    return UserRole.USER;
   };
 
   const customErrorMap = () => {
@@ -148,7 +148,9 @@ const UserAdministrationModal = ({
     setShowModal(false);
   };
 
-  const [roles, setRoles] = useState<UserRole[] | null>(() => getRoles());
+  const [roles, setRoles] = useState<UserRole[] | UserRole.USER>(() =>
+    getRoles()
+  );
   const [role, setRole] = useState<string | null>('');
   const [password, setPassword] = useState<string>('');
   const [openShowPasswordModal, setOpenShowPasswordModal] = useState(false);
