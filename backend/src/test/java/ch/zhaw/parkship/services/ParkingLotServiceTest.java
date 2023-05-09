@@ -2,6 +2,7 @@ package ch.zhaw.parkship.services;
 
 import ch.zhaw.parkship.parkinglot.*;
 import ch.zhaw.parkship.reservation.ReservationService;
+import ch.zhaw.parkship.tag.TagEntity;
 import ch.zhaw.parkship.user.UserDto;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
@@ -133,6 +134,29 @@ class ParkingLotServiceTest {
     }
 
     @Test
+    public void testSearchByTags() {
+        // arrange
+        List<ParkingLotEntity> parkingLotEntities = new ArrayList<>();
+        parkingLotEntities.add(parkingLotEntity)   ;
+
+        TagEntity garage = new TagEntity();
+        garage.setName("Garage");
+
+        ParkingLotEntity entityWithTag = ParkingLotGenerator.generate(UserGenerator.generate());
+        entityWithTag.getTags().add(garage);
+        parkingLotEntities.add(entityWithTag);
+
+        when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase(Mockito.any())).thenReturn(parkingLotEntities);
+
+        // act
+        var result = parkingLotService.getBySearchTerm("", List.of("Garage"), null, null,
+                0, 100);
+
+        // assertEquals(1, result.size());
+        assertEquals(1, result.size());
+    }
+
+    @Test
     public void testUpdate() {
         when(parkingLotRepository.findById(anyLong())).thenReturn(Optional.of(parkingLotEntity));
         when(parkingLotRepository.save(any(ParkingLotEntity.class))).thenReturn(parkingLotEntity);
@@ -166,7 +190,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", null, null, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance",List.of(), null, null, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
         // Add assertions for other properties
         verify(parkingLotRepository, times(1)).findAllByDescriptionContainsIgnoreCase("entrance");
@@ -180,7 +204,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository behavior
         when(parkingLotRepository.findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase("max", "max")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("max", null, null, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("max",List.of(), null, null, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
         // Add assertions for other properties
         verify(parkingLotRepository, times(1)).findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase("max", "max");
@@ -195,7 +219,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository behavior
         when(parkingLotRepository.findAllByAddressContainsIgnoreCase("muster")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("Muster Street 44", null, null, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("Muster Street 44",List.of(), null, null, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
         // Add assertions for other properties
         verify(parkingLotRepository, times(1)).findAllByAddressContainsIgnoreCase("muster");
@@ -214,7 +238,7 @@ class ParkingLotServiceTest {
         when(parkingLotRepository.isParkingLotAvailable(parkingLotEntity, startDate, endDate)).thenReturn(parkingLotEntity);
         when(parkingLotRepository.isParkingLotOffered(parkingLotEntity, startDate, endDate, false, false, false, false, false, true, true)).thenReturn(parkingLotEntity);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", startDate, endDate, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance",List.of(), startDate, endDate, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
 
     }
@@ -230,7 +254,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", startDate, endDate, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance",List.of(), startDate, endDate, 0, 100);
         assertTrue(actualReturnValue.isEmpty());
 
     }
@@ -243,7 +267,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", null, null, 1, 1);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance",List.of(), null, null, 1, 1);
         assertTrue(actualReturnValue.isEmpty());
     }
 
@@ -284,7 +308,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("entrance", null, null, 1, 1);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("entrance",List.of(), null, null, 1, 1);
 
         assertEquals(expectedReturnValue.get(1).getId(), actualReturnValue.get(0).getId());
     }

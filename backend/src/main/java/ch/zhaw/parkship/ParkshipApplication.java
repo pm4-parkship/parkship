@@ -8,6 +8,8 @@ import ch.zhaw.parkship.parkinglot.ParkingLotState;
 import ch.zhaw.parkship.reservation.ReservationEntity;
 import ch.zhaw.parkship.reservation.ReservationRepository;
 import ch.zhaw.parkship.reservation.ReservationState;
+import ch.zhaw.parkship.tag.TagEntity;
+import ch.zhaw.parkship.tag.TagRepository;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRole;
 import ch.zhaw.parkship.user.UserService;
@@ -23,7 +25,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
@@ -48,17 +49,17 @@ public class ParkshipApplication {
     @Bean
     @Profile({"dev", "production"})
     @Transactional
-    CommandLineRunner initTemplate(UserService userService) {
+    CommandLineRunner initTemplate(UserService userService, TagRepository tagRepository) {
         return args -> {
             Faker faker = new Faker();
 
-            UserEntity user = userService.signUp("user", "userSurname",  "user@parkship.ch", "user", UserRole.USER);
+            UserEntity user = userService.signUp("user", "userSurname", "user@parkship.ch", "user", UserRole.USER);
             user.setName(faker.name().lastName());
             user.setSurname(faker.name().firstName());
-            UserEntity secondUser = userService.signUp("second", "secondSurname",  "second@parkship.ch", "second", UserRole.USER);
+            UserEntity secondUser = userService.signUp("second", "secondSurname", "second@parkship.ch", "second", UserRole.USER);
             secondUser.setName(faker.name().lastName());
             secondUser.setSurname(faker.name().firstName());
-            UserEntity thirdUser = userService.signUp("thirdUser", "thirdUserSurname",  "thirdUser@parkship.ch", "thirdUser", UserRole.USER);
+            UserEntity thirdUser = userService.signUp("thirdUser", "thirdUserSurname", "thirdUser@parkship.ch", "thirdUser", UserRole.USER);
             thirdUser.setName(faker.name().lastName());
             thirdUser.setSurname(faker.name().firstName());
             UserEntity admin = userService.signUp("admin", "adminSurname", "admin@parkship.ch","admin", UserRole.ADMIN);
@@ -73,11 +74,27 @@ public class ParkshipApplication {
             List<UserEntity> users = List.of(user, secondUser, thirdUser, admin);
 
 
+            TagEntity ueberdacht = new TagEntity();
+            ueberdacht.setName("überdacht");
+            TagEntity schatten = new TagEntity();
+            schatten.setName("im Schatten");
+            TagEntity ladestation = new TagEntity();
+            ladestation.setName("Ladestation");
+            TagEntity barrierefrei = new TagEntity();
+            barrierefrei.setName("barrierefrei");
+            TagEntity garage = new TagEntity();
+            garage.setName("Garage");
+
+            tagRepository.saveAll(List.of(ueberdacht, schatten, ladestation, barrierefrei, garage));
+
+
+
             List<ParkingLotEntity> parkingLots = new ArrayList<>();
 
             for (int i = 0; i < 5; i++) {
                 var parkingLot = new ParkingLotEntity();
                 parkingLot.setId(i + 1L);
+                parkingLot.getTags().add(i == 0 ? barrierefrei : garage);
                 parkingLot.setName(faker.funnyName().name());
                 parkingLot.setLongitude(Double.valueOf(faker.address().longitude()));
                 parkingLot.setLatitude(Double.valueOf(faker.address().latitude()));
@@ -129,6 +146,10 @@ public class ParkshipApplication {
                 reservation.setCancelDate(LocalDate.of(current.getYear() + 1900, current.getMonth() + 1, current.getDay() + 1));
                 reservationRepository.save(reservation);
             }
+
+
+
+
         };
     }
 

@@ -141,9 +141,10 @@ public class ParkingLotService {
      * the HTTP response body with a status code of 200 if found, otherwise returns a no
      * content status code.
      */
-    public List<ParkingLotSearchDto> getBySearchTerm(String searchTerm, LocalDate startDate, LocalDate endDate, int page, int size) {
+    public List<ParkingLotSearchDto> getBySearchTerm(String searchTerm, List<String> tagList, LocalDate startDate, LocalDate endDate, int page, int size) {
         Set<ParkingLotEntity> parkingLots = getParkingLotsFromDatabase(searchTerm);
         Set<ParkingLotEntity> availableParkingLots = filterParkingLotsByDate(startDate, endDate, parkingLots);
+        availableParkingLots = filterByTags(availableParkingLots, tagList);
         List<ParkingLotSearchDto> parkingLotSearchDtos = availableParkingLots.stream().map(
                 parkingLotEntity -> {
                     ParkingLotSearchDto parkingLotSearchDto = new ParkingLotSearchDto(parkingLotEntity, parkingLotEntity.getOwner());
@@ -155,6 +156,18 @@ public class ParkingLotService {
 
         return getParkingLotSearchDtoPage(page, size, parkingLotSearchDtos);
     }
+
+    private Set<ParkingLotEntity> filterByTags(Set<ParkingLotEntity> availableParkingLots, List<String> tagList) {
+        if (tagList == null || tagList.isEmpty()) {
+            return availableParkingLots;
+        }
+
+        return availableParkingLots.stream()
+                .filter(parkingLotEntity -> parkingLotEntity.getTags()
+                        .stream().anyMatch(tagEntity -> tagList.contains(tagEntity.getName())))
+                .collect(Collectors.toSet());
+    }
+
 
     private Set<ParkingLotEntity> getParkingLotsFromDatabase(String searchTerm) {
         Set<ParkingLotEntity> parkingLots = new HashSet<>();

@@ -130,11 +130,13 @@ public class ParkingLotController {
     @GetMapping("/searchTerm")
     public List<ParkingLotSearchDto> searchParkingLot(
             @RequestParam(defaultValue = "") String searchTerm,
+            @RequestParam(defaultValue = "") List<String> tagList,
             @RequestParam(defaultValue = "") LocalDate startDate,
             @RequestParam(defaultValue = "") LocalDate endDate,
             @RequestParam(defaultValue = DEFAULT_PAGE_NUM) int page,
             @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
-        return parkingLotService.getBySearchTerm(searchTerm, startDate, endDate, page, size);
+        return parkingLotService.getBySearchTerm(searchTerm,tagList, startDate, endDate, page, size);
+
 
     }
 
