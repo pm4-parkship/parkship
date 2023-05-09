@@ -18,11 +18,10 @@ const ParkingListItem = (props: Props) => {
         height: 200
       }}
     >
-      <Typography>Parkplatz {parking.nr}</Typography>
+      <Typography align={'center'}>{`${parking.name}`}</Typography>
       <br />
-      <Typography>{parking.floor}</Typography>
-      <Typography>{parking.address}</Typography>
-      <Typography>{parking.addressNr}</Typography>
+      <Typography>{`${parking.address} ${parking.addressNr}`}</Typography>
+      <br />
       <Typography>CHF {parking.price} / Tag</Typography>
     </Paper>
   );

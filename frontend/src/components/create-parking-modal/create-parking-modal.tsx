@@ -1,5 +1,5 @@
 import { Box, Button, Grid, Modal, Typography } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import { ErrorMapCtx, z, ZodIssueOptionalMessage } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -11,6 +11,7 @@ import {
 import { logger } from 'src/logger';
 import { makeStyles } from '@mui/styles';
 import TagBar, { TagData } from '../search-bar/tag-bar';
+import { CreateParkingLotModel } from '../../models';
 
 const dummyTags: TagData[] = [
   { key: 0, label: 'überdacht' },
@@ -19,27 +20,37 @@ const dummyTags: TagData[] = [
   { key: 3, label: 'barrierefrei' },
   { key: 4, label: 'Garage' }
 ];
+
+interface CreateParkingModalProps {
+  showModal: boolean;
+  setShowModal: (value: boolean) => void;
+  addParkingLot: (value: CreateParkingLotModel) => void;
+  owner: string;
+}
+
 export const CreateParkingModal = ({
   showModal = true,
   setShowModal,
-  addParkingLot
-}: {
-  showModal: boolean;
-  setShowModal: (value: boolean) => void;
-  addParkingLot: (value: any) => void;
-}) => {
+  addParkingLot,
+  owner
+}: CreateParkingModalProps) => {
   const classes = useStyles();
 
-  const [selectedTags, setSelectedTag] = React.useState<TagData[]>([]);
+  const [selectedTags, setSelectedTag] = useState<TagData[]>([]);
+
   const formSchema = z.object({
-    parkingName: z.string().min(1),
-    address: z.string().min(1),
-    addressNr: z.string().min(1),
-    price: z.string().min(1),
-    startDateOne: z.date().optional(),
-    endDateOne: z.date().optional(),
+    parkingName: z.string().min(1, `Bitte geben Sie eine Parkplatznummer ein!`),
+    address: z.string().min(1, `Bitte geben Sie eine Adresse ein!`),
+    addressNr: z.string().optional(),
+    price: z.number().optional(),
+    startDateOne: z.date(),
+    endDateOne: z.date(),
     description: z.string().optional(),
-    days: z.any().optional()
+    days: z.literal(true),
+    days: z
+      .array(z.object({ id: z.number(), label: z.string() }))
+      .length(2, 'Bitte mehr als 2 Tage angeben'),
+    tags: z.string().optional()
   });
 
   const addTag = (tag: TagData) => {
@@ -53,29 +64,8 @@ export const CreateParkingModal = ({
   const customErrorMap = () => {
     return (issue: ZodIssueOptionalMessage, ctx: ErrorMapCtx) => {
       if (issue.code === z.ZodIssueCode.invalid_string) {
-        if (issue.path.includes('parkingName')) {
-          return {
-            message: `Bitte geben Sie eine Parkplatznummer ein!`
-          };
-        }
-
-        if (issue.path.includes('address')) {
-          return {
-            message: `Bitte geben Sie eine Adresse ein!`
-          };
-        }
-        if (issue.path.includes('addressNr')) {
-          return {
-            message: `Bitte geben Sie eine Adressnummer ein!`
-          };
-        }
-
-        if (issue.path.includes('addressNr')) {
-          return {
-            message: `Bitte geben Sie einen Preis ein!`
-          };
-        }
       }
+      logger.log(issue);
       return { message: ctx.defaultError };
     };
   };
@@ -89,10 +79,11 @@ export const CreateParkingModal = ({
       parkingName: '',
       address: '',
       addressNr: '',
-      price: '',
+      price: 0,
       startDateOne: '',
       endDateOne: '',
-      description: ''
+      description: '',
+      days: []
     }
   });
 
@@ -100,16 +91,28 @@ export const CreateParkingModal = ({
 
   const handleFormSubmit = async (data: ParkingCreationSchema) => {
     logger.log('here ', data);
-    const body = {
-      parkingName: data.parkingName,
+    const body: CreateParkingLotModel = {
+      name: data.parkingName,
       address: data.address,
-      addressNr: data.addressNr,
-      startDateOne: data.startDateOne,
-      endDateOne: data.endDateOne,
+      addressNr: data.addressNr || '',
       description: data.description,
-      days: data.days
+      price: data.price || 0,
+      offer: [
+        {
+          from: data.startDateOne, // todo
+          to: data.endDateOne,
+          monday: false,
+          tuesday: false,
+          wednesday: false,
+          thursday: false,
+          friday: false,
+          saturday: false,
+          sunday: false
+        }
+      ],
+      tags: selectedTags.map((value) => value.label)
     };
-
+    return;
     addParkingLot(body);
   };
 
@@ -128,27 +131,26 @@ export const CreateParkingModal = ({
         >
           <Grid
             container
-            xs={12}
-            rowSpacing={3}
+            rowSpacing={1}
             direction="column"
             justifyContent="center"
             alignItems="left"
           >
             <Grid item>
-              <Typography variant="h6">Parkplatznummer:</Typography>
+              <Typography variant="h6">Bezeichnung:</Typography>
               <TextFieldElement
                 required
                 fullWidth
                 id="parkingName"
-                label="Parkplatznummer: "
+                label="Bezeichnung:"
                 name="parkingName"
                 control={control}
-                style={{ marginTop: '10px', height: '60px' }}
+                className={classes.input}
               />
             </Grid>
 
             <Grid item>
-              <Typography variant="h6">Besitzer: Benjamin Blümchen</Typography>
+              <Typography variant="h6">{`Besitzer: ${owner}`}</Typography>
             </Grid>
             <Grid item>
               <Grid
@@ -158,7 +160,9 @@ export const CreateParkingModal = ({
                 spacing={3}
               >
                 <Grid item>
-                  <Typography variant="h6">Wo:</Typography>
+                  <Typography variant="h6" className={classes.input}>
+                    Wo:
+                  </Typography>
                 </Grid>
                 <Grid item xs={3}>
                   <TextFieldElement
@@ -168,6 +172,7 @@ export const CreateParkingModal = ({
                     label="Adresse: "
                     name="address"
                     control={control}
+                    className={classes.input}
                   />
                 </Grid>
                 <Grid item xs={1}>
@@ -177,22 +182,10 @@ export const CreateParkingModal = ({
                     label="Nr."
                     name="addressNr"
                     control={control}
+                    className={classes.input}
                   />
                 </Grid>
               </Grid>
-            </Grid>
-
-            <Grid item>
-              <Typography variant="h6">Kosten [CHFr. / Tag]: </Typography>
-              <TextFieldElement
-                required
-                fullWidth
-                id="price"
-                label="Kosten: "
-                name="price"
-                control={control}
-                style={{ marginTop: '10px', height: '60px' }}
-              />
             </Grid>
 
             <Grid item>
@@ -202,8 +195,38 @@ export const CreateParkingModal = ({
                 alignItems="center"
                 spacing={3}
               >
+                <Grid item>
+                  <Typography variant="h6" className={classes.input}>
+                    Kosten [CHFr. / Tag]:{' '}
+                  </Typography>
+                </Grid>
+                <Grid item xs={1}>
+                  <TextFieldElement
+                    required
+                    fullWidth
+                    id="price"
+                    label="Kosten: "
+                    name="price"
+                    type={'number'}
+                    control={control}
+                    className={classes.input}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+
+            <Grid item>
+              <Grid
+                container
+                justifyContent="left"
+                alignItems="center"
+                columnSpacing={3}
+                rowSpacing={0}
+              >
                 <Grid item xs={2}>
-                  <Typography variant="h6">Buchbarer Zeitraum: </Typography>
+                  <Typography variant="h6" className={classes.input}>
+                    Buchbarer Zeitraum:{' '}
+                  </Typography>
                 </Grid>
                 <Grid item xs={2}>
                   <DatePickerElement
@@ -211,6 +234,7 @@ export const CreateParkingModal = ({
                     label="von"
                     name="startDateOne"
                     control={control}
+                    className={classes.input}
                   />
                 </Grid>
                 <Grid item xs={2}>
@@ -219,6 +243,7 @@ export const CreateParkingModal = ({
                     label="bis"
                     name="endDateOne"
                     control={control}
+                    className={classes.input}
                   />
                 </Grid>
                 <Grid
@@ -229,39 +254,42 @@ export const CreateParkingModal = ({
                     columnGap: '1rem'
                   }}
                 >
-                  <Typography variant="h6">an:</Typography>
+                  <Typography variant="h6" className={classes.input}>
+                    an:
+                  </Typography>
                   <CheckboxButtonGroup
                     name="days"
                     returnObject
                     row
                     control={control}
+                    className={classes.input}
                     options={[
                       {
-                        id: '1',
+                        id: 1,
                         label: 'Mo'
                       },
                       {
-                        id: '2',
+                        id: 2,
                         label: 'Di'
                       },
                       {
-                        id: '3',
+                        id: 3,
                         label: 'Mi'
                       },
                       {
-                        id: '4',
+                        id: 4,
                         label: 'Do'
                       },
                       {
-                        id: '5',
+                        id: 5,
                         label: 'Fr'
                       },
                       {
-                        id: '6',
+                        id: 6,
                         label: 'Sa'
                       },
                       {
-                        id: '7',
+                        id: 7,
                         label: 'So'
                       }
                     ]}
@@ -342,5 +370,9 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       opacity: '50%'
     }
+  },
+  input: {
+    marginBottom: '15px'
+    // height: '60px'
   }
 }));

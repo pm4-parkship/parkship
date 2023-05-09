@@ -1,12 +1,13 @@
 import { makeStyles } from '@mui/styles';
-import { Paper, Typography } from '@mui/material';
+import { Paper } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
-const ParkingListEmptyItem = ({add} : {add : () => void}) => {
+const ParkingListEmptyItem = ({ add }: { add: () => void }) => {
   const { listItem } = useStyles();
 
   return (
-    <Paper elevation={1} className={listItem} onClick={() => add}>
-      <Typography>+</Typography>
+    <Paper elevation={1} className={listItem} onClick={add}>
+      <AddIcon fontSize={'large'} />
     </Paper>
   );
 };
@@ -18,10 +19,14 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
     textAlign: 'center',
     verticalAlign: 'middle',
-    backgroundColor: 'grey',
-    margin: 10,
+    backgroundColor: 'lightgray',
     width: 150,
-    height: 200
+    height: 200,
+    margin: 0,
+    '&:hover': {
+      opacity: '75%',
+      cursor: 'pointer'
+    }
   }
 }));
 
