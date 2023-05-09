@@ -22,16 +22,20 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ch.zhaw.parkship.parkinglot.ParkingLotController;
+import ch.zhaw.parkship.parkinglot.ParkingLotDto;
+import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
+import ch.zhaw.parkship.parkinglot.ParkingLotSearchDto;
+import ch.zhaw.parkship.parkinglot.ParkingLotService;
+import ch.zhaw.parkship.parkinglot.ParkingLotState;
+import ch.zhaw.parkship.reservation.ReservationDto;
+import ch.zhaw.parkship.reservation.ReservationEntity;
+import ch.zhaw.parkship.reservation.ReservationHistoryDto;
+import ch.zhaw.parkship.reservation.ReservationService;
+import ch.zhaw.parkship.user.ParkshipUserDetails;
+import ch.zhaw.parkship.user.UserEntity;
+import ch.zhaw.parkship.util.UserGenerator;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -40,6 +44,9 @@ class ParkingLotControllerTest {
 
     @Mock
     private ParkingLotService parkingLotService;
+    
+    @Mock
+    private ReservationService reservationService;
 
     @InjectMocks
     private ParkingLotController parkingLotController;
@@ -212,8 +219,28 @@ class ParkingLotControllerTest {
         assertNull(response.getBody());
         verify(parkingLotService, times(1)).getParkingLotsByUserId(user.getId());
     }
+    
+    @Test
+    public void getReservationsOfOwnedParkingLotsTest() throws Exception{
+      ReservationHistoryDto expectedDto = new ReservationHistoryDto();
+      ReservationDto reservationDto = new ReservationDto();
+      reservationDto.setFrom(LocalDate.of(2023, 4, 10));
+      reservationDto.setTo(LocalDate.of(2023, 4, 20));
+      
+      
+      expectedDto.setCurrent(Collections.emptyList());
+      expectedDto.setPast(List.of(reservationDto));
+
+      ParkshipUserDetails userDetails = createParkshipUserDetails(UserGenerator.generate(1L));
+      when(reservationService.getAllReservationsOfUserOwnedParkingLots(1L)).thenReturn(expectedDto);
+      var response = parkingLotController.getReservations(userDetails);
+      assertEquals(HttpStatus.OK, response.getStatusCode());
+      assertEquals(expectedDto, response.getBody());
+      verify(reservationService, times(1)).getAllReservationsOfUserOwnedParkingLots(userDetails.getId());
+    }
 
     ParkshipUserDetails createParkshipUserDetails(UserEntity user) {
         return new ParkshipUserDetails(user.getId(), user.getEmail(), user.getUsername(), user.getName(), user.getSurname(), user.getPassword(), user.getUserRole(), user.getUserState());
     }
+    
 }
