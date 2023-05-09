@@ -1,41 +1,33 @@
-import React, { ReactNode, useEffect } from 'react';
 import { Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import NavbarUser from '../navbar/navbar-user';
-import { useRouter } from 'next/router';
-import user from '../../../pages/api/user';
-import useUser from '../../auth/use-user';
-import NavbarAdmin from '../navbar/navbar-admin';
+import { ReactNode } from 'react';
 import { UserRole } from '../../models';
+import NavbarAdmin from '../navbar/navbar-admin';
+import NavbarUser from '../navbar/navbar-user';
+import { User } from 'pages/api/user';
 
 export type LayoutProps = {
   children: ReactNode;
+  user?: User;
+  signOut: () => Promise<void>;
 };
 
-export function Layout({ children }: LayoutProps) {
+export function Layout({ user, signOut, children }: LayoutProps) {
   const classes = useStyles();
-  const router = useRouter();
-  const { user: UserSession } = useUser();
-
-  useEffect(() => {
-    if (!UserSession?.isLoggedIn) {
-      router.push('/login');
-    }
-  }, [user]);
 
   return (
     <>
-      {UserSession?.role == UserRole.USER ? (
-        <NavbarUser user={UserSession} />
-      ) : UserSession?.role == UserRole.ADMIN ? (
-        <NavbarAdmin user={UserSession} />
+      {user?.role === UserRole.USER ? (
+        <NavbarUser user={user} signOut={signOut} />
+      ) : user?.role === UserRole.ADMIN ? (
+        <NavbarAdmin user={user} signOut={signOut} />
       ) : null}
       <main>
         <div className={classes.root}>{children}</div>
       </main>
       <div className={classes.bottomBar}>
         <Typography variant="body2" color="primary" align="center">
-          {'Created with ❤️ '}
+          {'Created with ❤️'}
         </Typography>
         <Typography variant="body2" color="textPrimary" align="center">
           {' by Parkship © '}

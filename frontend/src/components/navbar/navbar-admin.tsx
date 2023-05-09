@@ -6,8 +6,16 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import React, { useContext } from 'react';
 import { ColorModeContext } from '../../../context';
 import { User } from '../../../pages/api/user';
+import { useRouter } from 'next/router';
 
-function NavbarUser({ user }: { user?: User }) {
+function NavbarUser({
+  user,
+  signOut
+}: {
+  user?: User;
+  signOut: () => Promise<void>;
+}) {
+  const router = useRouter();
   const classes = useStyles();
   const colorMode = useContext(ColorModeContext);
   const theme = useTheme();
@@ -17,7 +25,7 @@ function NavbarUser({ user }: { user?: User }) {
     <AppBar position="static">
       <Toolbar>
         {isMobile ? (
-          <DrawerComponent />
+          <DrawerComponent user={user} signOut={signOut} />
         ) : (
           user?.isLoggedIn && (
             <>
@@ -39,7 +47,15 @@ function NavbarUser({ user }: { user?: User }) {
                 </Typography>
 
                 <Link href="/logout">
-                  <LogoutIcon />
+                  <span
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      await signOut();
+                      router.push('/login');
+                    }}
+                  >
+                    <LogoutIcon />
+                  </span>
                 </Link>
               </div>
             </>

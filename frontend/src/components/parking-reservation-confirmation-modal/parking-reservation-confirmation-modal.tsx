@@ -4,9 +4,9 @@ import { makeStyles } from '@mui/styles';
 import { Icon } from '@iconify/react';
 import { ParkingLotModel, UserRole } from '../../models';
 import { logger } from '../../logger';
-import useUser from '../../auth/use-user';
 import { toast } from 'react-toastify';
 import { formatDate } from '../../date/date-formatter';
+import { User } from 'pages/api/user';
 
 export const enum ParkingLotAction {
   RESERVIEREN = 'reservieren',
@@ -14,6 +14,7 @@ export const enum ParkingLotAction {
 }
 
 const ParkingReservationConfirmationModal = ({
+  user,
   showModal = true,
   setShowModal,
   parkingLot,
@@ -21,6 +22,7 @@ const ParkingReservationConfirmationModal = ({
   from,
   to
 }: {
+  user: User;
   showModal: boolean;
   setShowModal: (value: boolean) => void;
   parkingLot: ParkingLotModel;
@@ -28,7 +30,6 @@ const ParkingReservationConfirmationModal = ({
   from: Date;
   to: Date;
 }) => {
-  const { user } = useUser();
   const classes = useStyles();
 
   const executeReservation = (parkingLot: ParkingLotModel) => {

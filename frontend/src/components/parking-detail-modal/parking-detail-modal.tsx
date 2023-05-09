@@ -22,14 +22,17 @@ import Checkbox from '@mui/material/Checkbox';
 import ParkingReservationConfirmationModal, {
   ParkingLotAction
 } from '../parking-reservation-confirmation-modal/parking-reservation-confirmation-modal';
+import { User } from 'pages/api/user';
 
 const ParkingDetailModal = ({
+  user,
   showModal = true,
   setShowModal,
   parkingLotModel,
   fromDate,
   toDate
 }: {
+  user: User;
   showModal: boolean;
   setShowModal: (value: boolean) => void;
   parkingLotModel: ParkingLotModel;
@@ -230,6 +233,7 @@ const ParkingDetailModal = ({
         </div>
       </Modal>
       <ParkingReservationConfirmationModal
+        user={user}
         showModal={openConfirmationModal}
         setShowModal={setOpenConfirmationModal}
         from={fromDate}
