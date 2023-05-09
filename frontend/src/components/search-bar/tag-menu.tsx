@@ -20,7 +20,7 @@ const TagMenu = ({ options, selected, addTag }: TagMenuProps) => {
   const handleMenuItemClick = (key: number) => {
     const tag = options.find((value) => value.key == key);
     if (tag) addTag(tag);
-    setAnchorEl(null);
+    if (options.length == selected.length) setAnchorEl(null);
   };
 
   const handleClose = () => {

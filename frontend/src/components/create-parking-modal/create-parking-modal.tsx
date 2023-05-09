@@ -1,26 +1,6 @@
-import {
-  Box,
-  Button,
-  Divider,
-  FormControlLabel,
-  Grid,
-  Modal,
-  Paper,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  Typography
-} from '@mui/material';
+import { Box, Button, Grid, Modal, Typography } from '@mui/material';
 import React from 'react';
-import { makeStyles } from '@mui/styles';
-import { CreateParkingLotModel, OfferModel } from '../../models';
-import { Icon } from '@iconify/react';
-import { nanoid } from 'nanoid';
-import Checkbox from '@mui/material/Checkbox';
-import { useFormik } from 'formik';
-import { ErrorMapCtx, TypeOf, z, ZodIssueOptionalMessage } from 'zod';
+import { ErrorMapCtx, z, ZodIssueOptionalMessage } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import {
@@ -29,7 +9,16 @@ import {
   TextFieldElement
 } from 'react-hook-form-mui';
 import { logger } from 'src/logger';
+import { makeStyles } from '@mui/styles';
+import TagBar, { TagData } from '../search-bar/tag-bar';
 
+const dummyTags: TagData[] = [
+  { key: 0, label: 'überdacht' },
+  { key: 1, label: 'im Schatten' },
+  { key: 2, label: 'Ladestation' },
+  { key: 3, label: 'barrierefrei' },
+  { key: 4, label: 'Garage' }
+];
 export const CreateParkingModal = ({
   showModal = true,
   setShowModal,
@@ -41,6 +30,7 @@ export const CreateParkingModal = ({
 }) => {
   const classes = useStyles();
 
+  const [selectedTags, setSelectedTag] = React.useState<TagData[]>([]);
   const formSchema = z.object({
     parkingName: z.string().min(1),
     address: z.string().min(1),
@@ -51,6 +41,14 @@ export const CreateParkingModal = ({
     description: z.string().optional(),
     days: z.any().optional()
   });
+
+  const addTag = (tag: TagData) => {
+    setSelectedTag([...selectedTags, tag]);
+  };
+
+  const handleDelete = (key: number) => {
+    setSelectedTag((tags) => tags.filter((tag) => tag.key !== key));
+  };
 
   const customErrorMap = () => {
     return (issue: ZodIssueOptionalMessage, ctx: ErrorMapCtx) => {
@@ -94,8 +92,7 @@ export const CreateParkingModal = ({
       price: '',
       startDateOne: '',
       endDateOne: '',
-      description: '',
-      
+      description: ''
     }
   });
 
@@ -110,7 +107,7 @@ export const CreateParkingModal = ({
       startDateOne: data.startDateOne,
       endDateOne: data.endDateOne,
       description: data.description,
-      days: data.days,
+      days: data.days
     };
 
     addParkingLot(body);
@@ -129,129 +126,176 @@ export const CreateParkingModal = ({
           className={classes.form}
           onSubmit={handleSubmit((data) => handleFormSubmit(data))}
         >
-          <Typography variant="h6">Parkplatznummer:</Typography>
-          <TextFieldElement
-            required
-            fullWidth
-            id="parkingName"
-            label="Parkplatznummer: "
-            name="parkingName"
-            control={control}
-            style={{ marginTop: '10px', height: '60px' }}
-          />
-          <Typography variant="h6">Besitzer: Benjamin Blümchen</Typography>
-          <Typography variant="h6">Wo:</Typography>
-          <TextFieldElement
-            required
-            fullWidth
-            id="address"
-            label="Adresse: "
-            name="address"
-            control={control}
-            style={{ marginTop: '10px', height: '60px' }}
-          />
-          <TextFieldElement
-            required
-            fullWidth
-            id="addressNr"
-            label="Nummer: "
-            name="addressNr"
-            control={control}
-            style={{ marginTop: '10px', height: '60px' }}
-          />
-          <Typography variant="h6">Kosten [CHFr. / Tag]: </Typography>
-          <TextFieldElement
-            required
-            fullWidth
-            id="price"
-            label="Kosten: "
-            name="price"
-            control={control}
-            style={{ marginTop: '10px', height: '60px' }}
-          />
-
-          <Typography variant="h6">Buchbarer Zeitraum: </Typography>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-              gap: '10px',
-              width: '100%'
-            }}
+          <Grid
+            container
+            xs={12}
+            rowSpacing={3}
+            direction="column"
+            justifyContent="center"
+            alignItems="left"
           >
-            <DatePickerElement
-              required
-              label="Start"
-              name="startDateOne"
-              control={control}
-            />
-            <DatePickerElement
-              required
-              label="Ende"
-              name="endDateOne"
-              control={control}
-            />
-          </div>
+            <Grid item>
+              <Typography variant="h6">Parkplatznummer:</Typography>
+              <TextFieldElement
+                required
+                fullWidth
+                id="parkingName"
+                label="Parkplatznummer: "
+                name="parkingName"
+                control={control}
+                style={{ marginTop: '10px', height: '60px' }}
+              />
+            </Grid>
 
-          <Typography variant="h6">Tage:</Typography>
-          <CheckboxButtonGroup
-            name="days"
-            returnObject
-            row
-            control={control}
-            options={[
-              {
-                id: '1',
-                label: 'Mo'
-              },
-              {
-                id: '2',
-                label: 'Di'
-              },
-              {
-                id: '3',
-                label: 'Mi'
-              },
-              {
-                id: '4',
-                label: 'Do'
-              },
-              {
-                id: '5',
-                label: 'Fr'
-              },
-              {
-                id: '6',
-                label: 'Sa'
-              },
-              {
-                id: '7',
-                label: 'So'
-              }
-            ]}
-          />
+            <Grid item>
+              <Typography variant="h6">Besitzer: Benjamin Blümchen</Typography>
+            </Grid>
+            <Grid item>
+              <Grid
+                container
+                justifyContent="left"
+                alignItems="center"
+                spacing={3}
+              >
+                <Grid item>
+                  <Typography variant="h6">Wo:</Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <TextFieldElement
+                    required
+                    fullWidth
+                    id="address"
+                    label="Adresse: "
+                    name="address"
+                    control={control}
+                  />
+                </Grid>
+                <Grid item xs={1}>
+                  <TextFieldElement
+                    required
+                    id="addressNr"
+                    label="Nr."
+                    name="addressNr"
+                    control={control}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
 
-          <Typography variant="h6">
-            Beschreibung:
-          </Typography>
-          <TextFieldElement
-            fullWidth
-            id="description"
-            label="Beschreibung: "
-            name="description"
-            control={control}
-            style={{ marginTop: '10px', height: '60px' }}
-          />
-          <Button
-            type={'submit'}
-            variant={'contained'}
-            sx={{
-              width: '94%',
-              marginTop: '30px'
-            }}
-          >
-            Speichern
-          </Button>
+            <Grid item>
+              <Typography variant="h6">Kosten [CHFr. / Tag]: </Typography>
+              <TextFieldElement
+                required
+                fullWidth
+                id="price"
+                label="Kosten: "
+                name="price"
+                control={control}
+                style={{ marginTop: '10px', height: '60px' }}
+              />
+            </Grid>
+
+            <Grid item>
+              <Grid
+                container
+                justifyContent="left"
+                alignItems="center"
+                spacing={3}
+              >
+                <Grid item xs={2}>
+                  <Typography variant="h6">Buchbarer Zeitraum: </Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <DatePickerElement
+                    required
+                    label="von"
+                    name="startDateOne"
+                    control={control}
+                  />
+                </Grid>
+                <Grid item xs={2}>
+                  <DatePickerElement
+                    required
+                    label="bis"
+                    name="endDateOne"
+                    control={control}
+                  />
+                </Grid>
+                <Grid
+                  item
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    columnGap: '1rem'
+                  }}
+                >
+                  <Typography variant="h6">an:</Typography>
+                  <CheckboxButtonGroup
+                    name="days"
+                    returnObject
+                    row
+                    control={control}
+                    options={[
+                      {
+                        id: '1',
+                        label: 'Mo'
+                      },
+                      {
+                        id: '2',
+                        label: 'Di'
+                      },
+                      {
+                        id: '3',
+                        label: 'Mi'
+                      },
+                      {
+                        id: '4',
+                        label: 'Do'
+                      },
+                      {
+                        id: '5',
+                        label: 'Fr'
+                      },
+                      {
+                        id: '6',
+                        label: 'Sa'
+                      },
+                      {
+                        id: '7',
+                        label: 'So'
+                      }
+                    ]}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+
+            <Grid item>
+              <Typography variant="h6">Beschreibung:</Typography>
+              <TextFieldElement
+                fullWidth
+                multiline
+                rows={4}
+                id="description"
+                label="Beschreibung: "
+                name="description"
+                control={control}
+              />
+            </Grid>
+            <Grid item>
+              <TagBar
+                options={dummyTags}
+                addTag={addTag}
+                handleDelete={handleDelete}
+                selected={selectedTags}
+              />
+            </Grid>
+            <Grid item>
+              <Button type={'submit'} variant={'contained'}>
+                Speichern
+              </Button>
+            </Grid>
+          </Grid>
         </form>
       </Box>
     </Modal>
@@ -260,52 +304,7 @@ export const CreateParkingModal = ({
 
 const useStyles = makeStyles((theme) => ({
   form: {
-    display: 'grid',
     width: '80%'
-  },
-  button: {
-    float: 'right'
-  },
-  tableRoot: {
-    overflow: 'scroll'
-  },
-  tableBody: {
-    display: 'inline-table',
-    width: '100%',
-    [theme.breakpoints.down('md')]: {
-      display: 'grid-inline'
-    }
-  },
-  tableRow: {
-    [theme.breakpoints.down('md')]: {
-      borderBottom: '0pt solid black'
-    },
-    [theme.breakpoints.down('sm')]: {
-      display: 'grid',
-      gap: '0',
-      marginBottom: '5px'
-    },
-    gap: '20px'
-  },
-  tableCell: {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    minWidth: '250px',
-    maxWidth: '250px',
-    [theme.breakpoints.down('sm')]: {
-      minWidth: '300px',
-      maxWidth: '300px'
-    }
-  },
-  tableCellLabel: {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    minWidth: '70px',
-    maxWidth: '70px',
-    [theme.breakpoints.down('sm')]: {
-      minWidth: '100px',
-      maxWidth: '100px'
-    }
   },
   boxRoot: {
     position: 'absolute',
@@ -324,8 +323,8 @@ const useStyles = makeStyles((theme) => ({
       width: '90%',
       borderRadius: '0%'
     },
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000'
+    backgroundColor: theme.palette.background.default,
+    borderRadius: '4px'
   },
   header: {
     display: 'flex',
