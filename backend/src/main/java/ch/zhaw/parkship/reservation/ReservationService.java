@@ -7,6 +7,7 @@ import ch.zhaw.parkship.reservation.exceptions.ReservationNotFoundException;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
 import ch.zhaw.parkship.user.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -194,7 +195,6 @@ public class ReservationService {
             }
           });
       }
-
       dto.setCurrent(current);
       dto.setPast(past);
 
