@@ -1,9 +1,9 @@
 package ch.zhaw.parkship.parkinglot;
 
-import ch.zhaw.parkship.common.PaginatedResponse;
-import ch.zhaw.parkship.user.ParkshipUserDetails;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -11,13 +11,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import ch.zhaw.parkship.common.PaginatedResponse;
+import ch.zhaw.parkship.reservation.ReservationHistoryDto;
+import ch.zhaw.parkship.reservation.ReservationService;
+import ch.zhaw.parkship.user.ParkshipUserDetails;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 
 /**
  * This class is a Rest Controller for managing ParkingLotDto objects
@@ -31,6 +40,9 @@ public class ParkingLotController {
 
     @Autowired
     private ParkingLotService parkingLotService;
+    @Autowired
+    private ReservationService reservationService;
+
     private final String DEFAULT_PAGE_NUM = "0";
     private final String DEFAULT_PAGE_SIZE = "100";
 
@@ -123,13 +135,28 @@ public class ParkingLotController {
     @GetMapping("/searchTerm")
     public List<ParkingLotSearchDto> searchParkingLot(
             @RequestParam(defaultValue = "") String searchTerm,
+            @RequestParam(defaultValue = "") List<String> tagList,
             @RequestParam(defaultValue = "") LocalDate startDate,
             @RequestParam(defaultValue = "") LocalDate endDate,
             @RequestParam(defaultValue = DEFAULT_PAGE_NUM) int page,
             @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
 
-        return parkingLotService.getBySearchTerm(searchTerm, startDate, endDate, page, size);
+        return parkingLotService.getBySearchTerm(searchTerm,tagList, startDate, endDate, page, size);
 
+    }
+    
+    /**
+     * Retrieves all reservations of parking lots owned by the authenticated user.
+     * Returns a {@link ReservationHistoryDto} object that contains two lists of {@link ReservationEntity} objects,
+     * one for current reservations and one for past reservations.
+     *
+     * @param user the authenticated user information.
+     * @return a {@link ResponseEntity} containing the {@link ReservationHistoryDto} object and HTTP status code 200 (OK).
+     * @throws EntityNotFoundException if the authenticated user is not found in the system.
+     */
+    @GetMapping(value = "/reservations", produces= "application/json")
+    public ResponseEntity<ReservationHistoryDto> getReservations(@AuthenticationPrincipal ParkshipUserDetails user) {
+        return ResponseEntity.ok(reservationService.getAllReservationsOfUserOwnedParkingLots(user.getId()));
     }
 
     /**
@@ -154,6 +181,4 @@ public class ParkingLotController {
         parkingLotService.updateState(id, newState);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
 }

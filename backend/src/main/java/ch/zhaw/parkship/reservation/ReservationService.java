@@ -6,12 +6,15 @@ import ch.zhaw.parkship.reservation.exceptions.ReservationCanNotBeCanceledExcept
 import ch.zhaw.parkship.reservation.exceptions.ReservationNotFoundException;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
+import ch.zhaw.parkship.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -154,4 +157,47 @@ public class ReservationService {
                 .map(ReservationDto::new)
                 .collect(Collectors.toList());
     }
+    
+    /**
+     * Retrieves all reservations of parking lots owned by a user with the given id.
+     * Returns a {@link ReservationHistoryDto} object that contains two lists of {@link ReservationDto} objects,
+     * one for current reservations and one for past reservations.
+     *
+     * @param id the id of the user.
+     * @return a {@link ReservationHistoryDto} object containing two lists of {@link ReservationDto} objects.
+     * @throws EntityNotFoundException if the user with the given id is not found in the system.
+     */
+    public ReservationHistoryDto getAllReservationsOfUserOwnedParkingLots(Long id) {
+      var userEntityO = userRepository.findById(id);
+      ReservationHistoryDto dto = new ReservationHistoryDto();
+      List<ReservationEntity> reservations = new ArrayList<>();
+      List<ReservationDto> current = new ArrayList<>();
+      List<ReservationDto> past = new ArrayList<>();
+
+      if(userEntityO.isPresent()){
+          var userEntity = userEntityO.get();
+          var parkingLots = userEntity.getParkingLots();
+
+          for (ParkingLotEntity parkingLotEntity : parkingLots) {
+              reservations.addAll(parkingLotEntity.getReservationEntitySet());
+          }
+
+          // get the current date
+          LocalDate currentDate = LocalDate.now();
+
+          // filter reservations based on the to date
+          reservations.stream().map(ReservationDto::new).forEach(reservation -> {
+            if (reservation.getTo().isAfter(currentDate) || reservation.getTo().isEqual(currentDate)) {
+              current.add(reservation);
+            } else {
+              past.add( reservation);
+            }
+          });
+      }
+
+      dto.setCurrent(current);
+      dto.setPast(past);
+
+      return dto;
+  }
 }
