@@ -4,6 +4,7 @@ import { logger } from 'src/logger';
 import { formatDate } from 'src/date/date-formatter';
 import { ParkingLotReservationModel } from 'src/models/parking-lot-reservations/parking-lot-reservations.model';
 import MyParkinLotReservationTable from 'src/components/my-parking-lot-reservations/my-parking-lot-reservations';
+import MyParkingLotPage from 'pages/my-parking-lot';
 
 const fetchMyParkingLotReservations = async (
   user: User
@@ -86,6 +87,7 @@ const MyParkingLotsPage = ({ user }) => {
 
   return (
     <>
+      <MyParkingLotPage user={user}/>
       <MyParkinLotReservationTable headerNames={headerNames} reservations={myParkingLotsReservations}/>      
     </>
   );
