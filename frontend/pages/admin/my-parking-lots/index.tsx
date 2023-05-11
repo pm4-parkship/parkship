@@ -50,7 +50,6 @@ interface myParkingSlotsTableProps {
 
 const MyParkingLotsPage = ({ user }) => {
   const classes = useStyles();
-  const [test, setTest] = useState<RowDataType[]>([]);
   const [parkingSlotsDataPast, setParkingSlotsDataPast] = useState<
     myParkingSlotsTableProps[]
   >([]);
@@ -92,7 +91,7 @@ const MyParkingLotsPage = ({ user }) => {
           parkingSlotsDataPast.concat(parkingSlotsDataFuture)
         );
 
-        logger.log('test: ', test);
+        logger.log(parkingSlotsDataPast);
       })
       .catch((error) => logger.log(error));
   }, []);
@@ -107,22 +106,55 @@ const MyParkingLotsPage = ({ user }) => {
             {parkingSlotsDataPast.map((row, index) => {
               return (
                 <TableRow
-                  key={index}
+                  key={row.id}
                   className={!row.active ? classes.baseRow : classes.activeRow}
                 >
                   <TableCell
-                    align={index > 0 ? 'right' : 'left'}
+                    align={'left'}
                     variant={'body'}
                     key={index}
                   >
                     {row.id}
                   </TableCell>
+
                   <TableCell
-                    align={index > 0 ? 'right' : 'left'}
+                    align={'right'}
                     variant={'body'}
                     key={index}
                   >
                     {row.parkingLotName}
+                  </TableCell>
+
+                  <TableCell
+                    align={'right'}
+                    variant={'body'}
+                    key={index}
+                  >
+                    {row.location}
+                  </TableCell>
+
+                  <TableCell
+                    align={'right'}
+                    variant={'body'}
+                    key={index}
+                  >
+                    {row.reservedBy}
+                  </TableCell>
+
+                  <TableCell
+                    align={'right'}
+                    variant={'body'}
+                    key={index}
+                  >
+                    {row.bookingTime}
+                  </TableCell>
+
+                  <TableCell
+                    align={'right'}
+                    variant={'body'}
+                    key={index}
+                  >
+                    {row.status}
                   </TableCell>
                 </TableRow>
               );
@@ -130,8 +162,6 @@ const MyParkingLotsPage = ({ user }) => {
           </TableBody>
         </Table>
       </TableContainer>
-
-      <div>hello</div>
     </>
   );
 };
