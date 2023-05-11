@@ -14,21 +14,17 @@ public class TagDto implements Serializable {
   @NotBlank
   private String name;
 
-  @NotBlank
-  private String category;
 
   public TagDto(TagEntity tagEntity) {
     this.id = tagEntity.getId();
     this.name = tagEntity.getName();
-    this.category = tagEntity.getCategory();
   }
 
   public TagDto() {}
 
   @Override
   public String toString() {
-    return "TagDto{" + "id=" + id + ", name='" + name + '\'' + ", category='" + category + '\''
-        + '}';
+    return "TagDto{" + "id=" + id + ", name='" + name + '\'' + '}';
   }
 
   @Override

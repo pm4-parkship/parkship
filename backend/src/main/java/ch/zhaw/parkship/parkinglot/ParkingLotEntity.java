@@ -60,7 +60,7 @@ public class ParkingLotEntity {
     private Double price;
 
     @Column(nullable = false)
-    private String state;
+    private ParkingLotState state;
 
     @OneToMany(mappedBy = "parkingLot", fetch = FetchType.LAZY, cascade = {CascadeType.ALL},
             orphanRemoval = true)

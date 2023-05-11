@@ -2,6 +2,7 @@ package ch.zhaw.parkship.parkinglot;
 
 import ch.zhaw.parkship.tag.TagDto;
 import ch.zhaw.parkship.user.UserDto;
+import ch.zhaw.parkship.user.UserState;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -47,8 +48,7 @@ public class ParkingLotDto implements Serializable {
     @NotNull
     private Double price;
 
-    @NotBlank
-    private String state;
+    private ParkingLotState state;
 
     public ParkingLotDto(ParkingLotEntity parkingLotEntity) {
         this.id = parkingLotEntity.getId();

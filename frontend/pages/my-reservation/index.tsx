@@ -5,15 +5,16 @@ import {
   ReservationModel,
   ReservationState
 } from '../../src/models/reservation/reservation.model';
-import { Link, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { formatDate } from '../../src/date/date-formatter';
-import useUser from '../../src/auth/use-user';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
 import { RowDataType } from '../../src/components/table/table-row';
-import { toast } from 'react-toastify';
 import { User } from '../api/user';
 import { logger } from '../../src/logger';
 import ReservationStateIcon from '../../src/components/my-reservation/reservation-state-icon';
+import CancelReservationModal from '../../src/components/reservation/cancel-reservation-modal';
+import ModifyReservationModal from '../../src/components/reservation/modify-reservation-modal';
+import CancelCell from '../../src/components/my-reservation/reservation-cancel-cell';
 
 export interface ReservationFilterData {
   states: Set<ReservationState>;
@@ -25,50 +26,41 @@ const initState = {
   loading: false,
   result: Array<ReservationModel>()
 };
-const minCancelDate = () => {
-  const today = new Date();
-  today.setDate(today.getDate() + 2);
-  return today;
-};
 
-const MyReservationPage = () => {
-  const { user } = useUser();
-
+const MyReservationPage = ({ user }) => {
   const [filter, setFilter] = useState<ReservationFilterData>(initFilter);
   const [reservations, setReservations] = useState(initState);
-
-  const openReservationModal = (reservation: ReservationModel) => {
-    cancelReservation(reservation.id, user)
-      .then((result) => {
-        result &&
-          toast.success('Stornierung von ' + reservation.id + ' erfolgreich');
-
-        reservation.reservationState = result.reservationState;
-        reservation.cancelDate = result.cancelDate;
-
-        reservations.result.map((obj) =>
-          obj.id == reservation.id ? reservation : obj
-        );
-        setReservations({
-          error: null,
-          loading: false,
-          result: reservations.result
-        });
-      })
-      .catch((reject) => toast.error(reject.message));
+  const [selectedCancelReservation, setSelectedCancelReservation] =
+    useState<ReservationModel | null>(null);
+  const [selectedModifyReservation, setSelectedModifyReservation] =
+    useState<ReservationModel | null>(null);
+  const [, setOpen] = useState(false);
+  const handleClose = () => {
+    setSelectedModifyReservation(null);
+    setSelectedCancelReservation(null);
+    setOpen(false);
+  };
+  const updateReservation = (newValue: ReservationModel) => {
+    reservations.result.map((obj) => (obj.id == newValue.id ? newValue : obj));
+    setReservations({
+      error: null,
+      loading: false,
+      result: reservations.result
+    });
+    setSelectedCancelReservation(null);
   };
 
-  const makeCancelCell = (item: ReservationModel): string | JSX.Element => {
-    if (new Date(item.from) <= minCancelDate()) {
-      return <span></span>;
-    } else if (item.cancelDate) {
-      return `${formatDate(new Date(item.cancelDate))}`;
-    }
-    return (
-      <Link href="#" onClick={() => openReservationModal(item)}>
-        <Typography variant={'body2'}>{'stornieren'}</Typography>
-      </Link>
-    );
+  const openModifyModal = (row: RowDataType) => {
+    const id = Number(row[0]);
+    const reservation = reservations.result.filter(
+      (value) => value.id == id
+    )[0];
+    if (
+      reservation.reservationState != ReservationState.ACTIVE ||
+      new Date(reservation.from) <= new Date()
+    )
+      return;
+    setSelectedModifyReservation(reservation);
   };
 
   useEffect(() => {
@@ -81,7 +73,6 @@ const MyReservationPage = () => {
       })
       .catch();
   }, []);
-
   const filterReservation = (reservation: ReservationModel): boolean => {
     return (
       filter.states.has(reservation.reservationState) || !filter.states.size
@@ -97,7 +88,10 @@ const MyReservationPage = () => {
         `${item.parkingLot.address} ${item.parkingLot.addressNr}`,
         `${item.tenant.name} ${item.tenant.surname}`,
         `${formatDate(new Date(item.from))} - ${formatDate(new Date(item.to))}`,
-        makeCancelCell(item)
+        CancelCell({
+          reservation: item,
+          onClick: () => setSelectedCancelReservation(item)
+        })
       ];
     });
 
@@ -112,11 +106,28 @@ const MyReservationPage = () => {
         {reservations.result.length > 0 ? (
           <ReservationTable
             reservations={filteredReservations}
+            openModifyModal={openModifyModal}
           ></ReservationTable>
         ) : (
           <NoData size={reservations.result.length} />
         )}
       </>
+      {selectedCancelReservation && (
+        <CancelReservationModal
+          updateReservation={updateReservation}
+          reservation={selectedCancelReservation}
+          user={user}
+          handleClose={handleClose}
+        />
+      )}
+      {selectedModifyReservation && (
+        <ModifyReservationModal
+          updateReservation={updateReservation}
+          reservation={selectedModifyReservation}
+          user={user}
+          handleClose={handleClose}
+        />
+      )}
     </div>
   );
 };
@@ -140,20 +151,4 @@ const fetchReservations = async (user: User): Promise<ReservationModel[]> => {
   });
 };
 
-const cancelReservation = async (
-  reservationID: number,
-  user: User
-): Promise<ReservationModel> => {
-  return await fetch(`/backend/reservations/${reservationID}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${user.token}`
-    }
-  }).then(async (response) => {
-    if (response.ok) {
-      return await response.json();
-    }
-  });
-};
 export default MyReservationPage;

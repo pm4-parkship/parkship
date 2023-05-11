@@ -18,6 +18,13 @@ export interface ParkingLotModel {
 }
 
 export enum ParkingLotState {
-  released = 'released',
-  locked = 'locked'
+  active = 'ACTIVE',
+  locked = 'LOCKED',
+  inactive = 'INACTIVE'
 }
+
+export const ParkingLotStateLabel = new Map<ParkingLotState, string>([
+  [ParkingLotState.active, 'aktiv'],
+  [ParkingLotState.inactive, 'inaktiv'],
+  [ParkingLotState.locked, 'gesperrt']
+]);

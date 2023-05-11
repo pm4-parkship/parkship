@@ -1,6 +1,7 @@
 package ch.zhaw.parkship.util.generator;
 
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
+import ch.zhaw.parkship.parkinglot.ParkingLotState;
 import ch.zhaw.parkship.user.UserEntity;
 import com.github.javafaker.Faker;
 
@@ -15,7 +16,7 @@ public abstract class ParkingLotGenerator {
         entity.setLatitude(Double.valueOf(faker.address().latitude()));
         entity.setNr(faker.address().buildingNumber());
         entity.setPrice(faker.number().randomDouble(2, 10, 300));
-        entity.setState(faker.address().state());
+        entity.setState(ParkingLotState.ACTIVE);
         entity.setAddress(faker.address().streetAddress());
         entity.setAddressNr(faker.address().streetAddressNumber());
         entity.setDescription(faker.weather().description());

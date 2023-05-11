@@ -1,34 +1,16 @@
-import React, { useEffect } from 'react';
-import useUser from '../src/auth/use-user';
-import { ErrorMapCtx, z, ZodIssueOptionalMessage } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Box, Button, Paper, Typography } from '@mui/material';
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { TextFieldElement } from 'react-hook-form-mui';
-import { Box, Button, Paper, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
-import { logger } from '../src/logger';
 import { UserRole } from '../src/models';
-import { useRouter } from 'next/router';
-import { User } from './api/user';
+import { ErrorMapCtx, z, ZodIssueOptionalMessage } from 'zod';
+import { makeStyles } from '@mui/styles';
 
-export default function Login() {
+export default function Login({ signIn }) {
   const router = useRouter();
-  // here we just check if user is already logged in and redirect to profile
-  const { mutateUser, user } = useUser();
-
-  useEffect(() => {
-    redirectUser(user);
-  }, [user]);
-
-  const redirectUser = (user: User) => {
-    // logger.log(user);
-    if (user.isLoggedIn && user.role == UserRole.ADMIN) {
-      logger.log(user);
-      router.push('/admin/parking-lots');
-    } else if (user.isLoggedIn && user.role == UserRole.USER) {
-      router.push('/search');
-    }
-  };
+  const classNames = useStyles();
 
   const formSchema = z.object({
     email: z.string().email(),
@@ -76,12 +58,16 @@ export default function Login() {
       }).then(async (res: any) => {
         if (res.ok) {
           const data = await res.json();
-          await mutateUser({
+          const userData = {
             isLoggedIn: true,
             role: UserRole[data.user.role],
             token: data.user.token,
             username: data.user.username
-          }).then((user) => user && redirectUser(user));
+          };
+          signIn(userData);
+          router.push(
+            userData.role === UserRole.ADMIN ? '/admin/parking-lots' : '/search'
+          );
         }
       });
     } catch (error: any) {
@@ -90,66 +76,79 @@ export default function Login() {
   };
 
   return (
-    <div>
-      {user?.isLoggedIn ? (
-        <Typography component="h1" align="center" variant="h5">
-          Sie sind bereits eingeloggt
+    <div style={{ margin: 'auto 0' }}>
+      <Box className={classNames.root}>
+        <Typography component="h1" variant="h5">
+          Willkommen bei Parkship!
         </Typography>
-      ) : (
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-          }}
+        <form
+          className={classNames.form}
+          onSubmit={handleSubmit((data) => handleFormSubmit(data))}
         >
-          <Typography component="h1" variant="h5">
-            Willkommen bei Parkship!
-          </Typography>
-          <form
-            style={{ display: 'grid', width: '25%', marginTop: '20px' }}
-            onSubmit={handleSubmit((data) => handleFormSubmit(data))}
-          >
-            <Paper elevation={3}>
-              <TextFieldElement
-                required
-                fullWidth
-                id="email"
-                placeholder="admin@parkship.ch"
-                label="Email Addresse"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                control={control}
-                style={{ marginTop: '10px', height: '60px' }}
-              />
-              <TextFieldElement
-                required
-                fullWidth
-                name="password"
-                label="Passwort"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                control={control}
-                autoFocus
-                style={{ marginTop: '30px', height: '60px' }}
-              />
-              <Button
-                type={'submit'}
-                variant={'contained'}
-                sx={{
-                  width: '94%',
-                  marginTop: '30px'
-                }}
-              >
-                Einloggen
-              </Button>
-            </Paper>
-          </form>
-        </Box>
-      )}
+          <Paper elevation={3} className={classNames.container}>
+            <TextFieldElement
+              required
+              fullWidth
+              id="email"
+              placeholder="mail@domain.ch"
+              label="Email Addresse"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              control={control}
+              className={classNames.textField}
+            />
+            <TextFieldElement
+              required
+              fullWidth
+              name="password"
+              label="Passwort"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              control={control}
+              autoFocus
+              className={classNames.textField}
+            />
+            <Button
+              type={'submit'}
+              variant={'contained'}
+              className={classNames.button}
+            >
+              Einloggen
+            </Button>
+          </Paper>
+        </form>
+      </Box>
     </div>
   );
+}
+const useStyles = makeStyles(() => ({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '100%',
+    padding: 16,
+    paddingTop: 45,
+    rowGap: 35
+  },
+  textField: { height: '60px' },
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  form: { display: 'grid', width: '25%', marginTop: '20px' },
+  button: {
+    width: '80%'
+  }
+}));
+
+export async function getStaticProps() {
+  return {
+    props: {
+      publicPage: true
+    }
+  };
 }

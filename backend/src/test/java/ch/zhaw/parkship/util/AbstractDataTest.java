@@ -1,5 +1,6 @@
 package ch.zhaw.parkship.util;
 
+import ch.zhaw.parkship.parkinglot.ParkingLotState;
 import ch.zhaw.parkship.user.UserRole;
 import ch.zhaw.parkship.util.generator.ReservationGenerator;
 import ch.zhaw.parkship.ParkshipApplication;
@@ -58,7 +59,7 @@ public abstract class AbstractDataTest {
             parkingLot.setLatitude(Double.valueOf(faker.address().latitude()));
             parkingLot.setNr(faker.address().buildingNumber());
             parkingLot.setPrice(faker.number().randomDouble(2, 10, 300));
-            parkingLot.setState(faker.address().state());
+            parkingLot.setState(ParkingLotState.ACTIVE);
             parkingLot.setAddress(faker.address().streetAddress());
             parkingLot.setAddressNr(faker.address().streetAddressNumber());
             parkingLot.setDescription(faker.weather().description());

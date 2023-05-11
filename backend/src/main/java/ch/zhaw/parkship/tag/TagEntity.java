@@ -28,8 +28,6 @@ public class TagEntity {
   @Column(nullable = false)
   private String name;
 
-  @Column(nullable = false)
-  private String category;
 
   @ManyToMany(mappedBy = "tags", fetch = FetchType.EAGER)
   private Set<ParkingLotEntity> parkingLots;
@@ -40,8 +38,7 @@ public class TagEntity {
 
   @Override
   public String toString() {
-    return "TagEntity{" + "id=" + id + ", name='" + name + '\'' + ", category='" + category + '\''
-        + ", parkingLots=" + parkingLots + '}';
+    return "TagEntity{" + "id=" + id + ", name='" + name + '\'' + ", parkingLots=" + parkingLots + '}';
   }
 
   @Override

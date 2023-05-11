@@ -1,7 +1,6 @@
 import { withIronSessionApiRoute } from 'iron-session/next';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { sessionOptions } from '../../src/auth/session';
-import { logger } from '../../src/logger';
+import { sessionOptions } from '../../src/auth/sessionconfig';
 
 export interface User {
   isLoggedIn: boolean;
@@ -22,7 +21,7 @@ async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
       isLoggedIn: true
     });
   } else {
-    res.json({
+    res.status(401).json({
       isLoggedIn: false,
       username: '',
       token: '',
