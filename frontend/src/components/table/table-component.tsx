@@ -8,7 +8,7 @@ import TableHeader from './table-header';
 
 interface TableComponentProps {
   headerNames: string[];
-  onRowClick?: (row: unknown) => void;
+  onRowClick?: (row: RowDataType) => void;
   data: RowDataType[];
 }
 

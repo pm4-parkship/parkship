@@ -1,6 +1,6 @@
 import SearchBar from '../../src/components/search-bar/search-bar';
 import React, { useState } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Link, Typography } from '@mui/material';
 import { TagData } from '../../src/components/search-bar/tag-bar';
 import SearchParkingLotTable from '../../src/components/search-parking-lot/search-parking-lot-table';
 import ParkingDetailModal from '../../src/components/parking-detail-modal/parking-detail-modal';
@@ -13,10 +13,9 @@ import { User } from '../api/user';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
 import { RowDataType } from '../../src/components/table/table-row';
 import { SearchResultModel } from '../../src/models/search/search-result.model';
-import {
-  CreateReservationModel,
-  ReservationModel
-} from '../../src/models/reservation/reservation.model';
+import CreateReservationModal, {
+  CreateReservationConfirmationModalData
+} from '../../src/components/reservation/create-reservation-modal';
 
 export interface SearchParameters {
   searchTerm: string;
@@ -33,42 +32,45 @@ const SearchPage = ({ user }) => {
   };
 
   const [searchResult, setSearchResult] = useState(initState);
-  const [searchParameters, setSearchParameters] = useState<SearchParameters>();
+  const [searchParameters, setSearchParameters] = useState<SearchParameters>({
+    searchTerm: '',
+    fromDate: new Date(),
+    toDate: new Date(),
+    tags: []
+  });
 
   const [showDetails, setShowDetails] = useState(false);
+  const [requestConfirmation, setRequestConfirmation] =
+    useState<boolean>(false);
   const [selectedParkingLot, setSelectedParkingLot] =
     useState<ParkingLotModel>();
+  const [createReservationData, setCreateReservationData] =
+    useState<CreateReservationConfirmationModalData>();
 
   const onSelectParkingLot = (data: string[]) => {
     const name = data[0];
     const selected = searchResult.result.find((value) =>
       value.name.includes(name)
     );
-    if (selected && user) {
+    if (selected) {
       fetchParkingSpot(selected.id, user).then((result) => {
         setSelectedParkingLot(() => result);
+        setCreateReservationData({
+          parkingLotID: selected.id,
+          id: selected.name,
+          fromDate: searchParameters.fromDate,
+          toDate: searchParameters.toDate
+        });
         setShowDetails(true);
       });
     }
   };
-
-  const createReservation = () => {
-    if (selectedParkingLot && searchParameters) {
-      createReservationCall(
-        {
-          from: format(searchParameters.fromDate, 'yyy-MM-dd'),
-          to: format(searchParameters.toDate, 'yyy-MM-dd'),
-          parkingLotID: selectedParkingLot.id
-        },
-        user
-      )
-        .then((response) => toast.success('Buchung erfolgreich ' + response.id))
-        .catch((reject) => toast.error(reject.message));
-    }
+  const closeDetails = (value: boolean) => {
+    setRequestConfirmation(value);
+    setShowDetails(value);
   };
 
   const makeOnSearch = (searchParameters: SearchParameters) => {
-    if (!user) return;
     setSearchParameters(searchParameters);
     setSearchResult({ error: null, loading: true, result: [] });
     fetchSearch(searchParameters, user)
@@ -78,13 +80,31 @@ const SearchPage = ({ user }) => {
       .catch((error) => toast.error(error.message));
   };
 
+  const bookNowLink = (searchItem: SearchResultModel) => (
+    <Link
+      href="#"
+      onClick={(e) => {
+        e.stopPropagation();
+        setCreateReservationData({
+          parkingLotID: searchItem.id,
+          id: searchItem.name,
+          fromDate: searchParameters.fromDate,
+          toDate: searchParameters.toDate
+        });
+        setRequestConfirmation(true);
+      }}
+    >
+      <Typography variant={'body2'}>{'reservieren'}</Typography>
+    </Link>
+  );
+
   const mappedResult: Array<RowDataType> = searchResult.result.map((item) => {
     return [
       `${item.name}`,
       `${item.address}`,
       `${item.owner}`,
       `${formatDate(new Date(item.from))} - ${formatDate(new Date(item.to))}`,
-      `reservieren`
+      bookNowLink(item)
     ];
   });
 
@@ -93,7 +113,6 @@ const SearchPage = ({ user }) => {
       <Grid item xs={12}>
         <SearchBar makeOnSearch={makeOnSearch}></SearchBar>
       </Grid>
-
       <Grid item xs={12}>
         {mappedResult.length > 0 ? (
           <SearchParkingLotTable
@@ -104,14 +123,30 @@ const SearchPage = ({ user }) => {
           <Loading loading={searchResult.loading} />
         )}
       </Grid>
-      {selectedParkingLot ? (
+      {selectedParkingLot && showDetails ? (
         <ParkingDetailModal
-          user={user}
           showModal={showDetails}
-          setShowModal={setShowDetails}
+          setShowModal={closeDetails}
           parkingLotModel={selectedParkingLot}
-          fromDate={searchParameters?.fromDate || new Date()}
-          toDate={searchParameters?.toDate || new Date()}
+          makeOnAction={() => {
+            setCreateReservationData({
+              parkingLotID: selectedParkingLot.id,
+              id: selectedParkingLot.name,
+              fromDate: searchParameters.fromDate,
+              toDate: searchParameters.toDate
+            });
+            setRequestConfirmation(true);
+          }}
+        />
+      ) : null}
+      {requestConfirmation && createReservationData ? (
+        <CreateReservationModal
+          user={user}
+          data={createReservationData}
+          onClose={() => {
+            setRequestConfirmation(false);
+            setCreateReservationData(undefined);
+          }}
         />
       ) : null}
     </Grid>
@@ -138,31 +173,6 @@ const fetchSearch = async (
     },
     (reject) => {
       return reject.message;
-    }
-  );
-};
-const createReservationCall = async (
-  body: CreateReservationModel,
-  user: User
-): Promise<ReservationModel> => {
-  return fetch('/backend/reservations', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  }).then(
-    async (response) => {
-      if (response.ok) {
-        const data = await response.json();
-        logger.log(data);
-        return data;
-      }
-    },
-    async (reject) => {
-      const data = await reject.json();
-      return data.message;
     }
   );
 };

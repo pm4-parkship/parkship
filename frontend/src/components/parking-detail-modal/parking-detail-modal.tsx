@@ -12,35 +12,28 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@mui/styles';
 import { ParkingLotModel } from '../../models';
 import { Icon } from '@iconify/react';
 import ImageCustom from '../image/image-custom';
 import { nanoid } from 'nanoid';
 import Checkbox from '@mui/material/Checkbox';
-import ParkingReservationConfirmationModal, {
-  ParkingLotAction
-} from '../parking-reservation-confirmation-modal/parking-reservation-confirmation-modal';
-import { User } from 'pages/api/user';
 
-const ParkingDetailModal = ({
-  user,
-  showModal = true,
-  setShowModal,
-  parkingLotModel,
-  fromDate,
-  toDate
-}: {
-  user: User;
+interface ParkingDetailModalProps {
   showModal: boolean;
   setShowModal: (value: boolean) => void;
   parkingLotModel: ParkingLotModel;
-  fromDate: Date;
-  toDate: Date;
-}) => {
+  makeOnAction: () => void;
+}
+
+const ParkingDetailModal = ({
+  showModal = true,
+  setShowModal,
+  parkingLotModel,
+  makeOnAction
+}: ParkingDetailModalProps) => {
   const classes = useStyles();
-  const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
 
   return (
     <>
@@ -224,23 +217,14 @@ const ParkingDetailModal = ({
               ))}
           </Stack>
           <Button
-            onClick={() => setOpenConfirmationModal(true)}
+            onClick={makeOnAction}
             className={classes.button}
-            variant="outlined"
+            variant="contained"
           >
             reservieren
           </Button>
         </div>
       </Modal>
-      <ParkingReservationConfirmationModal
-        user={user}
-        showModal={openConfirmationModal}
-        setShowModal={setOpenConfirmationModal}
-        from={fromDate}
-        to={toDate}
-        parkingLot={parkingLotModel}
-        requestType={ParkingLotAction.RESERVIEREN}
-      />
     </>
   );
 };
@@ -307,7 +291,7 @@ const useStyles = makeStyles((theme) => ({
       width: '90%',
       borderRadius: '0%'
     },
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.default,
     border: '2px solid #000',
     boxShadow: '24',
     pt: '2',

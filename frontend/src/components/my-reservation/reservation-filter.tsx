@@ -8,9 +8,11 @@ import {
   SelectChangeEvent
 } from '@mui/material';
 import React, { useEffect } from 'react';
-import { ReservationState } from '../../models/reservation/reservation.model';
+import {
+  ReservationState,
+  ReservationStateLabel
+} from '../../models/reservation/reservation.model';
 import { ReservationFilterData } from '../../../pages/my-reservation';
-import { logger } from '../../logger';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -30,7 +32,6 @@ interface ReservationFilterProps {
 const ReservationFilter = ({ updateFilter }: ReservationFilterProps) => {
   const [reservationState, setReservationState] = React.useState<string[]>([]);
   const handleChange = (event: SelectChangeEvent<typeof reservationState>) => {
-    logger.log(event);
     const {
       target: { value }
     } = event;
@@ -72,7 +73,7 @@ const ReservationFilter = ({ updateFilter }: ReservationFilterProps) => {
           >
             {Object.entries(ReservationState).map(([key, state]) => (
               <MenuItem key={key} value={key}>
-                {state}
+                {ReservationStateLabel.get(state)}
               </MenuItem>
             ))}
           </Select>
