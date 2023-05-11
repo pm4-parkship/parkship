@@ -55,6 +55,10 @@ const ConfirmationModal = ({
   const classes = useStyles();
   const [fromDate, setFromDate] = useState<Date>(data.fromDate);
   const [toDate, setToDate] = useState<Date>(data.toDate);
+
+  const validateInput = (): boolean => {
+    return fromDate <= toDate && fromDate >= new Date() && toDate >= new Date();
+  };
   const DateRange = (date: Date, label: string, setter, minDate) => (
     <Grid item xs={12}>
       <Grid container flex={1} justifyContent="center" alignItems="center">
@@ -106,13 +110,14 @@ const ConfirmationModal = ({
             </Typography>
             <Typography align="center">{HeaderText.get(action)}</Typography>
             <Grid container rowSpacing={4} flex={1} xs={12}>
-              {DateRange(fromDate, 'von:', setFromDate, data.fromDate)}
+              {DateRange(fromDate, 'von:', setFromDate, new Date())}
               {DateRange(toDate, 'bis:', setToDate, fromDate)}
             </Grid>
 
             <Box textAlign="center">
               <Button
                 onClick={() =>
+                  validateInput() &&
                   onConfirm({ toDate: toDate, fromDate: fromDate, id: data.id })
                 }
                 variant="contained"
