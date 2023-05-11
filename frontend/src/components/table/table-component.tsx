@@ -10,20 +10,17 @@ interface TableComponentProps {
   headerNames: string[];
   onRowClick?: (row: RowDataType) => void;
   data: RowDataType[];
-  className?: string;
 }
 
 const TableComponent = ({
   headerNames,
   onRowClick,
-  data,
-  className,
+  data
 }: TableComponentProps) => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }}>
         <TableHeader headerNames={headerNames} />
-
         <TableBody>
           {data.map((row, index) => (
             <CustomTableRow
