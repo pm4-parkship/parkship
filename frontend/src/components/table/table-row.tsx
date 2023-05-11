@@ -24,6 +24,7 @@ const CustomTableRow = ({
       onClick={() => {
         onRowClick && onRowClick(data);
       }}
+      className={className}
     >
       {data.map((cell, index) => (
         <TableCell
