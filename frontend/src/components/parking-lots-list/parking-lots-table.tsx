@@ -2,7 +2,7 @@ import React from 'react';
 import TableComponent from '../table/table-component';
 import { RowDataType } from '../table/table-row';
 
-const headerNames = ['Bezeichnung', 'Ort', 'Besitzer', 'Status'];
+const headerNames = ['ID', 'Bezeichnung', 'Ort', 'Besitzer', 'Status'];
 
 const ParkingLotsTable = ({
   parkingLots

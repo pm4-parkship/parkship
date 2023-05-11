@@ -2,7 +2,9 @@ a {
     text-decoration: none;
 }
 
-
+body{
+    height: 100vh;
+}
 /*
     Fixes hover etc. states for regular links like logout
 */

@@ -22,3 +22,9 @@ export enum ParkingLotState {
   locked = 'LOCKED',
   inactive = 'INACTIVE'
 }
+
+export const ParkingLotStateLabel = new Map<ParkingLotState, string>([
+  [ParkingLotState.active, 'aktiv'],
+  [ParkingLotState.inactive, 'inaktiv'],
+  [ParkingLotState.locked, 'gesperrt']
+]);

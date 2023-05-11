@@ -1,9 +1,9 @@
 import TableComponent from '../table/table-component';
-import { logger } from '../../logger';
 import { RowDataType } from '../table/table-row';
 
 interface reservationTableProps {
   reservations: Array<RowDataType>;
+  openModifyModal: (row: RowDataType) => void;
 }
 
 const headerNames = [
@@ -15,12 +15,15 @@ const headerNames = [
   'storniert'
 ];
 
-const ReservationTable = ({ reservations }: reservationTableProps) => {
+const ReservationTable = ({
+  reservations,
+  openModifyModal
+}: reservationTableProps) => {
   return (
     <TableComponent
       data={reservations}
       headerNames={headerNames}
-      onRowClick={(e) => logger.log(e)}
+      onRowClick={openModifyModal}
     ></TableComponent>
   );
 };
