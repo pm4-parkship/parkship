@@ -6,8 +6,9 @@ import TableHeader from '../../../src/components/table/table-header';
 import TableBody from '@mui/material/TableBody';
 import { makeStyles } from '@mui/styles';
 import { TableCell, TableRow } from '@mui/material';
-import { MyParkingLotsTableProps } from 'pages/admin/my-parking-lots';
 import { nanoid } from 'nanoid';
+import { red } from '@mui/material/colors';
+import { MyParkingLotsTableProps } from 'pages/my-parking-lot';
 
 interface MyParkinLotReservationTableProps {
   headerNames: string[];
@@ -28,7 +29,7 @@ const MyParkinLotReservationTable = ({headerNames, reservations} : MyParkinLotRe
               return (
                 <TableRow
                   key={row.id}
-                  className={!row.active ? classes.baseRow : classes.activeRow}
+                  className={row.active ? classes.baseRow : classes.oldRow}
                 >
                   <TableCell align={'left'} variant={'body'} key={nanoid()}>
                     {row.id}
@@ -70,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
   baseRow: {
     width: '100%'
   },
-  activeRow: {
+  oldRow: {
     backgroundColor: theme.palette.primary.main,
     '&:hover': {
       backgroundColor: theme.palette.primary.main
