@@ -2,11 +2,15 @@ import { User } from 'pages/api/user';
 import { useEffect, useState } from 'react';
 import { logger } from 'src/logger';
 import { ParkingLotModel } from 'src/models';
+import TableComponent from '../../../src/components/table/table-component';
+import { RowDataType } from 'src/components/table/table-row';
+import { formatDate } from 'src/date/date-formatter';
+import { ParkingLotReservationModel } from 'src/models/parking-lot-reservations/parking-lot-reservations.model';
 
 const fetchMyParkingLotReservations = async (
   user: User
-): Promise<ParkingLotModel[]> => {
-  return await fetch('/backend/reservations', {
+): Promise<ParkingLotReservationModel> => {
+  return await fetch('/backend/parking-lot/reservations', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -15,33 +19,68 @@ const fetchMyParkingLotReservations = async (
   }).then(async (response) => {
     if (response.ok) {
       const data = await response.json();
-      logger.log(data);
       return data;
     }
   });
 };
 
-const MyParkingLotsPage = ({ user }) => {
+const headerNames = [
+  'ID',
+  'Parkplatzname',
+  'Ort',
+  'reserviert von',
+  'gebucht von - bis',
+  'Status'
+];
 
-  const [myParkingLotReservations, setMyParkingLotReservations] = useState<ParkingLotModel[]>([]);
+const MyParkingLotsPage = ({ user }) => {
+  const [test, setTest] = useState<RowDataType[]>([]);
 
   useEffect(() => {
     fetchMyParkingLotReservations(user)
-      .then((result: ParkingLotModel[]) => {
-        //const myResults = result?.filter( reservation => reservation.owner.email == user.username);
-        //logger.log(myResults);
-        setMyParkingLotReservations(result);
-        logger.log("result: ", result);
+      .then((result: ParkingLotReservationModel) => {
+        logger.log('result: ', result);
+
+        // cast to RowDataType
+        const mappedResult: Array<RowDataType> = result.past.map((item) => {
+          return [
+            `${item.id}`,
+            `${item.parkingLot.name}`,
+            `${item.tenant.name}`,
+            `${item.parkingLot.address} ${item.parkingLot.addressNr}`,
+            `${formatDate(new Date(item.from))} - ${formatDate(
+              new Date(item.to)
+            )}`,
+            `${item.reservationState}`
+          ];
+        });
+
+        const mapped2Result: Array<RowDataType> =  result.current.map((item) => {
+          return [
+            `${item.id}`,
+            `${item.parkingLot.name}`,
+            `${item.tenant.name}`,
+            `${item.parkingLot.address} ${item.parkingLot.addressNr}`,
+            `${formatDate(new Date(item.from))} - ${formatDate(new Date(item.to))}`,
+            `${item.reservationState}`
+          ];
+        });
+
+        setTest(mapped2Result.concat(mappedResult));
+
+        logger.log("test: ", test);
       })
-      .catch((error) => logger.log('error'));
+      .catch((error) => logger.log(error));
   }, []);
 
   return (
     <>
-    <div>hello</div>
-      {myParkingLotReservations?.map((reservation) => {
-        return <div key={reservation.id}>{reservation.id}</div>;
-      })}
+      <TableComponent
+        data={test}
+        headerNames={headerNames}
+        onRowClick={(e) => logger.log(e)}
+      ></TableComponent>
+      <div>hello</div>
     </>
   );
 };

@@ -10,12 +10,14 @@ interface TableComponentProps {
   headerNames: string[];
   onRowClick?: (row: RowDataType) => void;
   data: RowDataType[];
+  className?: string;
 }
 
 const TableComponent = ({
   headerNames,
   onRowClick,
-  data
+  data,
+  className,
 }: TableComponentProps) => {
   return (
     <TableContainer component={Paper}>
