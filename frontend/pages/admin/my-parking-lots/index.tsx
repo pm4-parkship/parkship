@@ -1,6 +1,5 @@
 import { User } from 'pages/api/user';
 import { useEffect, useState } from 'react';
-import useUser from 'src/auth/use-user';
 import { logger } from 'src/logger';
 import { ParkingLotModel } from 'src/models';
 
@@ -22,8 +21,7 @@ const fetchMyParkingLotReservations = async (
   });
 };
 
-const MyParkingLotsPage = () => {
-  const { user } = useUser();
+const MyParkingLotsPage = ({ user }) => {
 
   const [myParkingLotReservations, setMyParkingLotReservations] = useState<ParkingLotModel[]>([]);
 
