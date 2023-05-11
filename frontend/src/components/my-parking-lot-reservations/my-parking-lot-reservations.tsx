@@ -19,7 +19,7 @@ const MyParkinLotReservationTable = ({headerNames, reservations} : MyParkinLotRe
 
   return (
     <>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} className={classes.baseTableContainer}>
         <Table sx={{ minWidth: 650 }}>
           <TableHeader headerNames={headerNames} />
 
@@ -64,6 +64,9 @@ const MyParkinLotReservationTable = ({headerNames, reservations} : MyParkinLotRe
 };
 
 const useStyles = makeStyles((theme) => ({
+  baseTableContainer: {
+    marginTop: 10,
+  },
   baseRow: {
     width: '100%'
   },
