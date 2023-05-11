@@ -1,16 +1,9 @@
 import { User } from 'pages/api/user';
 import React, { useEffect, useState } from 'react';
 import { logger } from 'src/logger';
-import { RowDataType } from 'src/components/table/table-row';
 import { formatDate } from 'src/date/date-formatter';
 import { ParkingLotReservationModel } from 'src/models/parking-lot-reservations/parking-lot-reservations.model';
-import TableContainer from '@mui/material/TableContainer';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableHeader from '../../../src/components/table/table-header';
-import TableBody from '@mui/material/TableBody';
-import { TableCell, TableRow } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import MyParkinLotReservationTable from 'src/components/my-parking-lot-reservations/my-parking-lot-reservations';
 
 const fetchMyParkingLotReservations = async (
   user: User
@@ -38,7 +31,7 @@ const headerNames = [
   'Status'
 ];
 
-interface myParkingSlotsTableProps {
+export interface MyParkingLotsTableProps {
   id: number;
   parkingLotName: string;
   location: string;
@@ -49,16 +42,13 @@ interface myParkingSlotsTableProps {
 }
 
 const MyParkingLotsPage = ({ user }) => {
-  const classes = useStyles();
-  const [parkingSlotsDataPast, setParkingSlotsDataPast] = useState<
-    myParkingSlotsTableProps[]
+  const [myParkingLotsReservations, setMyParkingLotsReservations] = useState<
+    MyParkingLotsTableProps[]
   >([]);
 
   useEffect(() => {
     fetchMyParkingLotReservations(user)
       .then((result: ParkingLotReservationModel) => {
-        logger.log('result: ', result);
-
         const parkingSlotsDataPast = result.past.map((item) => {
           return {
             id: item.id,
@@ -87,95 +77,18 @@ const MyParkingLotsPage = ({ user }) => {
           };
         });
 
-        setParkingSlotsDataPast(
+        setMyParkingLotsReservations(
           parkingSlotsDataPast.concat(parkingSlotsDataFuture)
         );
-
-        logger.log(parkingSlotsDataPast);
       })
       .catch((error) => logger.log(error));
   }, []);
 
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }}>
-          <TableHeader headerNames={headerNames} />
-
-          <TableBody>
-            {parkingSlotsDataPast.map((row, index) => {
-              return (
-                <TableRow
-                  key={row.id}
-                  className={!row.active ? classes.baseRow : classes.activeRow}
-                >
-                  <TableCell
-                    align={'left'}
-                    variant={'body'}
-                    key={index}
-                  >
-                    {row.id}
-                  </TableCell>
-
-                  <TableCell
-                    align={'right'}
-                    variant={'body'}
-                    key={index}
-                  >
-                    {row.parkingLotName}
-                  </TableCell>
-
-                  <TableCell
-                    align={'right'}
-                    variant={'body'}
-                    key={index}
-                  >
-                    {row.location}
-                  </TableCell>
-
-                  <TableCell
-                    align={'right'}
-                    variant={'body'}
-                    key={index}
-                  >
-                    {row.reservedBy}
-                  </TableCell>
-
-                  <TableCell
-                    align={'right'}
-                    variant={'body'}
-                    key={index}
-                  >
-                    {row.bookingTime}
-                  </TableCell>
-
-                  <TableCell
-                    align={'right'}
-                    variant={'body'}
-                    key={index}
-                  >
-                    {row.status}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <MyParkinLotReservationTable headerNames={headerNames} reservations={myParkingLotsReservations}/>      
     </>
   );
 };
-
-const useStyles = makeStyles((theme) => ({
-  baseRow: {
-    width: '100%'
-  },
-  activeRow: {
-    backgroundColor: theme.palette.primary.main,
-    '&:hover': {
-      backgroundColor: theme.palette.primary.main
-    }
-  }
-}));
 
 export default MyParkingLotsPage;
