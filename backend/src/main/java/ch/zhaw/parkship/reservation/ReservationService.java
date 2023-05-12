@@ -5,11 +5,15 @@ import ch.zhaw.parkship.reservation.exceptions.ReservationCanNotBeCanceledExcept
 import ch.zhaw.parkship.reservation.exceptions.ReservationNotFoundException;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
+import ch.zhaw.parkship.user.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +32,6 @@ import java.util.stream.Collectors;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final UserRepository userRepository;
 
     public static final int CANCELLATION_DEADLINE = 2;
 
@@ -167,7 +170,7 @@ public class ReservationService {
                 .map(ReservationDto::new)
                 .collect(Collectors.toList());
     }
-
+    
     /**
      * Retrieves all reservations of parking lots owned by a user with the given id.
      * Returns a {@link ReservationHistoryDto} object that contains two lists of {@link ReservationDto} objects,
@@ -175,6 +178,7 @@ public class ReservationService {
      *
      * @param id the id of the user.
      * @return a {@link ReservationHistoryDto} object containing two lists of {@link ReservationDto} objects.
+     * @throws EntityNotFoundException if the user with the given id is not found in the system.
      */
     public ReservationHistoryDto getAllReservationsOfUserOwnedParkingLots(Long id) {
       var userEntityO = userRepository.findById(id);
