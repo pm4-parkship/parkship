@@ -2,6 +2,7 @@ import { ParkingLotModel } from 'src/models';
 import { makeStyles } from '@mui/styles';
 import ParkingListItem from './parking-list-item';
 import ParkingListEmptyItem from './parking-list-empty-item';
+import Paper from '@mui/material/Paper';
 
 const MyParkingLotList = ({ parkings }: { parkings: ParkingLotModel[] }) => {
   const classes = useStyles();
@@ -21,22 +22,27 @@ const MyParkingLotList = ({ parkings }: { parkings: ParkingLotModel[] }) => {
   };
 
   return (
-    <div className={classes.parkingList}>
-      {parkings.map((parking) => {
-        return (
-          <ParkingListItem
-            key={parking.id}
-            bcolor={randomColor(parking.name)}
-            parking={parking}
-          />
-        );
-      })}
-      {parkings?.length == 0 ? <ParkingListEmptyItem /> : <></>}
-    </div>
+    <Paper className={classes.root}>
+      <div className={classes.parkingList}>
+        {parkings.map((parking) => {
+          return (
+            <ParkingListItem
+              key={parking.id}
+              bcolor={randomColor(parking.name)}
+              parking={parking}
+            />
+          );
+        })}
+        {parkings?.length == 0 ? <ParkingListEmptyItem /> : <></>}
+      </div>
+    </Paper>
   );
 };
 
 const useStyles = makeStyles(() => ({
+  root: {
+    margin: '0'
+  },
   parkingList: {
     display: 'flex',
     flexDirection: 'row',

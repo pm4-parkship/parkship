@@ -9,15 +9,22 @@ interface CustomTableRowProps {
   rowKey: number;
   onRowClick?: (row: RowDataType) => void;
   data: RowDataType;
+  className?: string;
 }
 
-const CustomTableRow = ({ rowKey, data, onRowClick }: CustomTableRowProps) => {
+const CustomTableRow = ({
+  rowKey,
+  data,
+  onRowClick,
+  className
+}: CustomTableRowProps) => {
   return (
     <TableRow
       key={rowKey}
       onClick={() => {
         onRowClick && onRowClick(data);
       }}
+      className={className}
     >
       {data.map((cell, index) => (
         <TableCell
