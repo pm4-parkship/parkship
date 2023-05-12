@@ -276,4 +276,10 @@ class ReservationServiceTest {
       assertEquals(reservation2.getId(), result.getCurrent().get(0).getId());
       verify(userRepository, times(1)).findById(1L);
     }
+
+    public void getReservationByUserTest() {
+        when(reservationRepository.findAllByTenant(1L,LocalDate.now(),LocalDate.MAX)).thenReturn(new ArrayList<>());
+        reservationService.getByUserId(1L,LocalDate.now(),LocalDate.MAX);
+        verify(reservationRepository,times(1)).findAllByTenant(1L,LocalDate.now(),LocalDate.MAX);
+    }
 }

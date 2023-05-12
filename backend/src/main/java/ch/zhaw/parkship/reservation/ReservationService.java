@@ -6,16 +6,12 @@ import ch.zhaw.parkship.reservation.exceptions.ReservationCanNotBeCanceledExcept
 import ch.zhaw.parkship.reservation.exceptions.ReservationNotFoundException;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
-import ch.zhaw.parkship.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -157,6 +153,18 @@ public class ReservationService {
                 .stream()
                 .map(ReservationDto::new)
                 .collect(Collectors.toList());
+    }
+    /**
+     *
+     */
+    public List<ReservationDto> getByUserId(Long userId, LocalDate from, LocalDate to) {
+        List<ReservationDto> reservationDtos;
+        var reservationEntities = reservationRepository.findAllByTenant(userId, from, to);
+        reservationDtos = new ArrayList<>();
+        for (ReservationEntity reservationEntity : reservationEntities) {
+            reservationDtos.add(new ReservationDto(reservationEntity));
+        }
+        return reservationDtos;
     }
     
     /**
