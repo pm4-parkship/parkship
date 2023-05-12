@@ -24,8 +24,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -220,7 +218,7 @@ class ReservationControllerTest {
     }
 
     @Test
-    void updateReservationNotFoundTest() {
+    void updateReservationNotFoundTest() throws Exception {
         // arrange
         UpdateReservationDto updateReservationDto = new UpdateReservationDto(
                 2L,
@@ -236,17 +234,5 @@ class ReservationControllerTest {
         // assert
         Assertions.assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
         verify(reservationService, times(1)).update(updateReservationDtoCaptor.capture());
-    }
-
-    @Test
-    public void getUserReservationsTest(){
-        // arrange
-        List<ReservationDto> reservationDtos = new ArrayList<>();
-        when(reservationService.getByUserId(1L,LocalDate.MIN,LocalDate.MAX)).thenReturn(reservationDtos);
-        ParkshipUserDetails user = createParkshipUserDetails(userEntity);
-        //act
-        reservationController.getUserReservations(user, Optional.of(LocalDate.MIN),Optional.of(LocalDate.MAX));
-        //assert
-        verify(reservationService, times(1)).getByUserId(1L,LocalDate.MIN,LocalDate.MAX);
     }
 }

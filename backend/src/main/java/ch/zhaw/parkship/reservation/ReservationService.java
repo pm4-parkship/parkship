@@ -1,6 +1,7 @@
 package ch.zhaw.parkship.reservation;
 
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
+import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
 import ch.zhaw.parkship.reservation.exceptions.ReservationCanNotBeCanceledException;
 import ch.zhaw.parkship.reservation.exceptions.ReservationNotFoundException;
 import ch.zhaw.parkship.user.UserEntity;
@@ -8,6 +9,7 @@ import ch.zhaw.parkship.user.UserRepository;
 import ch.zhaw.parkship.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +33,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReservationService {
 
+
     private final ReservationRepository reservationRepository;
+    private final ParkingLotRepository parkingLotRepository;
+    private final UserRepository userRepository;
 
     public static final int CANCELLATION_DEADLINE = 2;
 
@@ -82,23 +87,6 @@ public class ReservationService {
         List<ReservationDto> reservationDtos = new ArrayList<>();
         for (ReservationEntity entity : reservationEntities) {
             reservationDtos.add(new ReservationDto(entity));
-        }
-        return reservationDtos;
-    }
-
-    /**
-     * This method retrieves reservations by customer id
-     *
-     * @return List<ReservationDto> Returns a list of reservation data in the ReservationDto format in
-     * the HTTP response body with a status code of 200 if found, otherwise returns a no
-     * content status code.
-     */
-    public List<ReservationDto> getByUserId(Long userId, LocalDate from, LocalDate to) {
-        List<ReservationDto> reservationDtos;
-        var reservationEntities = reservationRepository.findAllByTenant(userId, from, to);
-        reservationDtos = new ArrayList<>();
-        for (ReservationEntity reservationEntity : reservationEntities) {
-            reservationDtos.add(new ReservationDto(reservationEntity));
         }
         return reservationDtos;
     }
