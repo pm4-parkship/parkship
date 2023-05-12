@@ -39,6 +39,23 @@ import ch.zhaw.parkship.user.UserRepository;
 import ch.zhaw.parkship.util.UserGenerator;
 import ch.zhaw.parkship.util.generator.ParkingLotGenerator;
 import ch.zhaw.parkship.util.generator.ReservationGenerator;
+import ch.zhaw.parkship.user.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ReservationServiceTest {
@@ -56,14 +73,12 @@ class ReservationServiceTest {
 
     // Sample data for testing
     private ReservationEntity reservationEntity;
-    private ParkingLotEntity parkingLotEntity;
-
     UserEntity userEntity = new UserEntity();
 
     @BeforeEach
     public void setUp() {
         userEntity = new UserEntity();
-        parkingLotEntity = new ParkingLotEntity();
+        ParkingLotEntity parkingLotEntity = new ParkingLotEntity();
         parkingLotEntity.setId(1L);
         parkingLotEntity.setOwner(userEntity);
         userEntity.setId(1L);
@@ -247,7 +262,14 @@ class ReservationServiceTest {
         }, "No exception thrown, even if the reservation does not exist");
         verify(reservationRepository, times(1)).findById(2L);
     }
-    
+  
+    @Test
+    public void getReservationByUserTest() {
+        when(reservationRepository.findAllByTenant(1L,LocalDate.now(),LocalDate.MAX)).thenReturn(new ArrayList<>());
+        reservationService.getByUserId(1L,LocalDate.now(),LocalDate.MAX);
+        verify(reservationRepository,times(1)).findAllByTenant(1L,LocalDate.now(),LocalDate.MAX);
+    }
+  
     @Test
     public void testGetAllReservationsOfUserOwnedParkingLots() {
       when(userRepository.findById(1L)).thenReturn(Optional.of(userEntity));

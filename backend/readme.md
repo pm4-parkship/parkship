@@ -1,5 +1,6 @@
 # LoremIpsum Crashcourse
 
+
 ## Setup
 
 ### Software
@@ -114,7 +115,6 @@ Request:
 ```
 
 Response:
-
 ```json
 {
   "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNjgwODkyODYwLCJyb2xlcyI6WyJVU0VSIl0sInVzZXJuYW1lIjoidXNlciJ9.s-Cwm9rl6NCZf7Be04Wk5FfOsBj45_p8LCZ9I9Rbbt0",
