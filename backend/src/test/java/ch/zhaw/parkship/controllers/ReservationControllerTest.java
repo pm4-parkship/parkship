@@ -220,7 +220,7 @@ class ReservationControllerTest {
     }
 
     @Test
-    void updateReservationNotFoundTest() {
+    void updateReservationNotFoundTest() throws Exception {
         // arrange
         UpdateReservationDto updateReservationDto = new UpdateReservationDto(
                 2L,
