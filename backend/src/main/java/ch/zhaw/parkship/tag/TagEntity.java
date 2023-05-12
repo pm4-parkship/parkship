@@ -36,6 +36,10 @@ public class TagEntity {
     this.parkingLots = new HashSet<>();
   }
 
+  public TagEntity (TagDto tagDto){
+    this.name = tagDto.getName();
+  }
+
   @Override
   public String toString() {
     return "TagEntity{" + "id=" + id + ", name='" + name + '\'' + ", parkingLots=" + parkingLots + '}';

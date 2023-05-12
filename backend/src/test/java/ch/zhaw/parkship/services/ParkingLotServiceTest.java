@@ -2,7 +2,9 @@ package ch.zhaw.parkship.services;
 
 import ch.zhaw.parkship.parkinglot.*;
 import ch.zhaw.parkship.reservation.ReservationService;
+import ch.zhaw.parkship.tag.TagDto;
 import ch.zhaw.parkship.tag.TagEntity;
+import ch.zhaw.parkship.tag.TagRepository;
 import ch.zhaw.parkship.user.UserDto;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
@@ -34,6 +36,9 @@ class ParkingLotServiceTest {
     private ParkingLotRepository parkingLotRepository;
 
     @Mock
+    private TagRepository tagRepository;
+
+    @Mock
     private ReservationService reservationService;
 
     @Mock
@@ -51,6 +56,8 @@ class ParkingLotServiceTest {
     private UserEntity userEntity = new UserEntity();
 
     private ParkingLotEntity parkingLotEntity;
+
+    private TagEntity tagEntity;
 
 
     @BeforeEach
@@ -76,11 +83,17 @@ class ParkingLotServiceTest {
         parkingLotEntity.setAddress("Muster Street");
         parkingLotEntity.setAddressNr("44");
         parkingLotEntity.setDescription("next to the entrance");
+
+        tagEntity = new TagEntity();
+        tagEntity.setId(1L);
+        tagEntity.setName("schöner parkplatz");
     }
 
     private ParkingLotDto createParkingLotDto() {
         ParkingLotDto data = new ParkingLotDto();
         var owner = new UserDto(userEntity);
+        Set<TagDto> tagDtos = new HashSet<>();
+        tagDtos.add(new TagDto("schoener Parkplatz", 1L));
         data.setOwnerId(owner.id());
         data.setId(1L);
         data.setLongitude(15.5);
@@ -91,6 +104,7 @@ class ParkingLotServiceTest {
         data.setAddress("Muster Street");
         data.setAddressNr("44");
         data.setDescription("next to the entrance");
+        data.setTags(tagDtos);
         return data;
     }
 
@@ -160,12 +174,14 @@ class ParkingLotServiceTest {
     public void testUpdate() {
         when(parkingLotRepository.findById(anyLong())).thenReturn(Optional.of(parkingLotEntity));
         when(parkingLotRepository.save(any(ParkingLotEntity.class))).thenReturn(parkingLotEntity);
+        when(tagRepository.findById(1L)).thenReturn(Optional.ofNullable(tagEntity));
 
         var data = createParkingLotDto();
 
         var result = parkingLotService.update(data);
 
         assertEquals(1, result.get().getId());
+        verify(tagRepository, times(3)).findById(1L);
         verify(parkingLotRepository, times(1)).findById(1L);
         verify(parkingLotRepository, times(1)).save(any(ParkingLotEntity.class));
     }
@@ -366,10 +382,8 @@ class ParkingLotServiceTest {
         entity.setState(ParkingLotState.INACTIVE);
         when(parkingLotRepository.getReferenceById(1L)).thenReturn(entity);
 
-
         // act
         parkingLotService.updateState(1L, ParkingLotState.ACTIVE);
-
 
         // assert
         verify(parkingLotRepository, times(1)).getReferenceById(1L);

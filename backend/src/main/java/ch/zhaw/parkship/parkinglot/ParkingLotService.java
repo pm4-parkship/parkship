@@ -1,6 +1,9 @@
 package ch.zhaw.parkship.parkinglot;
 
 import ch.zhaw.parkship.reservation.ReservationService;
+import ch.zhaw.parkship.tag.TagDto;
+import ch.zhaw.parkship.tag.TagEntity;
+import ch.zhaw.parkship.tag.TagRepository;
 import ch.zhaw.parkship.user.UserRepository;
 import ch.zhaw.parkship.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +36,7 @@ public class ParkingLotService {
 
     @Value("${search.blacklist}")
     private Set<String> blackList;
+    private final TagRepository tagRepository;
 
     /**
      * This method creates a new parking lot with the provided parking lot data.
@@ -47,6 +51,7 @@ public class ParkingLotService {
         if (owner.isPresent()) {
             var parkingLotEntity = new ParkingLotEntity();
             parkingLotEntity.setOwner(owner.get());
+            parkingLotEntity.setTags(checkedTags(data.getTags()));
             BeanUtils.copyProperties(data, parkingLotEntity);
             parkingLotEntity.setId(null);
             parkingLotEntity.setState(ParkingLotState.PENDING);
@@ -105,6 +110,7 @@ public class ParkingLotService {
         var optionalEntity = parkingLotRepository.findById(data.getId());
         if (optionalEntity.isPresent()) {
             var parkingLotEntity = optionalEntity.get();
+            parkingLotEntity.setTags(checkedTags(data.getTags()));
             BeanUtils.copyProperties(data, parkingLotEntity);
             var updatedEntity = parkingLotRepository.save(parkingLotEntity);
             return Optional.of(new ParkingLotDto(updatedEntity));
@@ -236,5 +242,19 @@ public class ParkingLotService {
         ParkingLotEntity entity = parkingLotRepository.getReferenceById(parkingLotId);
         entity.setState(newState);
         parkingLotRepository.save(entity);
+    }
+
+    private Set<TagEntity> checkedTags (Set<TagDto> tagDtos){
+        Set<TagEntity> tagEntities = new HashSet<>();
+        for (TagDto tagDto: tagDtos){
+            if (tagDto.getId() == null || tagRepository.findById(tagDto.getId()).isEmpty()){
+                tagEntities.add(tagRepository.save(new TagEntity(tagDto)));
+            } else {
+                if (tagRepository.findById(tagDto.getId()).isPresent()){
+                    tagEntities.add(tagRepository.findById(tagDto.getId()).get());
+                }
+            }
+        }
+        return tagEntities;
     }
 }

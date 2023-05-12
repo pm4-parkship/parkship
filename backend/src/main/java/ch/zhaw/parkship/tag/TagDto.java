@@ -14,6 +14,10 @@ public class TagDto implements Serializable {
   @NotBlank
   private String name;
 
+  public TagDto(String name, Long id){
+    this.id = id;
+    this.name = name;
+  }
 
   public TagDto(TagEntity tagEntity) {
     this.id = tagEntity.getId();
