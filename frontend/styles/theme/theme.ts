@@ -266,7 +266,7 @@ export const getDesignTokens = (mode: any) => ({
           padding: '10px',
           borderColor: mode === 'dark' ? '#313d50' : 'lightgrey',
           borderWidth: mode === 'dark' ? '2px ' : '1px ',
-          backgroundColor: mode === 'dark' ? '#0d131d' : '#ffffff',
+          backgroundColor: mode === 'dark' ? '#1a1e27' : '#ffffff',
           margin: '0 auto'
         }
       },

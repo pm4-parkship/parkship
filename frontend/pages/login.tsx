@@ -6,9 +6,11 @@ import { TextFieldElement } from 'react-hook-form-mui';
 import { toast } from 'react-toastify';
 import { UserRole } from '../src/models';
 import { ErrorMapCtx, z, ZodIssueOptionalMessage } from 'zod';
+import { makeStyles } from '@mui/styles';
 
 export default function Login({ signIn }) {
   const router = useRouter();
+  const classNames = useStyles();
 
   const formSchema = z.object({
     email: z.string().email(),
@@ -74,34 +76,27 @@ export default function Login({ signIn }) {
   };
 
   return (
-    <div>
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center'
-        }}
-      >
+    <div style={{ margin: 'auto 0' }}>
+      <Box className={classNames.root}>
         <Typography component="h1" variant="h5">
           Willkommen bei Parkship!
         </Typography>
         <form
-          style={{ display: 'grid', width: '25%', marginTop: '20px' }}
+          className={classNames.form}
           onSubmit={handleSubmit((data) => handleFormSubmit(data))}
         >
-          <Paper elevation={3}>
+          <Paper elevation={3} className={classNames.container}>
             <TextFieldElement
               required
               fullWidth
               id="email"
-              placeholder="admin@parkship.ch"
+              placeholder="mail@domain.ch"
               label="Email Addresse"
               name="email"
               autoComplete="email"
               autoFocus
               control={control}
-              style={{ marginTop: '10px', height: '60px' }}
+              className={classNames.textField}
             />
             <TextFieldElement
               required
@@ -113,15 +108,12 @@ export default function Login({ signIn }) {
               autoComplete="current-password"
               control={control}
               autoFocus
-              style={{ marginTop: '30px', height: '60px' }}
+              className={classNames.textField}
             />
             <Button
               type={'submit'}
               variant={'contained'}
-              sx={{
-                width: '94%',
-                marginTop: '30px'
-              }}
+              className={classNames.button}
             >
               Einloggen
             </Button>
@@ -131,6 +123,27 @@ export default function Login({ signIn }) {
     </div>
   );
 }
+const useStyles = makeStyles(() => ({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '100%',
+    padding: 16,
+    paddingTop: 45,
+    rowGap: 35
+  },
+  textField: { height: '60px' },
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  form: { display: 'grid', width: '25%', marginTop: '20px' },
+  button: {
+    width: '80%'
+  }
+}));
 
 export async function getStaticProps() {
   return {

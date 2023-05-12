@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -35,7 +34,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Bearer Authentication")
 public class ReservationController {
-
+    //used because daterange in sql db is not as big as LocalDate.MAX / LocalDate.Min
+    private static final LocalDate MaxDate = LocalDate.of(9999, 12, 31);
+    private static final LocalDate MinDate = LocalDate.of(1000, 1, 1);
 
     private final ReservationService reservationService;
     private final ParkingLotRepository parkingLotRepository;
@@ -114,7 +115,6 @@ public class ReservationController {
     public ResponseEntity<List<ReservationDto>> getAllReservations(
             @AuthenticationPrincipal ParkshipUserDetails user
     ) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<ReservationDto> reservationDtos = reservationService.getAllByUser(user.getId());
         if (reservationDtos.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -153,6 +153,38 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.cancelReservation(id));
     }
 
+    /**
+     * endpoint to get all reservations of an user
+     *
+     * @param user user to get its reservatiosn
+     * @param from from date
+     * @param to to date
+     * @return list of reservations dtos
+     */
+    @GetMapping(value = "/user", produces = "application/json")
+    public List<ReservationDto> getUserReservations (
+            @AuthenticationPrincipal ParkshipUserDetails user, @RequestParam ("from") Optional<LocalDate> from, @RequestParam ("to") Optional<LocalDate> to) {
+        LocalDate fromDate ;
+        LocalDate toDate;
+        if (to.isPresent() || from.isPresent()) {
+            if (to.isPresent() && from.isEmpty()){
+                toDate = to.get();
+                fromDate = MinDate;
+            }
+            else if (to.isEmpty()) {
+                toDate = MaxDate;
+                fromDate = from.get();
+            } else {
+                fromDate = from.get();
+                toDate = to.get();
+            }
+        } else {
+            toDate = MaxDate;
+            fromDate = LocalDate.now();
+        }
+        return reservationService.getByUserId(user.getId(), fromDate, toDate);
+    }
+
 
     private boolean areDatesInFuture(LocalDate from, LocalDate to) {
         LocalDate today = LocalDate.now();
@@ -165,6 +197,5 @@ public class ReservationController {
         }
         return from.isBefore(to);
     }
-
 
 }
