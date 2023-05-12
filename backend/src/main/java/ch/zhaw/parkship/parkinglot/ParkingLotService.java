@@ -43,12 +43,13 @@ public class ParkingLotService {
      * Optional object.
      */
     public Optional<ParkingLotDto> create(ParkingLotDto data) {
-        var owner = userRepository.findById(data.getOwner().id());
+        var owner = userRepository.findById(data.getOwnerId());
         if (owner.isPresent()) {
             var parkingLotEntity = new ParkingLotEntity();
             parkingLotEntity.setOwner(owner.get());
             BeanUtils.copyProperties(data, parkingLotEntity);
             parkingLotEntity.setId(null);
+            parkingLotEntity.setState(ParkingLotState.PENDING);
             var savedEntity = parkingLotRepository.save(parkingLotEntity);
             return Optional.of(new ParkingLotDto(savedEntity));
         }
@@ -179,17 +180,34 @@ public class ParkingLotService {
             parkingLots.addAll(parkingLotRepository.findAllByAddressNrContainsIgnoreCase(term));
             parkingLots.addAll(parkingLotRepository.findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase(term, term));
         }
+        parkingLots = parkingLots.stream().filter(lot -> lot.getState() == ParkingLotState.ACTIVE).collect(Collectors.toSet());
+
         return parkingLots;
     }
 
     private Set<ParkingLotEntity> filterParkingLotsByDate(LocalDate startDate, LocalDate endDate, Set<ParkingLotEntity> parkingLots) {
         if (startDate != null && endDate != null) {
+            Boolean[] relevantDays = getRelevantDays(startDate,endDate);
             parkingLots = parkingLots.stream()
-                    .filter(lot -> reservationService.isFreeInDateRange(lot.getId(), startDate, endDate))
+                    .filter(lot -> (parkingLotRepository.isParkingLotAvailable(lot, startDate, endDate) != null))
+                    .filter(lot -> (parkingLotRepository.isParkingLotOffered(lot, startDate, endDate,
+                            relevantDays[0], relevantDays[1], relevantDays[2], relevantDays[3],
+                            relevantDays[4], relevantDays[5], relevantDays[6]) != null))
                     .collect(Collectors.toSet());
         }
         return parkingLots;
     }
+
+    private Boolean[] getRelevantDays(LocalDate startDate, LocalDate endDate){
+        Boolean relevantDays[] = {false,false,false,false,false,false,false};
+        LocalDate current = LocalDate.of(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth());
+        while(!current.isEqual(endDate.plusDays(1))){
+            relevantDays[current.getDayOfWeek().getValue()-1] = true;
+            current = current.plusDays(1);
+        }
+        return relevantDays;
+    }
+
 
     private List<ParkingLotSearchDto> getParkingLotSearchDtoPage(int page, int size, List<ParkingLotSearchDto> parkingLotDtos) {
         int maxIndex = (page + 1) * size;

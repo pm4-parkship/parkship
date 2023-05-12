@@ -1,5 +1,11 @@
 package ch.zhaw.parkship.parkinglot;
 
+import ch.zhaw.parkship.common.PaginatedResponse;
+import ch.zhaw.parkship.user.ParkshipUserDetails;
+import ch.zhaw.parkship.user.UserRepository;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +41,7 @@ import jakarta.validation.Valid;
  */
 @RestController
 @RequestMapping("/parking-lot")
+@RequiredArgsConstructor
 @SecurityRequirement(name = "Bearer Authentication")
 public class ParkingLotController {
 
@@ -45,6 +52,8 @@ public class ParkingLotController {
 
     private final String DEFAULT_PAGE_NUM = "0";
     private final String DEFAULT_PAGE_SIZE = "100";
+
+    private final UserRepository userRepository;
 
     /**
      * This end-point creates a new parking lot with the provided parking lot data.
@@ -57,6 +66,7 @@ public class ParkingLotController {
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<ParkingLotDto> createParkingLot(
             @Valid @RequestBody ParkingLotDto parkingLotDto) {
+        validateRequest(parkingLotDto);
         Optional<ParkingLotDto> createdParkingLot = parkingLotService.create(parkingLotDto);
         return createdParkingLot.map(value -> ResponseEntity.status(HttpStatus.CREATED).body(value))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -111,6 +121,7 @@ public class ParkingLotController {
      */
     @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<ParkingLotDto> updateParkingLot(@PathVariable Long id, @Valid @RequestBody ParkingLotDto parkingLotDto) {
+        validateRequest(parkingLotDto);
         parkingLotDto.setId(id);
         Optional<ParkingLotDto> updatedParkingLot = parkingLotService.update(parkingLotDto);
         return updatedParkingLot.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -140,8 +151,8 @@ public class ParkingLotController {
             @RequestParam(defaultValue = "") LocalDate endDate,
             @RequestParam(defaultValue = DEFAULT_PAGE_NUM) int page,
             @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
-
         return parkingLotService.getBySearchTerm(searchTerm,tagList, startDate, endDate, page, size);
+
 
     }
     
@@ -181,4 +192,22 @@ public class ParkingLotController {
         parkingLotService.updateState(id, newState);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
+    protected void validateRequest(ParkingLotDto parkingLotDto){
+        if(parkingLotDto == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given object is null");
+        }
+
+        if(parkingLotDto.getLatitude() < -90 || parkingLotDto.getLatitude() > 90
+        || parkingLotDto.getLongitude() < -180 || parkingLotDto.getLongitude() > 180){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given coordinates are invalid");
+        }
+
+        if(parkingLotDto.getPrice() < 0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Price may not be smaller than 0");
+        }
+
+    }
+
 }

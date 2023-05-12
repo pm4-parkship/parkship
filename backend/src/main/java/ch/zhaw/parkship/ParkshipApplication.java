@@ -1,5 +1,7 @@
 package ch.zhaw.parkship;
 
+import ch.zhaw.parkship.offer.OfferEntity;
+import ch.zhaw.parkship.offer.OfferRepository;
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
 import ch.zhaw.parkship.parkinglot.ParkingLotState;
@@ -29,12 +31,15 @@ import java.util.concurrent.TimeUnit;
 public class ParkshipApplication {
     private final ParkingLotRepository parkingLotRepository;
     private final ReservationRepository reservationRepository;
+    private final OfferRepository offerRepository;
 
 
     public ParkshipApplication(ParkingLotRepository parkingLotRepository,
-                               ReservationRepository reservationRepository) {
+                               ReservationRepository reservationRepository,
+                               OfferRepository offerRepository) {
         this.parkingLotRepository = parkingLotRepository;
         this.reservationRepository = reservationRepository;
+        this.offerRepository = offerRepository;
     }
 
     public static void main(String[] args) {
@@ -60,7 +65,6 @@ public class ParkshipApplication {
             UserEntity admin = userService.signUp("admin", "adminSurname", "admin@parkship.ch","admin", UserRole.ADMIN);
             admin.setName(faker.name().lastName());
             admin.setSurname(faker.name().firstName());
-
 
             //admin.setUserRole(UserRole.ADMIN);
             userService.save(user);
@@ -97,20 +101,35 @@ public class ParkshipApplication {
                 parkingLot.setNr(faker.address().buildingNumber());
                 parkingLot.setPrice(faker.number().randomDouble(2, 10, 300));
                 parkingLot.setState(ParkingLotState.ACTIVE);
-                parkingLot.setAddress(faker.address().streetAddress());
+                parkingLot.setAddress(faker.address().streetName());
                 parkingLot.setAddressNr(faker.address().streetAddressNumber());
-                parkingLot.setDescription(faker.weather().description());
+                String description = faker.hitchhikersGuideToTheGalaxy().quote();
+                parkingLot.setDescription(description.length() > 255 ? description.substring(0,255) : description);
                 parkingLot.setOwner(i == 0 ? admin : user);
                 parkingLotRepository.save(parkingLot);
                 parkingLots.add(parkingLot);
             }
 
+            for(ParkingLotEntity lot : parkingLots){
+                var offer = new OfferEntity();
+                offer.setFrom(LocalDate.of(2023,1,1));
+                offer.setTo(LocalDate.of(2023,12,31));
+                offer.setMonday(faker.random().nextBoolean());
+                offer.setTuesday(faker.random().nextBoolean());
+                offer.setWednesday(faker.random().nextBoolean());
+                offer.setThursday(faker.random().nextBoolean());
+                offer.setFriday(faker.random().nextBoolean());
+                offer.setSaturday(faker.random().nextBoolean());
+                offer.setSunday(faker.random().nextBoolean());
+                offer.setParkingLot(lot);
+                offerRepository.save(offer);
+            }
+
             for (int i = 0; i < 9; i++) {
                 var reservation = new ReservationEntity();
-                Date from = faker.date().future(2, 1, TimeUnit.DAYS);
-                reservation.setFrom(LocalDate.of(from.getYear() + 1900, from.getMonth() + 1, from.getDay() + 1));
-                Date to = faker.date().future(2, 1, TimeUnit.DAYS);
-                reservation.setTo(LocalDate.of(to.getYear() + 1900, to.getMonth() + 1, to.getDay() + 1));
+                Date current = new Date();
+                reservation.setFrom(LocalDate.of(current.getYear()+1900, current.getMonth()+1, current.getDay()+1+i));
+                reservation.setTo(LocalDate.of(current.getYear()+1900, current.getMonth()+1, current.getDay()+1+i+faker.random().nextInt(0,2)));
                 reservation.setParkingLot(parkingLots.get((i + 1) % 5));
                 reservation.setTenant(users.get(((i + 1) % 4)));
                 reservation.setState(ReservationState.ACTIVE);
@@ -118,14 +137,13 @@ public class ParkshipApplication {
             }
             for (int i = 0; i < 9; i++) {
                 var reservation = new ReservationEntity();
-                Date from = faker.date().future(2, 1, TimeUnit.DAYS);
-                reservation.setFrom(LocalDate.of(from.getYear() + 1900, from.getMonth() + 1, from.getDay() + 1));
-                Date to = faker.date().future(2, 1, TimeUnit.DAYS);
-                reservation.setTo(LocalDate.of(to.getYear() + 1900, to.getMonth() + 1, to.getDay() + 1));
+                Date current = new Date();
+                reservation.setFrom(LocalDate.of(current.getYear()+1900, current.getMonth()+1, current.getDay()+1+i));
+                reservation.setTo(LocalDate.of(current.getYear()+1900, current.getMonth()+1, current.getDay()+1+i+faker.random().nextInt(0,2)));
                 reservation.setParkingLot(parkingLots.get((i + 1) % 5));
                 reservation.setTenant(users.get(((i + 1) % 4)));
                 reservation.setState(ReservationState.CANCELED);
-                reservation.setCancelDate(LocalDate.of(from.getYear() + 1900, from.getMonth() + 1, from.getDay() + 1));
+                reservation.setCancelDate(LocalDate.of(current.getYear() + 1900, current.getMonth() + 1, current.getDay() + 1));
                 reservationRepository.save(reservation);
             }
 
