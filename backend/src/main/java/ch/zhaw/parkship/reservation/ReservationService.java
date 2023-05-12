@@ -1,13 +1,11 @@
 package ch.zhaw.parkship.reservation;
 
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
-import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
 import ch.zhaw.parkship.reservation.exceptions.ReservationCanNotBeCanceledException;
 import ch.zhaw.parkship.reservation.exceptions.ReservationNotFoundException;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +27,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReservationService {
 
-
     private final ReservationRepository reservationRepository;
-    private final ParkingLotRepository parkingLotRepository;
-    private final UserRepository userRepository;
 
     public static final int CANCELLATION_DEADLINE = 2;
 
