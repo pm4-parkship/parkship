@@ -1,31 +1,30 @@
 import TableComponent from '../table/table-component';
 import { RowDataType } from '../table/table-row';
 
-interface reservationTableProps {
+interface MyParkinLotReservationTableProps {
   reservations: Array<RowDataType>;
-  openModifyModal: (row: RowDataType) => void;
+  styles?: Map<number, string>;
 }
 
 const headerNames = [
   'ID',
   'Status',
+  'Parkplatzname',
   'Ort',
-  'Besitzer',
-  'gebucht von - bis',
-  'storniert'
+  'reserviert von',
+  'gebucht von - bis'
 ];
-
-const ReservationTable = ({
+const MyParkingLotReservationTable = ({
   reservations,
-  openModifyModal
-}: reservationTableProps) => {
+  styles
+}: MyParkinLotReservationTableProps) => {
   return (
     <TableComponent
       data={reservations}
       headerNames={headerNames}
-      onRowClick={openModifyModal}
+      styles={styles}
     ></TableComponent>
   );
 };
 
-export default ReservationTable;
+export default MyParkingLotReservationTable;

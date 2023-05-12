@@ -20,17 +20,19 @@ import ImageCustom from '../image/image-custom';
 import { nanoid } from 'nanoid';
 import Checkbox from '@mui/material/Checkbox';
 
+interface ParkingDetailModalProps {
+  showModal: boolean;
+  setShowModal: (value: boolean) => void;
+  parkingLotModel: ParkingLotModel;
+  makeOnAction: () => void;
+}
+
 const ParkingDetailModal = ({
   showModal = true,
   setShowModal,
   parkingLotModel,
-  createReservation
-}: {
-  showModal: boolean;
-  setShowModal: (value: boolean) => void;
-  parkingLotModel: ParkingLotModel;
-  createReservation: () => void;
-}) => {
+  makeOnAction
+}: ParkingDetailModalProps) => {
   const classes = useStyles();
 
   return (
@@ -215,9 +217,9 @@ const ParkingDetailModal = ({
               ))}
           </Stack>
           <Button
+            onClick={makeOnAction}
             className={classes.button}
-            variant="outlined"
-            onClick={createReservation}
+            variant="contained"
           >
             reservieren
           </Button>
@@ -289,7 +291,7 @@ const useStyles = makeStyles((theme) => ({
       width: '90%',
       borderRadius: '0%'
     },
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.default,
     border: '2px solid #000',
     boxShadow: '24',
     pt: '2',

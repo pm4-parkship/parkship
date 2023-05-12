@@ -3,14 +3,14 @@ import { Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import SearchPage from './search';
 
-const Index = (props) => {
+const Index = ({ user }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.superRoot}>
       <Grid container justifyContent="center" display="flex">
         <Grid item xs={12}>
-          <SearchPage />
+          {user?.isLoggedIn && <SearchPage user={user} />}
         </Grid>
       </Grid>
     </div>

@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -35,6 +34,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @SecurityRequirement(name = "Bearer Authentication")
 public class ReservationController {
+    private static final LocalDate MaxDate = LocalDate.of(9999, 12, 31);
+    private static final LocalDate MinDate = LocalDate.of(1000, 01, 01);
 
 
     private final ReservationService reservationService;

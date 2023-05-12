@@ -18,6 +18,8 @@ import { ColorModeContext } from 'context';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { enGB } from 'date-fns/locale';
+import useSession from '../src/auth/use-session';
+import { useAuthRedirect } from 'src/auth/use-redirect';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -31,6 +33,9 @@ const App = ({
   pageProps,
   emotionCache = clientSideEmotionCache
 }: AppPropsWithApm) => {
+  const { isInitialized, isSignedIn, user, signIn, signOut } = useSession();
+  useAuthRedirect(pageProps, { isInitialized, isSignedIn, user });
+
   const [mode, setMode] = useState<string>('light');
   const [mounted, setMounted] = useState<boolean>(false);
 
@@ -51,6 +56,13 @@ const App = ({
     return responsiveFontSizes(createTheme(getDesignTokens(mode)));
   }, [mode]);
 
+  const newPageProps = {
+    ...pageProps,
+    user,
+    signIn,
+    signOut
+  };
+
   return (
     <React.Fragment>
       <CacheProvider value={emotionCache}>
@@ -62,7 +74,7 @@ const App = ({
           />
           <meta name="description" content="This is our PM4 Project." />
         </Head>
-        {mounted && (
+        {mounted && isInitialized && (
           <ColorModeContext.Provider value={colorMode}>
             <ThemeProvider theme={theme}>
               <CssBaseline enableColorScheme>
@@ -83,9 +95,12 @@ const App = ({
                   dateAdapter={AdapterDateFns}
                   adapterLocale={enGB}
                 >
-                  <Layout>
-                    <Component {...pageProps} />
-                  </Layout>
+                  {/* To avoid flashes when accessing an unauthorized page */}
+                  {(pageProps.publicPage || user?.isLoggedIn) && (
+                    <Layout user={user} signOut={signOut}>
+                      <Component {...newPageProps} />
+                    </Layout>
+                  )}
                 </LocalizationProvider>
               </CssBaseline>
             </ThemeProvider>

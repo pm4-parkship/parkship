@@ -2,6 +2,16 @@ a {
     text-decoration: none;
 }
 
+body{
+    height: 100vh;
+}
+/*
+    Fixes hover etc. states for regular links like logout
+*/
+a:link {
+    color: inherit;
+}
+
 /* Scrollbars */
 * {
     scrollbar-color: #d5d5d5 transparent;

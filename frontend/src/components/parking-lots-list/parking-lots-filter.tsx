@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { ParkingLotsFilterData } from '../../../pages/admin/parking-lots';
 import { logger } from '../../logger';
-import { ParkingLotState } from '../../models';
+import { ParkingLotState, ParkingLotStateLabel } from '../../models';
 
 interface ParkingLotsFilterProps {
   updateFilter: (data: ParkingLotsFilterData) => void;
@@ -81,7 +81,7 @@ const ParkingLotsFilter = ({ updateFilter }: ParkingLotsFilterProps) => {
           >
             {Object.entries(ParkingLotState).map(([key, state]) => (
               <MenuItem key={key} value={key}>
-                {state}
+                {ParkingLotStateLabel.get(state)}
               </MenuItem>
             ))}
           </Select>
