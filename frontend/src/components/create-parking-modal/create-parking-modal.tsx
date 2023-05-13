@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, Divider, Grid, Modal, Typography } from '@mui/material';
+import { Box, Button, Grid, Modal, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -9,7 +9,7 @@ import {
   TextFieldElement
 } from 'react-hook-form-mui';
 import { logger } from 'src/logger';
-import { ErrorMapCtx, ZodIssueOptionalMessage, z } from 'zod';
+import { ErrorMapCtx, z, ZodIssueOptionalMessage } from 'zod';
 import { CreateParkingLotModel, OfferModel } from '../../models';
 import TagBar, { TagData } from '../search-bar/tag-bar';
 
@@ -34,23 +34,29 @@ export const CreateParkingModal = ({
   setShowModal,
   addParkingLot,
   owner,
-  ownerId,
+  ownerId
 }: CreateParkingModalProps) => {
   const classes = useStyles();
 
   const [selectedTags, setSelectedTag] = useState<TagData[]>([]);
+  const [offerCount, setOfferCount] = useState<number>(2);
+  const maxOffers = 5;
+
+  const offerSchema = z.object({
+    startDateOne: z.date(),
+    endDateOne: z.date(),
+    days: z
+      .array(z.object({ id: z.number(), label: z.string() }))
+      .min(1, 'Bitte min 1 Tag auswählen')
+  });
 
   const formSchema = z.object({
     parkingName: z.string().min(1, `Bitte geben Sie eine Parkplatznummer ein!`),
     address: z.string().min(1, `Bitte geben Sie eine Adresse ein!`),
     addressNr: z.string().optional(),
     price: z.number().optional(),
-    startDateOne: z.date(),
-    endDateOne: z.date(),
     description: z.string().optional(),
-    days: z
-      .array(z.object({ id: z.number(), label: z.string() }))
-      .min(1, 'Bitte min 1 Tag auswählen'),
+    offers: z.array(offerSchema).min(1, 'Bitte min 1 Angebot auswählen'),
     tags: z.string().optional()
   });
 
@@ -84,7 +90,7 @@ export const CreateParkingModal = ({
       startDateOne: '',
       endDateOne: '',
       description: '',
-      days: [],
+      days: []
     }
   });
 
@@ -101,20 +107,24 @@ export const CreateParkingModal = ({
       price: data.price || 0,
       tags: selectedTags.map((value) => value.label)
     };
-    const offers: OfferModel[] = [
+
+    const offers = data.offers.map(
+      (offer) => (offer.days = offer.days.map((day) => day.id))
+    );
+    const offersOld: OfferModel[] = [
       {
         from: data.startDateOne,
         to: data.endDateOne,
-        monday: data.days.filter(e => e.id === 0).length > 0,
-        tuesday: data.days.filter(e => e.id === 1).length > 0,
-        wednesday: data.days.filter(e => e.id === 2).length > 0,
-        thursday: data.days.filter(e => e.id === 3).length > 0,
-        friday: data.days.filter(e => e.id === 4).length > 0,
-        saturday: data.days.filter(e => e.id === 5).length > 0,
-        sunday: data.days.filter(e => e.id === 6).length > 0,
+        monday: data.days.filter((e) => e.id === 0).length > 0,
+        tuesday: data.days.filter((e) => e.id === 1).length > 0,
+        wednesday: data.days.filter((e) => e.id === 2).length > 0,
+        thursday: data.days.filter((e) => e.id === 3).length > 0,
+        friday: data.days.filter((e) => e.id === 4).length > 0,
+        saturday: data.days.filter((e) => e.id === 5).length > 0,
+        sunday: data.days.filter((e) => e.id === 6).length > 0
       }
     ];
-    addParkingLot(newParkingLot, offers);
+    addParkingLot(newParkingLot, offersOld);
   };
 
   return (
@@ -212,87 +222,101 @@ export const CreateParkingModal = ({
               </Grid>
             </Grid>
 
-            <Grid
-              container
-              justifyContent="left"
-              alignItems="center"
-              columnSpacing={3}
-              rowSpacing={0}
-            >
-              <Grid item xs={4}>
-                <Typography variant="h6" className={classes.input}>
-                  Buchbarer Zeitraum:*{' '}
-                </Typography>
-              </Grid>
+            <Button onClick={() => setOfferCount((prevState) => prevState++)}>
+              Add offer time
+            </Button>
 
-              <Grid item xs={4}>
-                <DatePickerElement
-                  required
-                  label="von"
-                  name="startDateOne"
-                  control={control}
-                  className={classes.input}
-                  
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <DatePickerElement
-                  required
-                  label="bis"
-                  name="endDateOne"
-                  control={control}
-                  className={classes.input}
-                />
-              </Grid>
-              <Grid
-                item
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  columnGap: '1rem'
-                }}
-              >
-                <Typography variant="h6" className={classes.input}>
-                  an:
-                </Typography>
-                <CheckboxButtonGroup
-                  name="days"
-                  returnObject
-                  row
-                  control={control}
-                  options={[
-                    {
-                      id: 1,
-                      label: 'Mo'
-                    },
-                    {
-                      id: 2,
-                      label: 'Di'
-                    },
-                    {
-                      id: 3,
-                      label: 'Mi'
-                    },
-                    {
-                      id: 4,
-                      label: 'Do'
-                    },
-                    {
-                      id: 5,
-                      label: 'Fr'
-                    },
-                    {
-                      id: 6,
-                      label: 'Sa'
-                    },
-                    {
-                      id: 7,
-                      label: 'So'
-                    }
-                  ]}
-                />
-              </Grid>
-            </Grid>
+            <Button onClick={() => setOfferCount((prevState) => prevState--)}>
+              Remove offer time
+            </Button>
+
+            {Object.keys(offerCount).map((key) => {
+              return (
+                <div key={key}>
+                  {' '}
+                  <Grid
+                    container
+                    justifyContent="left"
+                    alignItems="center"
+                    columnSpacing={3}
+                    rowSpacing={0}
+                  >
+                    <Grid item xs={4}>
+                      <Typography variant="h6" className={classes.input}>
+                        Buchbarer Zeitraum:*{' '}
+                      </Typography>
+                    </Grid>
+
+                    <Grid item xs={4}>
+                      <DatePickerElement
+                        required
+                        label="von"
+                        name="startDateOne"
+                        control={control}
+                        className={classes.input}
+                      />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <DatePickerElement
+                        required
+                        label="bis"
+                        name="endDateOne"
+                        control={control}
+                        className={classes.input}
+                      />
+                    </Grid>
+                    <Grid
+                      item
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        columnGap: '1rem'
+                      }}
+                    >
+                      <Typography variant="h6" className={classes.input}>
+                        an:
+                      </Typography>
+                      <CheckboxButtonGroup
+                        name="days"
+                        returnObject
+                        row
+                        control={control}
+                        options={[
+                          {
+                            id: 1,
+                            label: 'Mo'
+                          },
+                          {
+                            id: 2,
+                            label: 'Di'
+                          },
+                          {
+                            id: 3,
+                            label: 'Mi'
+                          },
+                          {
+                            id: 4,
+                            label: 'Do'
+                          },
+                          {
+                            id: 5,
+                            label: 'Fr'
+                          },
+                          {
+                            id: 6,
+                            label: 'Sa'
+                          },
+                          {
+                            id: 7,
+                            label: 'So'
+                          }
+                        ]}
+                      />
+                    </Grid>
+                  </Grid>
+                </div>
+              );
+            })}
 
             <Grid
               container
@@ -349,7 +373,6 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     display: 'flex',
     justifyContent: 'center',
-    borderRadius: '0%',
     overflow: 'scroll',
     textOverflow: 'ellipsis',
     padding: '20px',
