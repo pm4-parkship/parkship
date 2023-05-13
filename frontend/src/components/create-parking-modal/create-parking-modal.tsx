@@ -12,7 +12,6 @@ import { logger } from 'src/logger';
 import { ErrorMapCtx, z, ZodIssueOptionalMessage } from 'zod';
 import { CreateParkingLotModel, OfferModel } from '../../models';
 import TagBar, { TagData } from '../search-bar/tag-bar';
-import { off } from 'process';
 
 const dummyTags: TagData[] = [
   { key: 0, label: 'überdacht' },
@@ -44,8 +43,8 @@ export const CreateParkingModal = ({
   const maxOffers = 5;
 
   const offerSchema = z.object({
-    startDateOne: z.date(),
-    endDateOne: z.date(),
+    startDate: z.date(),
+    endDate: z.date(),
     days: z
       .array(z.object({ id: z.number(), label: z.string() }))
       .min(1, 'Bitte min 1 Tag auswählen')
@@ -77,7 +76,6 @@ export const CreateParkingModal = ({
       return { message: ctx.defaultError };
     };
   };
-
   const { handleSubmit, control } = useForm({
     resolver: zodResolver(formSchema, {
       errorMap: customErrorMap()
@@ -88,10 +86,15 @@ export const CreateParkingModal = ({
       address: '',
       addressNr: '',
       price: 0,
-      startDateOne: '',
-      endDateOne: '',
       description: '',
-      days: []
+      offers: [
+        {
+          startDate: '',
+          endDate: '',
+          days: []
+        }
+      ],
+      tags: []
     }
   });
 
@@ -223,18 +226,21 @@ export const CreateParkingModal = ({
               </Grid>
             </Grid>
 
-            <Button onClick={() => {setOfferCount(offerCount+1)}}>
+            <Button
+              onClick={() => {
+                setOfferCount(offerCount + 1);
+              }}
+            >
               Add offer time
             </Button>
 
-            <Button onClick={() => setOfferCount(offerCount-1)}>
+            <Button onClick={() => setOfferCount(offerCount - 1)}>
               Remove offer time
             </Button>
 
-            {Object.keys(offerCount).map((key) => {
+            {Array.from({ length: offerCount }, (_, i) => i + 1).map((key) => {
               return (
                 <div key={key}>
-                  {' '}
                   <Grid
                     container
                     justifyContent="left"
@@ -244,7 +250,7 @@ export const CreateParkingModal = ({
                   >
                     <Grid item xs={4}>
                       <Typography variant="h6" className={classes.input}>
-                        Buchbarer Zeitraum:*{' '}
+                        Buchbarer Zeitraum:*
                       </Typography>
                     </Grid>
 
@@ -252,7 +258,7 @@ export const CreateParkingModal = ({
                       <DatePickerElement
                         required
                         label="von"
-                        name="startDateOne"
+                        name={`offers.${key}.startDate`} // <== Changed here
                         control={control}
                         className={classes.input}
                       />
@@ -261,7 +267,7 @@ export const CreateParkingModal = ({
                       <DatePickerElement
                         required
                         label="bis"
-                        name="endDateOne"
+                        name={`offers.${key}.endDate`} // <== Changed here
                         control={control}
                         className={classes.input}
                       />
@@ -278,7 +284,7 @@ export const CreateParkingModal = ({
                         an:
                       </Typography>
                       <CheckboxButtonGroup
-                        name="days"
+                        name={`offers.${key}.days`}
                         returnObject
                         row
                         control={control}
