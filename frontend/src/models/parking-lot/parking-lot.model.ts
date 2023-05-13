@@ -19,10 +19,22 @@ export interface ParkingLotModel {
 
 export type CreateParkingLotModel = Omit<
   ParkingLotModel,
-  'id' | 'owner' | 'state'
+  'id' | 'owner' | 'state' | 'longitude' | 'latitude' |'floor' | 'nr' | 'pictures'
 > & {
-  ownerID: string;
+  userId: number;
 };
+
+export interface OfferModel {
+  from: Date;
+  to: Date;
+  monday: boolean;
+  tuesday: boolean;
+  wednesday: boolean;
+  thursday: boolean;
+  friday: boolean;
+  saturday: boolean;
+  sunday: boolean;
+}
 
 export enum ParkingLotState {
   active = 'ACTIVE',

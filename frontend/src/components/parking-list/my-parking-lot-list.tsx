@@ -4,7 +4,7 @@ import ParkingListItem from './parking-list-item';
 import ParkingListEmptyItem from './parking-list-empty-item';
 import Paper from '@mui/material/Paper';
 
-const MyParkingLotList = ({ parkings }: { parkings: ParkingLotModel[] }) => {
+const MyParkingLotList = ({ parkings , createNewParking}: { parkings: ParkingLotModel[] , createNewParking : () => void }) => {
   const classes = useStyles();
 
   const stringToAscii = (input: string): number => {
@@ -33,7 +33,7 @@ const MyParkingLotList = ({ parkings }: { parkings: ParkingLotModel[] }) => {
             />
           );
         })}
-        {parkings?.length == 0 ? <ParkingListEmptyItem /> : <></>}
+        <ParkingListEmptyItem add={createNewParking}/>
       </div>
     </Paper>
   );

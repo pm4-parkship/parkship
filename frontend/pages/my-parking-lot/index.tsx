@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import MyParkingLotList from '../../src/components/parking-list/my-parking-lot-list';
-import { ParkingLotModel } from '../../src/models';
+import { CreateParkingLotModel, OfferModel, ParkingLotModel } from '../../src/models';
 import { User } from '../api/user';
 import { logger } from '../../src/logger';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
@@ -14,6 +14,7 @@ import {
   ReservationState
 } from '../../src/models/reservation/reservation.model';
 import { makeStyles } from '@mui/styles';
+import { CreateParkingModal } from 'src/components/create-parking-modal/create-parking-modal';
 
 const initState = {
   error: null,
@@ -37,6 +38,31 @@ const MyParkingLotPage = ({ user }) => {
   const [reservations, setReservations] = useState<MyParkingLotsTableProps[]>(
     []
   );
+
+  const [showCreateParking, setShowCreateParking] = useState(true);
+  useEffect(() => {
+    fetchParkingLots(user).then((response) =>
+      setParkingLots({ error: null, loading: false, result: response })
+    );
+  }, []);
+
+  const addParkingLot = (
+    newParkingLot: CreateParkingLotModel,
+    offers: OfferModel[]
+  ) => {
+    setShowCreateParking(false);
+    //TODO: models noch verlesen
+
+    logger.log('new parking lot:', newParkingLot);
+    logger.log('new offers:', offers);
+    createParkingLotCall(user, newParkingLot).then((response) => {
+      if (response) {
+        parkingLots.result.push(response);
+        setParkingLots(parkingLots);
+      }
+    });
+    alert(JSON.stringify(newParkingLot, null, 2));
+  };
 
   useEffect(() => {
     fetchParkingLots(user).then((response) =>
@@ -69,8 +95,17 @@ const MyParkingLotPage = ({ user }) => {
       <Loading loading={parkingLots.loading} />
 
       {parkingLots.result && parkingLots.result.length > 0 && (
-        <MyParkingLotList parkings={parkingLots.result} />
+        <MyParkingLotList parkings={parkingLots.result} createNewParking={() => setShowCreateParking(true)}/>
       )}
+
+      <CreateParkingModal
+        showModal={showCreateParking}
+        setShowModal={setShowCreateParking}
+        addParkingLot={addParkingLot}
+        owner={user.username} // TODO: username wird ersetzt!
+        ownerId={user.id}
+      />
+
       <MyParkingLotReservationTable
         reservations={mappedReservations}
         styles={rowStyleMap}
@@ -157,6 +192,26 @@ const buildReservationList = (
       };
     });
   return parkingSlotsDataFuture.concat(parkingSlotsDataPast);
+};
+
+const createParkingLotCall = async (
+  user: User,
+  body: CreateParkingLotModel
+): Promise<ParkingLotModel> => {
+  return await fetch('/backend/parking-lot', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${user.token}`
+    },
+    body: JSON.stringify(body)
+  }).then(async (response) => {
+    if (response.ok) {
+      const data = await response.json();
+      logger.log(data);
+      return data;
+    }
+  });
 };
 
 const useStyles = makeStyles((theme) => ({
