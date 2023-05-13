@@ -12,7 +12,6 @@ import { logger } from 'src/logger';
 import { ErrorMapCtx, ZodIssueOptionalMessage, z } from 'zod';
 import { CreateParkingLotModel, OfferModel } from '../../models';
 import TagBar, { TagData } from '../search-bar/tag-bar';
-import user from 'pages/api/user';
 
 const dummyTags: TagData[] = [
   { key: 0, label: 'überdacht' },
@@ -49,7 +48,6 @@ export const CreateParkingModal = ({
     startDateOne: z.date(),
     endDateOne: z.date(),
     description: z.string().optional(),
-    days: z.literal(true),
     days: z
       .array(z.object({ id: z.number(), label: z.string() }))
       .min(1, 'Bitte min 1 Tag auswählen'),
@@ -95,7 +93,7 @@ export const CreateParkingModal = ({
   const handleFormSubmit = async (data: ParkingCreationSchema) => {
     logger.log('here ', data);
     const newParkingLot: CreateParkingLotModel = {
-      userId: ownerId,
+      ownerId: ownerId,
       name: data.parkingName,
       address: data.address,
       addressNr: data.addressNr || '',

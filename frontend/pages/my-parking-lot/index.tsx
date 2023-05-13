@@ -41,6 +41,8 @@ const MyParkingLotPage = ({ user }) => {
 
   const [showCreateParking, setShowCreateParking] = useState(true);
   useEffect(() => {
+    logger.log(user);
+  
     fetchParkingLots(user).then((response) =>
       setParkingLots({ error: null, loading: false, result: response })
     );
@@ -51,11 +53,13 @@ const MyParkingLotPage = ({ user }) => {
     offers: OfferModel[]
   ) => {
     setShowCreateParking(false);
-    //TODO: models noch verlesen
 
     logger.log('new parking lot:', newParkingLot);
     logger.log('new offers:', offers);
+    logger.log("**************************");
+
     createParkingLotCall(user, newParkingLot).then((response) => {
+      logger.log(response);
       if (response) {
         parkingLots.result.push(response);
         setParkingLots(parkingLots);
