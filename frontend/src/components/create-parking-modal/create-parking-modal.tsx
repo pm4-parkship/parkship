@@ -46,7 +46,6 @@ export const CreateParkingModal = ({
     startDateOne: z.date(),
     endDateOne: z.date(),
     description: z.string().optional(),
-    days: z.literal(true),
     days: z
       .array(z.object({ id: z.number(), label: z.string() }))
       .length(2, 'Bitte mehr als 2 Tage angeben'),
@@ -112,8 +111,7 @@ export const CreateParkingModal = ({
       ],
       tags: selectedTags.map((value) => value.label)
     };
-    return;
-    addParkingLot(body);
+    return addParkingLot(body);
   };
 
   return (
@@ -262,7 +260,6 @@ export const CreateParkingModal = ({
                     returnObject
                     row
                     control={control}
-                    className={classes.input}
                     options={[
                       {
                         id: 1,
@@ -303,6 +300,7 @@ export const CreateParkingModal = ({
               <TextFieldElement
                 fullWidth
                 multiline
+                required
                 rows={4}
                 id="description"
                 label="Beschreibung: "
@@ -338,7 +336,6 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     display: 'flex',
     justifyContent: 'center',
-    borderRadius: '0%',
     overflow: 'scroll',
     textOverflow: 'ellipsis',
     padding: '20px',
@@ -373,6 +370,5 @@ const useStyles = makeStyles((theme) => ({
   },
   input: {
     marginBottom: '15px'
-    // height: '60px'
   }
 }));

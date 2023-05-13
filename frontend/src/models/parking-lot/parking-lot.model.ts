@@ -17,6 +17,13 @@ export interface ParkingLotModel {
   state: ParkingLotState;
 }
 
+export type CreateParkingLotModel = Omit<
+  ParkingLotModel,
+  'id' | 'owner' | 'state'
+> & {
+  ownerID: string;
+};
+
 export enum ParkingLotState {
   active = 'ACTIVE',
   locked = 'LOCKED',
