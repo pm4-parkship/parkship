@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import MyParkingLotList from '../../src/components/parking-list/my-parking-lot-list';
-import { CreateParkingLotModel, OfferModel, ParkingLotModel } from '../../src/models';
+import { CreateParkingLotModel, OfferCreateModel, OfferModel, ParkingLotModel } from '../../src/models';
 import { User } from '../api/user';
 import { logger } from '../../src/logger';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
@@ -15,6 +15,7 @@ import {
 } from '../../src/models/reservation/reservation.model';
 import { makeStyles } from '@mui/styles';
 import { CreateParkingModal } from 'src/components/create-parking-modal/create-parking-modal';
+import { Button } from '@mui/material';
 
 const initState = {
   error: null,
@@ -58,14 +59,63 @@ const MyParkingLotPage = ({ user }) => {
     logger.log('new offers:', offers);
     logger.log("**************************");
 
+    newParkingLot = {
+      address : "Blumenweg2",
+      addressNr : "12",
+      description : "Dies ist ein Beispielparkplatz",
+      name : "BesterParkplatz",
+      price : 12.50,
+      tags : ["überdacht"]
+    };
+
+    let parkingLotId = 0;
+
     createParkingLotCall(user, newParkingLot).then((response) => {
+      logger.log(response);
+      if (response) {
+        parkingLotId = response.id;
+        parkingLots.result.push(response);
+        setParkingLots(parkingLots);
+      }
+    });
+
+    const dummyOffers : OfferCreateModel[] = [
+      {
+        "parkingLotId": parkingLotId,
+        "from" : new Date("2023-05-08"),
+        "to": new Date("2023-05-21"),
+        "monday": true,
+        "tuesday": false,
+        "wednesday": false,
+        "thursday": true,
+        "friday": true,
+        "saturday": false,
+        "sunday": true
+      },
+      {
+        "parkingLotId": parkingLotId,
+        "from": new Date("2023-06-05"),
+        "to": new Date("2023-05-11"),
+        "monday": false,
+        "tuesday": false,
+        "wednesday": false,
+        "thursday": true,
+        "friday": true,
+        "saturday": false,
+        "sunday": true
+      }
+    ];
+
+    logger.log("offers");
+    logger.log(dummyOffers);
+    createParkingLotOfferCall(user, dummyOffers).then((response) => {
       logger.log(response);
       if (response) {
         parkingLots.result.push(response);
         setParkingLots(parkingLots);
       }
     });
-    alert(JSON.stringify(newParkingLot, null, 2));
+
   };
 
   useEffect(() => {
@@ -101,6 +151,8 @@ const MyParkingLotPage = ({ user }) => {
       {parkingLots.result && parkingLots.result.length > 0 && (
         <MyParkingLotList parkings={parkingLots.result} createNewParking={() => setShowCreateParking(true)}/>
       )}
+
+      <Button onClick={() => addParkingLot(null, null)}>Test Button.</Button>
 
       <CreateParkingModal
         showModal={showCreateParking}
@@ -203,6 +255,26 @@ const createParkingLotCall = async (
   body: CreateParkingLotModel
 ): Promise<ParkingLotModel> => {
   return await fetch('/backend/parking-lot', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${user.token}`
+    },
+    body: JSON.stringify(body)
+  }).then(async (response) => {
+    if (response.ok) {
+      const data = await response.json();
+      logger.log(data);
+      return data;
+    }
+  });
+};
+
+const createParkingLotOfferCall = async (
+  user: User,
+  body: OfferCreateModel[]
+): Promise<any> => {
+  return await fetch('/backend/offer', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
