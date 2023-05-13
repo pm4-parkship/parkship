@@ -12,6 +12,7 @@ import { logger } from 'src/logger';
 import { ErrorMapCtx, z, ZodIssueOptionalMessage } from 'zod';
 import { CreateParkingLotModel, OfferModel } from '../../models';
 import TagBar, { TagData } from '../search-bar/tag-bar';
+import { off } from 'process';
 
 const dummyTags: TagData[] = [
   { key: 0, label: 'überdacht' },
@@ -222,11 +223,11 @@ export const CreateParkingModal = ({
               </Grid>
             </Grid>
 
-            <Button onClick={() => setOfferCount((prevState) => prevState++)}>
+            <Button onClick={() => {setOfferCount(offerCount+1)}}>
               Add offer time
             </Button>
 
-            <Button onClick={() => setOfferCount((prevState) => prevState--)}>
+            <Button onClick={() => setOfferCount(offerCount-1)}>
               Remove offer time
             </Button>
 
