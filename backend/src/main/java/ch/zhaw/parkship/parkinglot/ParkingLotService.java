@@ -46,19 +46,20 @@ public class ParkingLotService {
      * data in the ParkingLotDto format if created successfully, otherwise returns an empty
      * Optional object.
      */
-    public Optional<ParkingLotDto> create(ParkingLotDto data) {
-        var owner = userRepository.findById(data.getOwnerId());
-        if (owner.isPresent()) {
-            var parkingLotEntity = new ParkingLotEntity();
-            parkingLotEntity.setOwner(owner.get());
-            parkingLotEntity.setTags(checkedTags(data.getTags()));
-            BeanUtils.copyProperties(data, parkingLotEntity);
-            parkingLotEntity.setId(null);
-            parkingLotEntity.setState(ParkingLotState.PENDING);
-            var savedEntity = parkingLotRepository.save(parkingLotEntity);
-            return Optional.of(new ParkingLotDto(savedEntity));
-        }
-        return Optional.empty();
+    @Transactional
+    public ParkingLotDto create(ParkingLotDto data) {
+        var parkingLotEntity = new ParkingLotEntity();
+        parkingLotEntity.setTags(checkedTags(data.getTags()));BeanUtils.copyProperties(data, parkingLotEntity);
+        parkingLotEntity.setId(null);
+        parkingLotEntity.setOwner(data.getOwner().toEntity());
+        parkingLotEntity.setState(ParkingLotState.PENDING);
+        // TODO: Tag handling
+        //parkingLotEntity.setTags(data.getTags().stream().map(TagEntity::new).collect(Collectors.toSet()));
+        var savedEntity = parkingLotRepository.save(parkingLotEntity);
+        // TODO: Do we need the user data in the parkinglot dto?
+        var owner = userRepository.findById(savedEntity.getOwner().getId());
+        savedEntity.setOwner(owner.get());
+        return new ParkingLotDto(savedEntity);
     }
 
     /**
@@ -193,7 +194,7 @@ public class ParkingLotService {
 
     private Set<ParkingLotEntity> filterParkingLotsByDate(LocalDate startDate, LocalDate endDate, Set<ParkingLotEntity> parkingLots) {
         if (startDate != null && endDate != null) {
-            Boolean[] relevantDays = getRelevantDays(startDate,endDate);
+            Boolean[] relevantDays = getRelevantDays(startDate, endDate);
             parkingLots = parkingLots.stream()
                     .filter(lot -> (parkingLotRepository.isParkingLotAvailable(lot, startDate, endDate) != null))
                     .filter(lot -> (parkingLotRepository.isParkingLotOffered(lot, startDate, endDate,
@@ -204,11 +205,11 @@ public class ParkingLotService {
         return parkingLots;
     }
 
-    private Boolean[] getRelevantDays(LocalDate startDate, LocalDate endDate){
-        Boolean relevantDays[] = {false,false,false,false,false,false,false};
+    private Boolean[] getRelevantDays(LocalDate startDate, LocalDate endDate) {
+        Boolean relevantDays[] = {false, false, false, false, false, false, false};
         LocalDate current = LocalDate.of(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth());
-        while(!current.isEqual(endDate.plusDays(1))){
-            relevantDays[current.getDayOfWeek().getValue()-1] = true;
+        while (!current.isEqual(endDate.plusDays(1))) {
+            relevantDays[current.getDayOfWeek().getValue() - 1] = true;
             current = current.plusDays(1);
         }
         return relevantDays;

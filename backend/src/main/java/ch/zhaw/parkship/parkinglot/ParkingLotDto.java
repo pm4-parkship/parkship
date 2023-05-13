@@ -1,9 +1,8 @@
 package ch.zhaw.parkship.parkinglot;
 
-import ch.zhaw.parkship.offer.OfferDto;
-import ch.zhaw.parkship.tag.TagDto;
+import ch.zhaw.parkship.tag.TagEntity;
+import ch.zhaw.parkship.user.UserDto;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,33 +17,29 @@ import java.util.stream.Collectors;
 public class ParkingLotDto implements Serializable {
 
     private Long id;
+    @NotBlank
     private String name;
 
-    @NotNull
-    private Long ownerId;
+    private UserDto owner;
 
     private String description;
 
-    private Set<TagDto> tags;
+    private Set<String> tags;
 
-    @NotNull
     private Double longitude;
 
-    @NotNull
     private Double latitude;
 
+    @NotBlank
     private String address;
-
+    @NotBlank
     private String addressNr;
 
     private Integer floor;
-
-    @NotBlank
     private String nr;
 
     private byte[] picture;
 
-    @NotNull
     private Double price;
 
     private ParkingLotState state;
@@ -52,9 +47,9 @@ public class ParkingLotDto implements Serializable {
     public ParkingLotDto(ParkingLotEntity parkingLotEntity) {
         this.id = parkingLotEntity.getId();
         this.name = parkingLotEntity.getName();
-        this.ownerId = parkingLotEntity.getOwner().getId();
+        this.owner = new UserDto(parkingLotEntity.getOwner());
         this.description = parkingLotEntity.getDescription();
-        this.tags = parkingLotEntity.getTags().stream().map(TagDto::new).collect(Collectors.toSet());
+        this.tags = parkingLotEntity.getTags().stream().map(TagEntity::getName).collect(Collectors.toSet());
         this.longitude = parkingLotEntity.getLongitude();
         this.latitude = parkingLotEntity.getLatitude();
         this.address = parkingLotEntity.getAddress();
@@ -72,7 +67,7 @@ public class ParkingLotDto implements Serializable {
 
     @Override
     public String toString() {
-        return "ParkingLotDto{" + "id=" + id + ",name=" + name + ", owner=" + ownerId + ", description='" + description
+        return "ParkingLotDto{" + "id=" + id + ",name=" + name + ", owner=" + owner.id() + ", description='" + description
                 + '\'' + ", tags=" + tags + ", longitude=" + longitude + ", latitude=" + latitude
                 + ", address='" + address + '\'' + ", addressNr='" + addressNr + '\'' + ", floor=" + floor
                 + ", nr='" + nr + '\'' + ", price=" + price + ", state='" + state + '\'' + '}';

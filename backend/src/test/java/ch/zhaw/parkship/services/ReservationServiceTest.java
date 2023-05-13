@@ -1,36 +1,9 @@
 package ch.zhaw.parkship.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import org.assertj.core.util.Sets;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import ch.zhaw.parkship.parkinglot.ParkingLotDto;
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
-import ch.zhaw.parkship.reservation.CreateReservationDto;
-import ch.zhaw.parkship.reservation.ReservationDto;
-import ch.zhaw.parkship.reservation.ReservationEntity;
-import ch.zhaw.parkship.reservation.ReservationRepository;
-import ch.zhaw.parkship.reservation.ReservationService;
-import ch.zhaw.parkship.reservation.ReservationState;
-import ch.zhaw.parkship.reservation.UpdateReservationDto;
+import ch.zhaw.parkship.reservation.*;
 import ch.zhaw.parkship.reservation.exceptions.ReservationCanNotBeCanceledException;
 import ch.zhaw.parkship.reservation.exceptions.ReservationNotFoundException;
 import ch.zhaw.parkship.user.UserDto;
@@ -39,6 +12,21 @@ import ch.zhaw.parkship.user.UserRepository;
 import ch.zhaw.parkship.util.UserGenerator;
 import ch.zhaw.parkship.util.generator.ParkingLotGenerator;
 import ch.zhaw.parkship.util.generator.ReservationGenerator;
+import org.assertj.core.util.Sets;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDate;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ReservationServiceTest {
@@ -47,7 +35,7 @@ class ReservationServiceTest {
 
     @Mock
     private ParkingLotRepository parkingLotRepository;
-    
+
     @Mock
     private UserRepository userRepository;
 
@@ -79,7 +67,7 @@ class ReservationServiceTest {
         var parkingLot = new ParkingLotDto();
         var tenant = new UserDto(userEntity);
         parkingLot.setId(1L);
-        parkingLot.setOwnerId(tenant.id());
+        parkingLot.setOwner(tenant);
         data.setId(1L);
         data.setParkingLot(parkingLot);
         data.setTenant(tenant);
@@ -247,39 +235,39 @@ class ReservationServiceTest {
         }, "No exception thrown, even if the reservation does not exist");
         verify(reservationRepository, times(1)).findById(2L);
     }
-    
+
     @Test
     public void testGetAllReservationsOfUserOwnedParkingLots() {
-      when(userRepository.findById(1L)).thenReturn(Optional.of(userEntity));
-      userEntity.setParkingLots(Sets.set(parkingLotEntity));
-      Set<ReservationEntity> reservations = new HashSet<>();
-      ReservationEntity reservation1 = new ReservationEntity();
-      reservation1.setId(1L);
-      reservation1.setFrom(LocalDate.of(2023, 04, 10));
-      reservation1.setTo(LocalDate.of(2023, 04, 20));
-      reservation1.setTenant(userEntity);
-      reservation1.setParkingLot(parkingLotEntity);
-      reservations.add(reservation1);
-      ReservationEntity reservation2 = new ReservationEntity();
-      reservation2.setId(2L);
-      reservation2.setFrom(LocalDate.of(2023, 5, 8));
-      reservation2.setTo(LocalDate.of(2023, 5, 18));
-      reservation2.setTenant(userEntity);
-      reservation2.setParkingLot(parkingLotEntity);
-      reservations.add(reservation2);
-      parkingLotEntity.setReservationEntitySet(reservations);
-      
-      var result = reservationService.getAllReservationsOfUserOwnedParkingLots(1L);
-      assertEquals(1, result.getCurrent().size());
-      assertEquals(1, result.getPast().size());
-      assertEquals(reservation1.getId(), result.getPast().get(0).getId());
-      assertEquals(reservation2.getId(), result.getCurrent().get(0).getId());
-      verify(userRepository, times(1)).findById(1L);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(userEntity));
+        userEntity.setParkingLots(Sets.set(parkingLotEntity));
+        Set<ReservationEntity> reservations = new HashSet<>();
+        ReservationEntity reservation1 = new ReservationEntity();
+        reservation1.setId(1L);
+        reservation1.setFrom(LocalDate.of(2023, 04, 10));
+        reservation1.setTo(LocalDate.of(2023, 04, 20));
+        reservation1.setTenant(userEntity);
+        reservation1.setParkingLot(parkingLotEntity);
+        reservations.add(reservation1);
+        ReservationEntity reservation2 = new ReservationEntity();
+        reservation2.setId(2L);
+        reservation2.setFrom(LocalDate.of(2023, 5, 8));
+        reservation2.setTo(LocalDate.of(2023, 5, 18));
+        reservation2.setTenant(userEntity);
+        reservation2.setParkingLot(parkingLotEntity);
+        reservations.add(reservation2);
+        parkingLotEntity.setReservationEntitySet(reservations);
+
+        var result = reservationService.getAllReservationsOfUserOwnedParkingLots(1L);
+        assertEquals(1, result.getCurrent().size());
+        assertEquals(1, result.getPast().size());
+        assertEquals(reservation1.getId(), result.getPast().get(0).getId());
+        assertEquals(reservation2.getId(), result.getCurrent().get(0).getId());
+        verify(userRepository, times(1)).findById(1L);
     }
 
     public void getReservationByUserTest() {
-        when(reservationRepository.findAllByTenant(1L,LocalDate.now(),LocalDate.MAX)).thenReturn(new ArrayList<>());
-        reservationService.getByUserId(1L,LocalDate.now(),LocalDate.MAX);
-        verify(reservationRepository,times(1)).findAllByTenant(1L,LocalDate.now(),LocalDate.MAX);
+        when(reservationRepository.findAllByTenant(1L, LocalDate.now(), LocalDate.MAX)).thenReturn(new ArrayList<>());
+        reservationService.getByUserId(1L, LocalDate.now(), LocalDate.MAX);
+        verify(reservationRepository, times(1)).findAllByTenant(1L, LocalDate.now(), LocalDate.MAX);
     }
 }

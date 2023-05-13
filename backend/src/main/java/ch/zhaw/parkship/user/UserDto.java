@@ -15,4 +15,14 @@ public record UserDto(Long id, @NotBlank @Email String email, @NotBlank String u
     public UserDto(UserEntity in) {
         this(in.getId(), in.getEmail(), in.getUsername(), in.getName(), in.getSurname(), in.getUserRole(), in.getUserState());
     }
+
+    public UserEntity toEntity() {
+        var user = new UserEntity();
+        user.setId(id);
+        user.setEmail(email);
+        user.setUsername(username);
+        user.setUserRole(role);
+        user.setUserState(userState);
+        return user;
+    }
 }
