@@ -37,10 +37,10 @@ public class ParkingLotEntity {
     private Set<TagEntity> tags;
 
     @Column(nullable = false)
-    private Double longitude;
+    private double longitude;
 
     @Column(nullable = false)
-    private Double latitude;
+    private double latitude;
 
     @Column(nullable = true)
     private String address;
@@ -51,14 +51,14 @@ public class ParkingLotEntity {
     @Column(nullable = true)
     private Integer floor;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String nr;
 
     @Column(nullable = true)
     private byte[] picture;
 
     @Column(nullable = false)
-    private Double price;
+    private double price;
 
     @Column(nullable = false)
     private ParkingLotState state;

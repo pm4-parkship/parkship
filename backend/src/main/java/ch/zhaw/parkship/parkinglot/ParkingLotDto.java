@@ -26,9 +26,9 @@ public class ParkingLotDto implements Serializable {
 
     private Set<String> tags;
 
-    private Double longitude;
+    private double longitude;
 
-    private Double latitude;
+    private double latitude;
 
     @NotBlank
     private String address;
@@ -40,7 +40,7 @@ public class ParkingLotDto implements Serializable {
 
     private byte[] picture;
 
-    private Double price;
+    private double price;
 
     private ParkingLotState state;
 
