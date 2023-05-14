@@ -6,7 +6,11 @@ const headerNames = ['Name', 'Vorname', 'Email', 'Rolle', 'Status'];
 
 const UsersTable = ({ users }: { users: Array<RowDataType> }) => {
   return (
-    <TableComponent data={users} headerNames={headerNames}></TableComponent>
+    <TableComponent
+      data={users}
+      headerNames={headerNames}
+      paginationLabel={'Benutzer pro Seite'}
+    ></TableComponent>
   );
 };
 
