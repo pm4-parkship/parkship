@@ -182,14 +182,22 @@ export const CreateParkingModal = ({
               </Grid>
             </Grid>
             <Divider variant="middle" />
-            <div
+            {/* <div
               style={{
                 display: 'flex',
                 justifyContent: 'center',
                 width: '100%',
                 marginBottom: '1rem'
               }}
+            > */}
+            <Grid
+              container
+              justifyContent="left"
+              alignItems="center"
+              spacing={3}
             >
+              <Grid item xs={4}></Grid>
+              <Grid item xs={4}>
               <Button
                 variant="outlined"
                 type="button"
@@ -200,17 +208,23 @@ export const CreateParkingModal = ({
                     toast.error('Maximal 5 Angebote möglich');
                   }
                 }}
+                disabled={offerCount >= 5}
               >
                 Add offer time
               </Button>
+              </Grid>
+
+              <Grid item xs={4}>
               <Button
                 variant="outlined"
                 type="button"
                 onClick={() => setOfferCount(offerCount - 1)}
+                disabled={offerCount == 1}
               >
                 Remove offer time
               </Button>
-            </div>
+              </Grid>
+              </Grid>
 
             {Array.from({ length: offerCount }, (_, i) => i + 1).map((key) => {
               return (
@@ -288,6 +302,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.default,
     borderRadius: '4px'
   },
+  
   header: {
     display: 'flex',
     marginBottom: '20px',

@@ -52,7 +52,7 @@ export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
   return (
     <>
       <form
-        style={{ width: '80%' }}
+        style={{ width: '100%' }}
         onChange={handleSubmit((data) => handleFormSubmit(data))}
       >
         <Grid
