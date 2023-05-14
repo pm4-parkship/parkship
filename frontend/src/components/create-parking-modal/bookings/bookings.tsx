@@ -5,7 +5,6 @@ import { z } from 'zod';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { logger } from '../../../logger';
 import { OfferModel } from '../../../models';
 
 interface OfferProps {
@@ -36,7 +35,6 @@ export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
   });
 
   const handleFormSubmit = (data: OfferType) => {
-    logger.warn('OfferComponent: handleFormSubmit: data: ', data);
     const offerModel: OfferModel = {
       from: data.startDate,
       to: data.endDate,
@@ -74,6 +72,7 @@ export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
             <DatePickerElement
               required
               label="von"
+              disablePast
               name={`startDate`} // <== Changed here
               control={control}
               className={classes.input}
@@ -85,6 +84,7 @@ export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
               label="bis"
               name={`endDate`} // <== Changed here
               control={control}
+              disablePast
               className={classes.input}
             />
           </Grid>
