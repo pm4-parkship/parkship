@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import MyParkingLotList from '../../src/components/parking-list/my-parking-lot-list';
-import { CreateParkingLotModel, OfferCreateModel, OfferModel, ParkingLotModel } from '../../src/models';
+import {
+  CreateParkingLotModel,
+  OfferCreateModel,
+  OfferModel,
+  ParkingLotModel
+} from '../../src/models';
 import { User } from '../api/user';
 import { logger } from '../../src/logger';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
@@ -43,7 +48,7 @@ const MyParkingLotPage = ({ user }) => {
   const [showCreateParking, setShowCreateParking] = useState(true);
   useEffect(() => {
     logger.log(user);
-  
+
     fetchParkingLots(user).then((response) =>
       setParkingLots({ error: null, loading: false, result: response })
     );
@@ -57,16 +62,7 @@ const MyParkingLotPage = ({ user }) => {
 
     logger.log('new parking lot:', newParkingLot);
     logger.log('new offers:', offers);
-    logger.log("**************************");
-
-    newParkingLot = {
-      address : "Blumenweg2",
-      addressNr : "12",
-      description : "Dies ist ein Beispielparkplatz",
-      name : "BesterParkplatz",
-      price : 12.50,
-      tags : ["überdacht"]
-    };
+    logger.log('**************************');
 
     let parkingLotId = 0;
 
@@ -79,43 +75,21 @@ const MyParkingLotPage = ({ user }) => {
       }
     });
 
-    const dummyOffers : OfferCreateModel[] = [
-      {
-        "parkingLotId": parkingLotId,
-        "from" : new Date("2023-05-08"),
-        "to": new Date("2023-05-21"),
-        "monday": true,
-        "tuesday": false,
-        "wednesday": false,
-        "thursday": true,
-        "friday": true,
-        "saturday": false,
-        "sunday": true
-      },
-      {
-        "parkingLotId": parkingLotId,
-        "from": new Date("2023-06-05"),
-        "to": new Date("2023-05-11"),
-        "monday": false,
-        "tuesday": false,
-        "wednesday": false,
-        "thursday": true,
-        "friday": true,
-        "saturday": false,
-        "sunday": true
-      }
-    ];
+    const offersToCreate: OfferCreateModel[] = offers.map((offer) => {
+      return {
+        parkingLotId: parkingLotId,
+        ...offer
+      };
+    });
 
-    logger.log("offers");
-    logger.log(dummyOffers);
-    createParkingLotOfferCall(user, dummyOffers).then((response) => {
+    logger.log('offers to create', offersToCreate);
+    createParkingLotOfferCall(user, offersToCreate).then((response) => {
       logger.log(response);
       if (response) {
         parkingLots.result.push(response);
         setParkingLots(parkingLots);
       }
     });
-
   };
 
   useEffect(() => {
@@ -149,17 +123,16 @@ const MyParkingLotPage = ({ user }) => {
       <Loading loading={parkingLots.loading} />
 
       {parkingLots.result && parkingLots.result.length > 0 && (
-        <MyParkingLotList parkings={parkingLots.result} createNewParking={() => setShowCreateParking(true)}/>
+        <MyParkingLotList
+          parkings={parkingLots.result}
+          createNewParking={() => setShowCreateParking(true)}
+        />
       )}
-
-      <Button onClick={() => addParkingLot(null, null)}>Test Button.</Button>
-
       <CreateParkingModal
         showModal={showCreateParking}
         setShowModal={setShowCreateParking}
         addParkingLot={addParkingLot}
         owner={user.username} // TODO: username wird ersetzt!
-        ownerId={user.id}
       />
 
       <MyParkingLotReservationTable

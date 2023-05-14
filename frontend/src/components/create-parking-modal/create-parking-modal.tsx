@@ -1,17 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, Grid, Modal, Typography } from '@mui/material';
+import { Box, Button, Divider, Grid, Modal, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  CheckboxButtonGroup,
-  DatePickerElement,
-  TextFieldElement
-} from 'react-hook-form-mui';
-import { logger } from 'src/logger';
-import { ErrorMapCtx, z, ZodIssueOptionalMessage } from 'zod';
+import { TextFieldElement } from 'react-hook-form-mui';
+import { toast } from 'react-toastify';
+import { z } from 'zod';
 import { CreateParkingLotModel, OfferModel } from '../../models';
 import TagBar, { TagData } from '../search-bar/tag-bar';
+import { OfferComponent } from './bookings/bookings';
 
 const dummyTags: TagData[] = [
   { key: 0, label: 'überdacht' },
@@ -26,15 +23,13 @@ interface CreateParkingModalProps {
   setShowModal: (value: boolean) => void;
   addParkingLot: (value: CreateParkingLotModel, offers: OfferModel[]) => void;
   owner: string;
-  ownerId: number;
 }
 
 export const CreateParkingModal = ({
   showModal = true,
   setShowModal,
   addParkingLot,
-  owner,
-  ownerId
+  owner
 }: CreateParkingModalProps) => {
   const classes = useStyles();
 
@@ -42,13 +37,7 @@ export const CreateParkingModal = ({
   const [offerCount, setOfferCount] = useState<number>(2);
   const maxOffers = 5;
 
-  const offerSchema = z.object({
-    startDate: z.date(),
-    endDate: z.date(),
-    days: z
-      .array(z.object({ id: z.number(), label: z.string() }))
-      .min(1, 'Bitte min 1 Tag auswählen')
-  });
+  const [offersStored, setOffersStored] = useState<OfferModel[]>([]);
 
   const formSchema = z.object({
     parkingName: z.string().min(1, `Bitte geben Sie eine Parkplatznummer ein!`),
@@ -56,8 +45,7 @@ export const CreateParkingModal = ({
     addressNr: z.string().optional(),
     price: z.number().optional(),
     description: z.string().optional(),
-    offers: z.array(offerSchema).min(1, 'Bitte min 1 Angebot auswählen'),
-    tags: z.string().optional()
+    tags: z.any().optional()
   });
 
   const addTag = (tag: TagData) => {
@@ -68,18 +56,8 @@ export const CreateParkingModal = ({
     setSelectedTag((tags) => tags.filter((tag) => tag.key !== key));
   };
 
-  const customErrorMap = () => {
-    return (issue: ZodIssueOptionalMessage, ctx: ErrorMapCtx) => {
-      if (issue.code === z.ZodIssueCode.invalid_string) {
-      }
-      logger.log(issue);
-      return { message: ctx.defaultError };
-    };
-  };
   const { handleSubmit, control } = useForm({
-    resolver: zodResolver(formSchema, {
-      errorMap: customErrorMap()
-    }),
+    resolver: zodResolver(formSchema),
     mode: 'onSubmit',
     defaultValues: {
       parkingName: '',
@@ -87,13 +65,6 @@ export const CreateParkingModal = ({
       addressNr: '',
       price: 0,
       description: '',
-      offers: [
-        {
-          startDate: '',
-          endDate: '',
-          days: []
-        }
-      ],
       tags: []
     }
   });
@@ -101,34 +72,19 @@ export const CreateParkingModal = ({
   type ParkingCreationSchema = z.infer<typeof formSchema>;
 
   const handleFormSubmit = async (data: ParkingCreationSchema) => {
-    logger.log('here ', data);
-    const newParkingLot: CreateParkingLotModel = {
-      ownerId: ownerId,
-      name: data.parkingName,
+    const createData: CreateParkingLotModel = {
       address: data.address,
       addressNr: data.addressNr || '',
       description: data.description || '',
-      price: data.price || 0,
-      tags: selectedTags.map((value) => value.label)
+      tags: selectedTags.map((tag) => tag.label),
+      name: data.parkingName,
+      price: data.price || 0
     };
+    addParkingLot(createData, offersStored);
+  };
 
-    const offers = data.offers.map(
-      (offer) => (offer.days = offer.days.map((day) => day.id))
-    );
-    const offersOld: OfferModel[] = [
-      {
-        from: data.startDateOne,
-        to: data.endDateOne,
-        monday: data.days.filter((e) => e.id === 0).length > 0,
-        tuesday: data.days.filter((e) => e.id === 1).length > 0,
-        wednesday: data.days.filter((e) => e.id === 2).length > 0,
-        thursday: data.days.filter((e) => e.id === 3).length > 0,
-        friday: data.days.filter((e) => e.id === 4).length > 0,
-        saturday: data.days.filter((e) => e.id === 5).length > 0,
-        sunday: data.days.filter((e) => e.id === 6).length > 0
-      }
-    ];
-    addParkingLot(newParkingLot, offersOld);
+  const handleOfferDataSubmit = (data: OfferModel) => {
+    setOffersStored([...offersStored, data]);
   };
 
   return (
@@ -141,7 +97,7 @@ export const CreateParkingModal = ({
     >
       <Box className={classes.boxRoot}>
         <form
-          className={classes.form}
+          style={{ width: '80%' }}
           onSubmit={handleSubmit((data) => handleFormSubmit(data))}
         >
           <Grid container justifyContent="left" alignItems="center">
@@ -153,7 +109,7 @@ export const CreateParkingModal = ({
                 required
                 fullWidth
                 id="parkingName"
-                // label="Bezeichnung:"s
+                label="Bezeichnung:"
                 name="parkingName"
                 control={control}
                 className={classes.input}
@@ -225,103 +181,43 @@ export const CreateParkingModal = ({
                 />
               </Grid>
             </Grid>
-
-            <Button
-              onClick={() => {
-                setOfferCount(offerCount + 1);
+            <Divider variant="middle" />
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                width: '100%',
+                marginBottom: '1rem'
               }}
             >
-              Add offer time
-            </Button>
-
-            <Button onClick={() => setOfferCount(offerCount - 1)}>
-              Remove offer time
-            </Button>
+              <Button
+                variant="outlined"
+                type="button"
+                onClick={() => {
+                  if (offerCount < maxOffers) {
+                    setOfferCount(offerCount + 1);
+                  } else {
+                    toast.error('Maximal 5 Angebote möglich');
+                  }
+                }}
+              >
+                Add offer time
+              </Button>
+              <Button
+                variant="outlined"
+                type="button"
+                onClick={() => setOfferCount(offerCount - 1)}
+              >
+                Remove offer time
+              </Button>
+            </div>
 
             {Array.from({ length: offerCount }, (_, i) => i + 1).map((key) => {
               return (
-                <div key={key}>
-                  <Grid
-                    container
-                    justifyContent="left"
-                    alignItems="center"
-                    columnSpacing={3}
-                    rowSpacing={0}
-                  >
-                    <Grid item xs={4}>
-                      <Typography variant="h6" className={classes.input}>
-                        Buchbarer Zeitraum:*
-                      </Typography>
-                    </Grid>
-
-                    <Grid item xs={4}>
-                      <DatePickerElement
-                        required
-                        label="von"
-                        name={`offers.${key}.startDate`} // <== Changed here
-                        control={control}
-                        className={classes.input}
-                      />
-                    </Grid>
-                    <Grid item xs={4}>
-                      <DatePickerElement
-                        required
-                        label="bis"
-                        name={`offers.${key}.endDate`} // <== Changed here
-                        control={control}
-                        className={classes.input}
-                      />
-                    </Grid>
-                    <Grid
-                      item
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        columnGap: '1rem'
-                      }}
-                    >
-                      <Typography variant="h6" className={classes.input}>
-                        an:
-                      </Typography>
-                      <CheckboxButtonGroup
-                        name={`offers.${key}.days`}
-                        returnObject
-                        row
-                        control={control}
-                        options={[
-                          {
-                            id: 1,
-                            label: 'Mo'
-                          },
-                          {
-                            id: 2,
-                            label: 'Di'
-                          },
-                          {
-                            id: 3,
-                            label: 'Mi'
-                          },
-                          {
-                            id: 4,
-                            label: 'Do'
-                          },
-                          {
-                            id: 5,
-                            label: 'Fr'
-                          },
-                          {
-                            id: 6,
-                            label: 'Sa'
-                          },
-                          {
-                            id: 7,
-                            label: 'So'
-                          }
-                        ]}
-                      />
-                    </Grid>
-                  </Grid>
-                </div>
+                <OfferComponent
+                  key={key}
+                  onValuesChange={handleOfferDataSubmit}
+                />
               );
             })}
 
@@ -373,9 +269,6 @@ export const CreateParkingModal = ({
 };
 
 const useStyles = makeStyles((theme) => ({
-  form: {
-    width: '80%'
-  },
   boxRoot: {
     position: 'absolute',
     display: 'flex',

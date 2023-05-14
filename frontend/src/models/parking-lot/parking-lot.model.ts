@@ -34,7 +34,7 @@ export interface OfferModel {
   sunday: boolean;
 }
 
-export type OfferCreateModel =Omit<ParkingLotModel, ''> & {
+export type OfferCreateModel =Omit<OfferModel, ''> & {
   parkingLotId : number;
 };
 
