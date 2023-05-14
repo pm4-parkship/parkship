@@ -15,13 +15,15 @@ interface TableComponentProps {
   onRowClick?: (row: RowDataType) => void;
   data: RowDataType[];
   styles?: Map<number, string>;
+  paginationLabel: string;
 }
 
 const TableComponent = ({
   headerNames,
   onRowClick,
   data,
-  styles
+  styles,
+  paginationLabel
 }: TableComponentProps) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -77,11 +79,11 @@ const TableComponent = ({
               page={page}
               SelectProps={{
                 inputProps: {
-                  'aria-label': 'Reservationen pro Seite'
+                  'aria-label': paginationLabel
                 },
                 native: true
               }}
-              labelRowsPerPage={'Reservationen pro Seite'}
+              labelRowsPerPage={paginationLabel}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
               ActionsComponent={TablePaginationActions}

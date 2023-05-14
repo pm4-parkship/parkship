@@ -13,6 +13,7 @@ const ParkingLotsTable = ({
     <TableComponent
       data={parkingLots}
       headerNames={headerNames}
+      paginationLabel={'Parklätze pro Seite'}
     ></TableComponent>
   );
 };

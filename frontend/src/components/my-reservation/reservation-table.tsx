@@ -24,6 +24,7 @@ const ReservationTable = ({
       data={reservations}
       headerNames={headerNames}
       onRowClick={openModifyModal}
+      paginationLabel={'Reservationen pro Seite'}
     ></TableComponent>
   );
 };

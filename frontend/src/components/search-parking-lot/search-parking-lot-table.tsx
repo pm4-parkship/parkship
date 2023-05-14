@@ -25,6 +25,7 @@ const SearchParkingLotTable = ({
         data={parkingLots}
         headerNames={headerNames}
         onRowClick={onRowClick}
+        paginationLabel={'Angebote pro Seite'}
       ></TableComponent>
     </div>
   );
