@@ -48,7 +48,8 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'row',
     overflow: 'scroll',
     justifyContent: 'flex-start',
-    columnGap: '2rem'
+    columnGap: '2rem',
+    maxWidth: '100%'
   }
 }));
 
