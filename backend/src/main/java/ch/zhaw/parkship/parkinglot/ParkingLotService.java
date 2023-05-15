@@ -247,12 +247,11 @@ public class ParkingLotService {
     private Set<TagEntity> checkedTags (Set<TagDto> tagDtos){
         Set<TagEntity> tagEntities = new HashSet<>();
         for (TagDto tagDto: tagDtos){
-            if (tagDto.getId() == null || tagRepository.findById(tagDto.getId()).isEmpty()){
+            Optional<TagEntity> optionalTagEntity = tagRepository.findById(tagDto.getId());
+            if (tagDto.getId() == null || optionalTagEntity.isEmpty()){
                 tagEntities.add(tagRepository.save(new TagEntity(tagDto)));
             } else {
-                if (tagRepository.findById(tagDto.getId()).isPresent()){
-                    tagEntities.add(tagRepository.findById(tagDto.getId()).get());
-                }
+                tagEntities.add(optionalTagEntity.get());
             }
         }
         return tagEntities;
