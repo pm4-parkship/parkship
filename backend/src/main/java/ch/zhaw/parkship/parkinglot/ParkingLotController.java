@@ -1,9 +1,11 @@
 package ch.zhaw.parkship.parkinglot;
 
 import ch.zhaw.parkship.common.PaginatedResponse;
+import ch.zhaw.parkship.reservation.ReservationEntity;
 import ch.zhaw.parkship.user.ParkshipUserDetails;
 import ch.zhaw.parkship.user.UserRepository;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import java.time.LocalDate;
@@ -122,6 +124,7 @@ public class ParkingLotController {
     @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<ParkingLotDto> updateParkingLot(@PathVariable Long id, @Valid @RequestBody ParkingLotDto parkingLotDto) {
         validateRequest(parkingLotDto);
+
         parkingLotDto.setId(id);
         Optional<ParkingLotDto> updatedParkingLot = parkingLotService.update(parkingLotDto);
         return updatedParkingLot.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
