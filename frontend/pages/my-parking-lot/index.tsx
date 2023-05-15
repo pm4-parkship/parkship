@@ -20,7 +20,6 @@ import {
 } from '../../src/models/reservation/reservation.model';
 import { makeStyles } from '@mui/styles';
 import { CreateParkingModal } from 'src/components/create-parking-modal/create-parking-modal';
-import { Button } from '@mui/material';
 
 const initState = {
   error: null,
@@ -59,15 +58,8 @@ const MyParkingLotPage = ({ user }) => {
     offers: OfferModel[]
   ) => {
     setShowCreateParking(false);
-
-    logger.log('new parking lot:', newParkingLot);
-    logger.log('new offers:', offers);
-    logger.log('**************************');
-
     let parkingLotId = 0;
-
     createParkingLotCall(user, newParkingLot).then((response) => {
-      logger.log(response);
       if (response) {
         parkingLotId = response.id;
         parkingLots.result.push(response);
@@ -82,9 +74,7 @@ const MyParkingLotPage = ({ user }) => {
       };
     });
 
-    logger.log('offers to create', offersToCreate);
     createParkingLotOfferCall(user, offersToCreate).then((response) => {
-      logger.log(response);
       if (response) {
         parkingLots.result.push(response);
         setParkingLots(parkingLots);
