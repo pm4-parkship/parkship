@@ -181,7 +181,7 @@ class ParkingLotServiceTest {
         var result = parkingLotService.update(data);
 
         assertEquals(1, result.get().getId());
-        verify(tagRepository, times(3)).findById(1L);
+        verify(tagRepository, times(1)).findById(1L);
         verify(parkingLotRepository, times(1)).findById(1L);
         verify(parkingLotRepository, times(1)).save(any(ParkingLotEntity.class));
     }
