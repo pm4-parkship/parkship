@@ -46,12 +46,10 @@ const MyParkingLotPage = ({ user }) => {
 
   const [showCreateParking, setShowCreateParking] = useState(true);
   useEffect(() => {
-    logger.log(user);
-
     fetchParkingLots(user).then((response) =>
       setParkingLots({ error: null, loading: false, result: response })
     );
-  }, []);
+  }, [parkingLots]);
 
   const addParkingLot = (
     newParkingLot: CreateParkingLotModel,
