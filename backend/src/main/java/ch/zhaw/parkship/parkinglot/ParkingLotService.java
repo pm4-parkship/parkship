@@ -47,7 +47,7 @@ public class ParkingLotService {
      * Optional object.
      */
     public Optional<ParkingLotDto> create(ParkingLotDto data) {
-        var owner = userRepository.findById(data.getOwnerId());
+        var owner = userRepository.findById(data.getOwner().id());
         if (owner.isPresent()) {
             var parkingLotEntity = new ParkingLotEntity();
             parkingLotEntity.setOwner(owner.get());
