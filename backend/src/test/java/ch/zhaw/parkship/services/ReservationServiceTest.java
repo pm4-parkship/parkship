@@ -79,7 +79,7 @@ class ReservationServiceTest {
         var parkingLot = new ParkingLotDto();
         var tenant = new UserDto(userEntity);
         parkingLot.setId(1L);
-        parkingLot.setOwnerId(tenant.id());
+        parkingLot.setOwner(tenant);
         data.setId(1L);
         data.setParkingLot(parkingLot);
         data.setTenant(tenant);

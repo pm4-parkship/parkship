@@ -94,7 +94,7 @@ class ParkingLotServiceTest {
         var owner = new UserDto(userEntity);
         Set<TagDto> tagDtos = new HashSet<>();
         tagDtos.add(new TagDto("schoener Parkplatz", 1L));
-        data.setOwnerId(owner.id());
+        data.setOwner(owner);
         data.setId(1L);
         data.setLongitude(15.5);
         data.setLatitude(16.22);
@@ -353,7 +353,7 @@ class ParkingLotServiceTest {
             Optional<ParkingLotEntity> correspondingEntity = parkingLots.stream()
                     .filter(entity -> entity.getId().equals(parkingLotDto.getId())).findFirst();
             assertTrue(correspondingEntity.isPresent());
-            assertEquals(correspondingEntity.get().getOwner().getId(), parkingLotDto.getOwnerId());
+            assertEquals(correspondingEntity.get().getOwner().getId(), parkingLotDto.getOwner().id());
         });
 
         verify(parkingLotRepository, times(1)).findByOwnerId(userEntity.getId());
