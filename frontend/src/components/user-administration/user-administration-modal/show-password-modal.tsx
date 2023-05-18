@@ -14,6 +14,7 @@ const ShowPasswordModal = ({
   password: string;
 }) => {
   const showToast = async () => {
+    navigator.clipboard.writeText(password);
     toast.success('Password copied');
   };
 

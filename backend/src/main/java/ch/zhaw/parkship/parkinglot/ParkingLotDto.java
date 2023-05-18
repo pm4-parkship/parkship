@@ -1,6 +1,7 @@
 package ch.zhaw.parkship.parkinglot;
 
-import ch.zhaw.parkship.tag.TagEntity;
+import ch.zhaw.parkship.offer.OfferDto;
+import ch.zhaw.parkship.tag.TagDto;
 import ch.zhaw.parkship.user.UserDto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class ParkingLotDto implements Serializable {
     @NotBlank
     private String name;
 
+    @NotNull
     private UserDto owner;
 
     private String description;
@@ -67,7 +69,7 @@ public class ParkingLotDto implements Serializable {
 
     @Override
     public String toString() {
-        return "ParkingLotDto{" + "id=" + id + ",name=" + name + ", owner=" + owner.id() + ", description='" + description
+        return "ParkingLotDto{" + "id=" + id + ",name=" + name + ", owner=" + owner + ", description='" + description
                 + '\'' + ", tags=" + tags + ", longitude=" + longitude + ", latitude=" + latitude
                 + ", address='" + address + '\'' + ", addressNr='" + addressNr + '\'' + ", floor=" + floor
                 + ", nr='" + nr + '\'' + ", price=" + price + ", state='" + state + '\'' + '}';

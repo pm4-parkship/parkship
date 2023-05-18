@@ -46,20 +46,19 @@ public class ParkingLotService {
      * data in the ParkingLotDto format if created successfully, otherwise returns an empty
      * Optional object.
      */
-    @Transactional
-    public ParkingLotDto create(ParkingLotDto data) {
-        var parkingLotEntity = new ParkingLotEntity();
-        parkingLotEntity.setTags(checkedTags(data.getTags()));BeanUtils.copyProperties(data, parkingLotEntity);
-        parkingLotEntity.setId(null);
-        parkingLotEntity.setOwner(data.getOwner().toEntity());
-        parkingLotEntity.setState(ParkingLotState.PENDING);
-        // TODO: Tag handling
-        //parkingLotEntity.setTags(data.getTags().stream().map(TagEntity::new).collect(Collectors.toSet()));
-        var savedEntity = parkingLotRepository.save(parkingLotEntity);
-        // TODO: Do we need the user data in the parkinglot dto?
-        var owner = userRepository.findById(savedEntity.getOwner().getId());
-        savedEntity.setOwner(owner.get());
-        return new ParkingLotDto(savedEntity);
+    public Optional<ParkingLotDto> create(ParkingLotDto data) {
+        var owner = userRepository.findById(data.getOwner().id());
+        if (owner.isPresent()) {
+            var parkingLotEntity = new ParkingLotEntity();
+            parkingLotEntity.setOwner(owner.get());
+            parkingLotEntity.setTags(checkedTags(data.getTags()));
+            BeanUtils.copyProperties(data, parkingLotEntity);
+            parkingLotEntity.setId(null);
+            parkingLotEntity.setState(ParkingLotState.PENDING);
+            var savedEntity = parkingLotRepository.save(parkingLotEntity);
+            return Optional.of(new ParkingLotDto(savedEntity));
+        }
+        return Optional.empty();
     }
 
     /**
