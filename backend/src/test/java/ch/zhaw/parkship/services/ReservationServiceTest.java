@@ -47,7 +47,7 @@ class ReservationServiceTest {
 
     @Mock
     private ParkingLotRepository parkingLotRepository;
-    
+
     @Mock
     private UserRepository userRepository;
 
@@ -248,7 +248,7 @@ class ReservationServiceTest {
         }, "No exception thrown, even if the reservation does not exist");
         verify(reservationRepository, times(1)).findById(2L);
     }
-    
+
     @Test
     public void testGetAllReservationsOfUserOwnedParkingLots() {
       when(userRepository.findById(1L)).thenReturn(Optional.of(userEntity));
@@ -269,7 +269,7 @@ class ReservationServiceTest {
       reservation2.setParkingLot(parkingLotEntity);
       reservations.add(reservation2);
       parkingLotEntity.setReservationEntitySet(reservations);
-      
+
       var result = reservationService.getAllReservationsOfUserOwnedParkingLots(1L);
       assertEquals(1, result.getCurrent().size());
       assertEquals(1, result.getPast().size());
