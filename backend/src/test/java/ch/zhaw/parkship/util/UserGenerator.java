@@ -18,7 +18,6 @@ public abstract class UserGenerator {
     public static UserEntity generate(Long id) {
         return new UserEntity(id,
                 faker.internet().emailAddress(),
-                faker.name().username(),
                 faker.name().firstName(),
                 faker.name().lastName(),
                 faker.internet().password(),

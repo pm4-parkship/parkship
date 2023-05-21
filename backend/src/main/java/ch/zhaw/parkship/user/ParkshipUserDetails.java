@@ -12,7 +12,6 @@ import java.util.List;
 @Getter
 public class ParkshipUserDetails implements UserDetails {
     private final Long id;
-    private final String email;
     private final String username;
     private final String name;
     private final String surname;
@@ -21,9 +20,8 @@ public class ParkshipUserDetails implements UserDetails {
     private final UserState userState;
 
     // Need explicit Constructor cause of Repository -> No lombok
-    public ParkshipUserDetails(Long id, String email, String username, String name, String surname, String password, UserRole userRole, UserState userState) {
+    public ParkshipUserDetails(Long id, String username, String name, String surname, String password, UserRole userRole, UserState userState) {
         this.id = id;
-        this.email = email;
         this.username = username;
         this.name = name;
         this.surname = surname;

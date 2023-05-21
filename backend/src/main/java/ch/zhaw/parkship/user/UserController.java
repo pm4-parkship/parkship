@@ -34,9 +34,8 @@ public class UserController {
     /**
      * Record for having the users request from the frontend to sign up in one clean object.
      *
-     * @param email
      */
-    public record SignUpRequestDTO(@NotBlank String name, @NotBlank String surname, @NotBlank @Email String email,  @NotNull UserRole role) {
+    public record SignUpRequestDTO(@NotBlank String name, @NotBlank String surname, @NotBlank String username, @NotNull UserRole role) {
     }
 
     /**
@@ -45,7 +44,7 @@ public class UserController {
      * @param id
      * @param username
      */
-    public record SignUpResponseDTO(Long id, String name, String surname, String email, String username, UserRole userRole, String password) {
+    public record SignUpResponseDTO(Long id, String name, String surname, String username, UserRole userRole, String password) {
     }
 
 
@@ -75,17 +74,16 @@ public class UserController {
     @PostMapping("/signup")
     @Secured("ADMIN")
     public SignUpResponseDTO signUp(@Valid @RequestBody SignUpRequestDTO signUpRequestDTO) {
-        if (userService.existsByEmail(signUpRequestDTO.email)) {
+        if (userService.existsByUsername(signUpRequestDTO.username)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
         String password = passwordGeneratorService.generatePassword();
-        UserEntity newUser = userService.signUp(signUpRequestDTO.name, signUpRequestDTO.surname, signUpRequestDTO.email,
+        UserEntity newUser = userService.signUp(signUpRequestDTO.name, signUpRequestDTO.surname, signUpRequestDTO.username,
                 password, signUpRequestDTO.role);
         return new SignUpResponseDTO(newUser.getId(),
                 newUser.getName(),
                 newUser.getSurname(),
-                newUser.getEmail(),
                 newUser.getUsername(),
                 newUser.getUserRole(),
                 password);
@@ -109,13 +107,11 @@ public class UserController {
     @GetMapping(value = "/user", produces = "application/json")
     public ResponseEntity<UserDto> getUser(@AuthenticationPrincipal ParkshipUserDetails userDetails) {
         ParkshipUserDetails user = ParkshipUserDetailsContext.getCurrentParkshipUserDetails();
-        return ResponseEntity.ok(new UserDto(user.getId(), user.getEmail(), user.getUsername(), user.getName(), user.getSurname(), user.getUserRole(), user.getUserState()));
+        return ResponseEntity.ok(new UserDto(user.getId(), user.getUsername(), user.getName(), user.getSurname(), user.getUserRole(), user.getUserState()));
     }
 
     @GetMapping(value = "/roles", produces = "application/json")
     public ResponseEntity<List<UserRole>> getUserRoles() {
         return ResponseEntity.ok(Arrays.asList(UserRole.values()));
     }
-
-
 }

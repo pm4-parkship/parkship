@@ -49,14 +49,13 @@ public class UserControllerTest {
     public void testGetAllUsers() throws Exception {
         List<UserDto> userList = new ArrayList<>();
         userList
-                .add(new UserDto(1L, "test@test.com", "testUser", "Test", "User", UserRole.USER, UserState.UNLOCKED));
+                .add(new UserDto(1L, "test@test.com", "Test", "User", UserRole.USER, UserState.UNLOCKED));
         when(userService.getAll()).thenReturn(userList);
 
         mockMvc.perform(get("/users").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].email", is("test@test.com")))
-                .andExpect(jsonPath("$[0].username", is("testUser")))
+                .andExpect(jsonPath("$[0].username", is("test@test.com")))
                 .andExpect(jsonPath("$[0].name", is("Test")))
                 .andExpect(jsonPath("$[0].surname", is("User")))
                 .andExpect(jsonPath("$[0].role", is("USER")));
@@ -67,8 +66,8 @@ public class UserControllerTest {
         String password = "1231231233";
         //New user
         when(passwordGeneratorService.generatePassword()).thenReturn(password);
-        when(userService.existsByEmail("test@test.ch")).thenReturn(false);
-        UserEntity user = new UserEntity("test@test.ch", "tester", password);
+        when(userService.existsByUsername("test@test.ch")).thenReturn(false);
+        UserEntity user = new UserEntity("test@test.ch", password);
         user.setId(1L);
         user.setUserRole(UserRole.USER);
         user.setUserState(UserState.UNLOCKED);
@@ -79,11 +78,11 @@ public class UserControllerTest {
         assertNotNull(signUpResponseDTO, "SignUpResponseDTO is null");
         assertEquals(1L, signUpResponseDTO.id(), "User id in response is null");
         assertEquals(password, signUpResponseDTO.password(), "User password in response is null");
-        assertEquals("tester", signUpResponseDTO.username(), "Username in response is not correct");
+        assertEquals("test@test.ch", signUpResponseDTO.username(), "Username in response is not correct");
         assertEquals(UserRole.USER, signUpResponseDTO.userRole(), "Username in response is not correct");
 
         //Email already exists
-        when(userService.existsByEmail("user@parkship.ch")).thenReturn(true);
+        when(userService.existsByUsername("user@parkship.ch")).thenReturn(true);
         UserController.SignUpRequestDTO signUpRequestDTOEmailExists = new UserController.SignUpRequestDTO("user", "userSurname", "user@parkship.ch",  UserRole.USER);
 
         assertThrows(ResponseStatusException.class, () -> {
@@ -91,7 +90,7 @@ public class UserControllerTest {
         }, "No exception thrown, because email already exists");
 
         //Username already exists
-        when(userService.existsByEmail("neu@neu.ch")).thenReturn(true);
+        when(userService.existsByUsername("neu@neu.ch")).thenReturn(true);
         UserController.SignUpRequestDTO signUpRequestDTOUsernameExists = new UserController.SignUpRequestDTO("neu","neuSurname","neu@neu.ch",  UserRole.USER);
 
         assertThrows(ResponseStatusException.class, () -> {
