@@ -10,12 +10,17 @@ import TableRow from '@mui/material/TableRow';
 import TablePaginationActions from './table-pagination';
 import TableCell from '@mui/material/TableCell';
 
+export enum SortOrder {
+  asc = 1,
+  desc = -1
+}
 interface TableComponentProps {
   headerNames: string[];
   onRowClick?: (row: RowDataType) => void;
   data: RowDataType[];
   styles?: Map<number, string>;
   paginationLabel: string;
+  onColumnClick: (name: string) => void;
 }
 
 const TableComponent = ({
@@ -23,7 +28,8 @@ const TableComponent = ({
   onRowClick,
   data,
   styles,
-  paginationLabel
+  paginationLabel,
+  onColumnClick
 }: TableComponentProps) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -49,7 +55,7 @@ const TableComponent = ({
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }}>
-        <TableHeader headerNames={headerNames} />
+        <TableHeader headerNames={headerNames} onColumnClick={onColumnClick} />
         <TableBody>
           {(rowsPerPage > 0
             ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -60,11 +66,11 @@ const TableComponent = ({
               data={row}
               rowKey={index}
               onRowClick={onRowClick}
-              className={styles && styles.get(index)}
+              className={styles && styles.get(index + page * rowsPerPage)}
             />
           ))}
           {emptyRows > 0 && (
-            <TableRow style={{ height: 62 * emptyRows }}>
+            <TableRow style={{ height: 62.56 * emptyRows }}>
               <TableCell colSpan={6} />
             </TableRow>
           )}

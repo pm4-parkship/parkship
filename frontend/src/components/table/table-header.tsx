@@ -5,9 +5,10 @@ import { TableCell, Typography } from '@mui/material';
 
 interface TableHeaderProps {
   headerNames: string[];
+  onColumnClick: (name: string) => void;
 }
 
-const TableHeader = ({ headerNames }: TableHeaderProps) => {
+const TableHeader = ({ headerNames, onColumnClick }: TableHeaderProps) => {
   return (
     <TableHead>
       <TableRow>
@@ -18,6 +19,7 @@ const TableHeader = ({ headerNames }: TableHeaderProps) => {
             scope="row"
             variant={'head'}
             key={`${value}-${index}`}
+            onClick={() => onColumnClick(value)}
           >
             <Typography>{value}</Typography>
           </TableCell>

@@ -2,6 +2,7 @@ import { ReservationModel } from '../../models/reservation/reservation.model';
 import { formatDate } from '../../date/date-formatter';
 import { Link, Typography } from '@mui/material';
 import React from 'react';
+import { makeStyles } from "@mui/styles";
 
 const minCancelDate = () => {
   const today = new Date();
@@ -18,21 +19,32 @@ const CancelCell = ({
   reservation,
   onClick
 }: CancelCellProps): string | JSX.Element => {
-  if (new Date(reservation.from) <= minCancelDate()) {
-    return <span></span>;
-  } else if (reservation.cancelDate) {
+  const classes = useStyles();
+
+  if (reservation.cancelDate) {
     return `${formatDate(new Date(reservation.cancelDate))}`;
+  } else if (new Date(reservation.from) <= minCancelDate()) {
+    return <></>;
   }
   return (
-    <Link
-      href="#"
+    <div className={classes.bookLink}
       onClick={(e) => {
         e.stopPropagation();
         onClick();
       }}
     >
       <Typography variant={'body2'}>{'stornieren'}</Typography>
-    </Link>
+    </div>
   );
 };
+const useStyles = makeStyles((theme) => ({
+  bookLink: {
+    color: theme.palette.primary.main,
+    textDecorationStyle:'solid',
+    '&:hover': {
+      cursor: 'pointer',
+      textDecorationLine:'underline',
+    }
+  }
+}))
 export default CancelCell;
