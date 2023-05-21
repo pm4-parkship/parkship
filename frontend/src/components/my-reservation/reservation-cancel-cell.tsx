@@ -18,10 +18,10 @@ const CancelCell = ({
   reservation,
   onClick
 }: CancelCellProps): string | JSX.Element => {
-  if (new Date(reservation.from) <= minCancelDate()) {
-    return <span></span>;
-  } else if (reservation.cancelDate) {
+  if (reservation.cancelDate) {
     return `${formatDate(new Date(reservation.cancelDate))}`;
+  } else if (new Date(reservation.from) <= minCancelDate()) {
+    return <span></span>;
   }
   return (
     <Link

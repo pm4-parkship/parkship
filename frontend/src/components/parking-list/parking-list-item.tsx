@@ -1,5 +1,6 @@
-import { Divider, Paper, Typography } from '@mui/material';
+import { Card, CardActionArea, CardContent, Divider,Typography } from '@mui/material';
 import { ParkingLotModel } from 'src/models';
+import React from 'react';
 
 interface Props {
   bcolor: string;
@@ -9,25 +10,22 @@ interface Props {
 const ParkingListItem = (props: Props) => {
   const { parking } = props;
   return (
-    <Paper
-      elevation={1}
-      style={{
-        backgroundColor: props.bcolor,
-        margin: 0,
-        padding: "1em",
-        width: 150,
-        height: 250,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        fontSize: "0.9em"
-      }}
-    >
-      <Typography align={'center'}>{`${parking.name}`}</Typography>
-      <Divider/>
-      <Typography fontSize={"14px"} align={'center'}>CHF {parking.price} / Tag</Typography>
-    </Paper>
+    <Card style={{ margin: 0, padding: 0 }} elevation={4}>
+      <CardActionArea
+        style={{
+          backgroundColor: props.bcolor,
+          margin: 0,
+          width: 150,
+          height: 250
+        }}
+      >
+        <CardContent>
+          <Typography align={'center'}>{`${parking.name}`}</Typography>
+          <Divider/>
+          <Typography fontSize={"14px"} align={'center'}>CHF {parking.price} / Tag</Typography>
+        </CardContent>
+      </CardActionArea>
+    </Card>
   );
 };
 
