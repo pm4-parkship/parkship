@@ -1,17 +1,17 @@
 package ch.zhaw.parkship.parkinglot;
 
 import ch.zhaw.parkship.common.PaginatedResponse;
-import ch.zhaw.parkship.reservation.ReservationHistoryDto;
-import ch.zhaw.parkship.reservation.ReservationService;
 import ch.zhaw.parkship.reservation.ReservationEntity;
 import ch.zhaw.parkship.user.ParkshipUserDetails;
-import ch.zhaw.parkship.user.UserDto;
-import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -19,13 +19,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import ch.zhaw.parkship.common.PaginatedResponse;
+import ch.zhaw.parkship.reservation.ReservationHistoryDto;
+import ch.zhaw.parkship.reservation.ReservationService;
+import ch.zhaw.parkship.user.ParkshipUserDetails;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 
 /**
  * This class is a Rest Controller for managing ParkingLotDto objects
@@ -56,17 +65,13 @@ public class ParkingLotController {
      * body with a status code of 201 if created successfully, otherwise returns a bad request
      * status code.
      */
-    @Secured(value = {"ADMIN", "USER"})
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<ParkingLotDto> createParkingLot(
-            @Valid @RequestBody ParkingLotDto parkingLotDto,
-            @AuthenticationPrincipal ParkshipUserDetails user) {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(user.getId());
-        userEntity.setName(user.getName());
-        parkingLotDto.setOwner(new UserDto(userEntity));
-        ParkingLotDto createdParkingLot = parkingLotService.create(parkingLotDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdParkingLot);
+            @Valid @RequestBody ParkingLotDto parkingLotDto) {
+        validateRequest(parkingLotDto);
+        Optional<ParkingLotDto> createdParkingLot = parkingLotService.create(parkingLotDto);
+        return createdParkingLot.map(value -> ResponseEntity.status(HttpStatus.CREATED).body(value))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     /**
@@ -149,7 +154,7 @@ public class ParkingLotController {
             @RequestParam(defaultValue = "") LocalDate endDate,
             @RequestParam(defaultValue = DEFAULT_PAGE_NUM) int page,
             @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
-        return parkingLotService.getBySearchTerm(searchTerm, tagList, startDate, endDate, page, size);
+        return parkingLotService.getBySearchTerm(searchTerm,tagList, startDate, endDate, page, size);
 
 
     }
@@ -163,7 +168,7 @@ public class ParkingLotController {
      * @return a {@link ResponseEntity} containing the {@link ReservationHistoryDto} object and HTTP status code 200 (OK).
      * @throws EntityNotFoundException if the authenticated user is not found in the system.
      */
-    @GetMapping(value = "/reservations", produces = "application/json")
+    @GetMapping(value = "/reservations", produces= "application/json")
     public ResponseEntity<ReservationHistoryDto> getReservations(@AuthenticationPrincipal ParkshipUserDetails user) {
         return ResponseEntity.ok(reservationService.getAllReservationsOfUserOwnedParkingLots(user.getId()));
     }
@@ -192,17 +197,17 @@ public class ParkingLotController {
     }
 
 
-    protected void validateRequest(ParkingLotDto parkingLotDto) {
-        if (parkingLotDto == null) {
+    protected void validateRequest(ParkingLotDto parkingLotDto){
+        if(parkingLotDto == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given object is null");
         }
 
-        if (parkingLotDto.getLatitude() < -90 || parkingLotDto.getLatitude() > 90
-                || parkingLotDto.getLongitude() < -180 || parkingLotDto.getLongitude() > 180) {
+        if(parkingLotDto.getLatitude() < -90 || parkingLotDto.getLatitude() > 90
+        || parkingLotDto.getLongitude() < -180 || parkingLotDto.getLongitude() > 180){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given coordinates are invalid");
         }
 
-        if (parkingLotDto.getPrice() < 0) {
+        if(parkingLotDto.getPrice() < 0){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Price may not be smaller than 0");
         }
 

@@ -4,6 +4,7 @@ import ch.zhaw.parkship.offer.OfferDto;
 import ch.zhaw.parkship.tag.TagDto;
 import ch.zhaw.parkship.user.UserDto;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +19,6 @@ import java.util.stream.Collectors;
 public class ParkingLotDto implements Serializable {
 
     private Long id;
-    @NotBlank
     private String name;
 
     @NotNull
@@ -26,23 +26,27 @@ public class ParkingLotDto implements Serializable {
 
     private String description;
 
-    private Set<String> tags;
+    private Set<TagDto> tags;
 
-    private double longitude;
+    @NotNull
+    private Double longitude;
 
-    private double latitude;
+    @NotNull
+    private Double latitude;
 
-    @NotBlank
     private String address;
-    @NotBlank
+
     private String addressNr;
 
     private Integer floor;
+
+    @NotBlank
     private String nr;
 
     private byte[] picture;
 
-    private double price;
+    @NotNull
+    private Double price;
 
     private ParkingLotState state;
 
@@ -51,7 +55,7 @@ public class ParkingLotDto implements Serializable {
         this.name = parkingLotEntity.getName();
         this.owner = new UserDto(parkingLotEntity.getOwner());
         this.description = parkingLotEntity.getDescription();
-        this.tags = parkingLotEntity.getTags().stream().map(TagEntity::getName).collect(Collectors.toSet());
+        this.tags = parkingLotEntity.getTags().stream().map(TagDto::new).collect(Collectors.toSet());
         this.longitude = parkingLotEntity.getLongitude();
         this.latitude = parkingLotEntity.getLatitude();
         this.address = parkingLotEntity.getAddress();

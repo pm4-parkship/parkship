@@ -193,7 +193,7 @@ public class ParkingLotService {
 
     private Set<ParkingLotEntity> filterParkingLotsByDate(LocalDate startDate, LocalDate endDate, Set<ParkingLotEntity> parkingLots) {
         if (startDate != null && endDate != null) {
-            Boolean[] relevantDays = getRelevantDays(startDate, endDate);
+            Boolean[] relevantDays = getRelevantDays(startDate,endDate);
             parkingLots = parkingLots.stream()
                     .filter(lot -> (parkingLotRepository.isParkingLotAvailable(lot, startDate, endDate) != null))
                     .filter(lot -> (parkingLotRepository.isParkingLotOffered(lot, startDate, endDate,
@@ -204,11 +204,11 @@ public class ParkingLotService {
         return parkingLots;
     }
 
-    private Boolean[] getRelevantDays(LocalDate startDate, LocalDate endDate) {
-        Boolean relevantDays[] = {false, false, false, false, false, false, false};
+    private Boolean[] getRelevantDays(LocalDate startDate, LocalDate endDate){
+        Boolean relevantDays[] = {false,false,false,false,false,false,false};
         LocalDate current = LocalDate.of(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth());
-        while (!current.isEqual(endDate.plusDays(1))) {
-            relevantDays[current.getDayOfWeek().getValue() - 1] = true;
+        while(!current.isEqual(endDate.plusDays(1))){
+            relevantDays[current.getDayOfWeek().getValue()-1] = true;
             current = current.plusDays(1);
         }
         return relevantDays;

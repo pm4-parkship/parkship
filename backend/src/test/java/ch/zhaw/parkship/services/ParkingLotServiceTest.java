@@ -117,7 +117,7 @@ class ParkingLotServiceTest {
 
         var result = parkingLotService.create(data);
 
-        assertEquals(1, result.getId());
+        assertEquals(1, result.get().getId());
 
         verify(parkingLotRepository, times(1)).save(any(ParkingLotEntity.class));
     }
@@ -151,7 +151,7 @@ class ParkingLotServiceTest {
     public void testSearchByTags() {
         // arrange
         List<ParkingLotEntity> parkingLotEntities = new ArrayList<>();
-        parkingLotEntities.add(parkingLotEntity);
+        parkingLotEntities.add(parkingLotEntity)   ;
 
         TagEntity garage = new TagEntity();
         garage.setName("Garage");
@@ -206,7 +206,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", List.of(), null, null, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance",List.of(), null, null, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
         // Add assertions for other properties
         verify(parkingLotRepository, times(1)).findAllByDescriptionContainsIgnoreCase("entrance");
@@ -220,7 +220,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository behavior
         when(parkingLotRepository.findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase("max", "max")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("max", List.of(), null, null, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("max",List.of(), null, null, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
         // Add assertions for other properties
         verify(parkingLotRepository, times(1)).findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase("max", "max");
@@ -235,7 +235,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository behavior
         when(parkingLotRepository.findAllByAddressContainsIgnoreCase("muster")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("Muster Street 44", List.of(), null, null, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("Muster Street 44",List.of(), null, null, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
         // Add assertions for other properties
         verify(parkingLotRepository, times(1)).findAllByAddressContainsIgnoreCase("muster");
@@ -254,7 +254,7 @@ class ParkingLotServiceTest {
         when(parkingLotRepository.isParkingLotAvailable(parkingLotEntity, startDate, endDate)).thenReturn(parkingLotEntity);
         when(parkingLotRepository.isParkingLotOffered(parkingLotEntity, startDate, endDate, false, false, false, false, false, true, true)).thenReturn(parkingLotEntity);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", List.of(), startDate, endDate, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance",List.of(), startDate, endDate, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
 
     }
@@ -270,7 +270,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", List.of(), startDate, endDate, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance",List.of(), startDate, endDate, 0, 100);
         assertTrue(actualReturnValue.isEmpty());
 
     }
@@ -283,12 +283,12 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", List.of(), null, null, 1, 1);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance",List.of(), null, null, 1, 1);
         assertTrue(actualReturnValue.isEmpty());
     }
 
     @Test
-    public void testGetBySearchTermInactive() {
+    public void testGetBySearchTermInactive(){
         List<ParkingLotEntity> expectedReturnValue = new ArrayList<ParkingLotEntity>();
         ParkingLotEntity p1 = new ParkingLotEntity();
         p1.setId(1L);
@@ -302,7 +302,7 @@ class ParkingLotServiceTest {
 
         List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", null, null, null, 0, 100);
         assertTrue(actualReturnValue.isEmpty());
-    }
+      }
 
     @Test
     public void testGetBySearchTermPageOneEntry() {
@@ -324,7 +324,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("entrance", List.of(), null, null, 1, 1);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("entrance",List.of(), null, null, 1, 1);
 
         assertEquals(expectedReturnValue.get(1).getId(), actualReturnValue.get(0).getId());
     }
@@ -375,17 +375,15 @@ class ParkingLotServiceTest {
 
 
     @Test
-    void updateStateTest() {
+    void updateStateTest(){
         // arrange
         ParkingLotEntity entity = ParkingLotGenerator.generate(UserGenerator.generate());
         entity.setId(1L);
         entity.setState(ParkingLotState.INACTIVE);
         when(parkingLotRepository.getReferenceById(1L)).thenReturn(entity);
 
-
         // act
         parkingLotService.updateState(1L, ParkingLotState.ACTIVE);
-
 
         // assert
         verify(parkingLotRepository, times(1)).getReferenceById(1L);
