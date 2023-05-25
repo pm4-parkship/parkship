@@ -39,7 +39,7 @@ class AuthenticationControllerContextTest extends AbstractDataRollbackTest {
 
     @Test
     void testSignIn() {
-        assertTrue(userService.existsByEmail("user@parkship.ch"), "Dummy user for test does not exist");
+        assertTrue(userService.existsByUsername("user@parkship.ch"), "Dummy user for test does not exist");
 
         //Existing user right password
         AuthenticationController.SignInRequestDTO signInRequestDTO = new AuthenticationController.SignInRequestDTO("user@parkship.ch", "user");
@@ -53,7 +53,6 @@ class AuthenticationControllerContextTest extends AbstractDataRollbackTest {
 
         assertThrows(BadCredentialsException.class, () -> {
             authenticationController.signIn(signInRequestDTOWrongPW);
-
         }, "No exception thrown for wrong password");
 
         //Non-existent user

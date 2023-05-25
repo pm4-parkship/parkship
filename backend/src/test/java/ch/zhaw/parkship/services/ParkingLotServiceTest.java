@@ -65,8 +65,7 @@ class ParkingLotServiceTest {
         ReflectionTestUtils.setField(parkingLotService, "blackList", new HashSet<String>(Arrays.asList("street", "and", "the", "on", "a", "at", "be", "i", "you", "to", "it", "not", "that", "of", "do", "have", "what", "we", "in", "get", "this", "near", "close", "next")));
 
         userEntity.setId(1L);
-        userEntity.setEmail("fritz@mail.com");
-        userEntity.setUsername("fritz123");
+        userEntity.setUsername("fritz@mail.com");
         userEntity.setPassword("verysecure");
 
         parkingLotEntity = new ParkingLotEntity();
@@ -230,7 +229,7 @@ class ParkingLotServiceTest {
     @MockitoSettings(strictness = Strictness.LENIENT)
     @Test
     public void testGetBySearchTermAddress() {
-        List<ParkingLotEntity> expectedReturnValue = new ArrayList<ParkingLotEntity>();
+        List<ParkingLotEntity> expectedReturnValue = new ArrayList<>();
         expectedReturnValue.add(parkingLotEntity);
         // Mock the necessary ParkingLotRepository behavior
         when(parkingLotRepository.findAllByAddressContainsIgnoreCase("muster")).thenReturn(expectedReturnValue);
@@ -243,7 +242,7 @@ class ParkingLotServiceTest {
 
     @Test
     public void testGetBySearchTermFreeInGivenTimeFrame() {
-        List<ParkingLotEntity> expectedReturnValue = new ArrayList<ParkingLotEntity>();
+        List<ParkingLotEntity> expectedReturnValue = new ArrayList<>();
         expectedReturnValue.add(parkingLotEntity);
 
         LocalDate startDate = LocalDate.of(2023, 4, 8);
@@ -261,7 +260,7 @@ class ParkingLotServiceTest {
 
     @Test
     public void testGetBySearchTermNotFreeInGivenTimeFrame() {
-        List<ParkingLotEntity> expectedReturnValue = new ArrayList<ParkingLotEntity>();
+        List<ParkingLotEntity> expectedReturnValue = new ArrayList<>();
         expectedReturnValue.add(parkingLotEntity);
 
         LocalDate startDate = LocalDate.of(2023, 4, 8);
@@ -277,7 +276,7 @@ class ParkingLotServiceTest {
 
     @Test
     public void testGetBySearchTermPageOneEmpty() {
-        List<ParkingLotEntity> expectedReturnValue = new ArrayList<ParkingLotEntity>();
+        List<ParkingLotEntity> expectedReturnValue = new ArrayList<>();
         expectedReturnValue.add(parkingLotEntity);
 
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
@@ -289,7 +288,7 @@ class ParkingLotServiceTest {
 
     @Test
     public void testGetBySearchTermInactive(){
-        List<ParkingLotEntity> expectedReturnValue = new ArrayList<ParkingLotEntity>();
+        List<ParkingLotEntity> expectedReturnValue = new ArrayList<>();
         ParkingLotEntity p1 = new ParkingLotEntity();
         p1.setId(1L);
         p1.setState(ParkingLotState.INACTIVE);
@@ -306,7 +305,7 @@ class ParkingLotServiceTest {
 
     @Test
     public void testGetBySearchTermPageOneEntry() {
-        List<ParkingLotEntity> expectedReturnValue = new ArrayList<ParkingLotEntity>();
+        List<ParkingLotEntity> expectedReturnValue = new ArrayList<>();
         ParkingLotEntity p1 = new ParkingLotEntity();
         p1.setId(1L);
         p1.setState(ParkingLotState.ACTIVE);

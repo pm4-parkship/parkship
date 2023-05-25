@@ -6,7 +6,6 @@ import ch.zhaw.parkship.user.exceptions.UserStateCanNotBeChanged;
 import ch.zhaw.parkship.util.ParkshipUserDetailsContext;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -27,25 +26,23 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
     private final PasswordGeneratorService passwordGeneratorService;
 
 
     /**
      * Record for having the users request from the frontend to sign up in one clean object.
      *
-     * @param email
      */
-    public record SignUpRequestDTO(@NotBlank String name, @NotBlank String surname, @NotBlank @Email String email,  @NotNull UserRole role) {
+    public record SignUpRequestDTO(@NotBlank String name, @NotBlank String surname, @NotBlank String email, @NotNull UserRole role) {
     }
 
     /**
      * Record for having the response to a users sign up request in one clean object.
      *
      * @param id
-     * @param username
+     * //@param username
      */
-    public record SignUpResponseDTO(Long id, String name, String surname, String email, String username, UserRole userRole, String password) {
+    public record SignUpResponseDTO(Long id, String name, String surname, String email, UserRole userRole, String password) {
     }
 
 
@@ -75,7 +72,7 @@ public class UserController {
     @PostMapping("/signup")
     @Secured("ADMIN")
     public SignUpResponseDTO signUp(@Valid @RequestBody SignUpRequestDTO signUpRequestDTO) {
-        if (userService.existsByEmail(signUpRequestDTO.email)) {
+        if (userService.existsByUsername(signUpRequestDTO.email)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
@@ -85,7 +82,6 @@ public class UserController {
         return new SignUpResponseDTO(newUser.getId(),
                 newUser.getName(),
                 newUser.getSurname(),
-                newUser.getEmail(),
                 newUser.getUsername(),
                 newUser.getUserRole(),
                 password);
@@ -109,13 +105,11 @@ public class UserController {
     @GetMapping(value = "/user", produces = "application/json")
     public ResponseEntity<UserDto> getUser(@AuthenticationPrincipal ParkshipUserDetails userDetails) {
         ParkshipUserDetails user = ParkshipUserDetailsContext.getCurrentParkshipUserDetails();
-        return ResponseEntity.ok(new UserDto(user.getId(), user.getEmail(), user.getUsername(), user.getName(), user.getSurname(), user.getUserRole(), user.getUserState()));
+        return ResponseEntity.ok(new UserDto(user.getId(), user.getUsername(), user.getName(), user.getSurname(), user.getUserRole(), user.getUserState()));
     }
 
     @GetMapping(value = "/roles", produces = "application/json")
     public ResponseEntity<List<UserRole>> getUserRoles() {
         return ResponseEntity.ok(Arrays.asList(UserRole.values()));
     }
-
-
 }

@@ -107,7 +107,7 @@ class ReservationControllerTest {
     }
 
     ParkshipUserDetails createParkshipUserDetails(UserEntity user) {
-        return new ParkshipUserDetails(user.getId(), user.getEmail(), user.getUsername(), user.getName(), user.getSurname(), user.getPassword(), user.getUserRole(), user.getUserState());
+        return new ParkshipUserDetails(user.getId(), user.getUsername(), user.getName(), user.getSurname(), user.getPassword(), user.getUserRole(), user.getUserState());
     }
 
     @Test

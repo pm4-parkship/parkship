@@ -35,7 +35,7 @@ public class UserService implements UserDetailsService {
     /**
      * Save a ApplicationUser in the database.
      *
-     * @param userEntity
+     * @param userEntity to be saved
      * @return Saved applicationUser
      */
     public UserEntity save(UserEntity userEntity) {
@@ -46,13 +46,13 @@ public class UserService implements UserDetailsService {
     /**
      * Get a user from the database by username.
      *
-     * @param username
+     * @param username email adress of user
      * @return The user where username is the email address.
-     * @throws UsernameNotFoundException
+     * @throws UsernameNotFoundException email of user not found
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.getParkshipUserDetailsByEmail(username);
+        return userRepository.getParkshipUserDetailsByUsername(username);
     }
 
     /**
@@ -68,7 +68,6 @@ public class UserService implements UserDetailsService {
         UserEntity newUser = new UserEntity();
         newUser.setName(name);
         newUser.setSurname(surname);
-        newUser.setEmail(email);
         newUser.setUsername(email);
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setUserRole(userRole);
@@ -80,12 +79,12 @@ public class UserService implements UserDetailsService {
     /**
      * Checks if a users email or username already exists in the database.
      *
-     * @param email
+     * @param username email adress of user
      * @return true, if the email or username already exists in the database.
      */
 
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
     }
 
     public void changeUserState(Long userId, UserState userState) throws UserNotFoundException, UserStateCanNotBeChanged {

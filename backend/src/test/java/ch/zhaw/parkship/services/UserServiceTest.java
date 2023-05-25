@@ -26,7 +26,7 @@ public class UserServiceTest {
   @Test
   public void testGetAllUsers() {
     List<UserEntity> userList = new ArrayList<>();
-    var userEntity = new UserEntity("test@test.com", "testUser", "password");
+    var userEntity = new UserEntity("test@test.com", "password");
     userEntity.setId(1L);
     userEntity.setName("Test");
     userEntity.setSurname("User");
@@ -38,7 +38,6 @@ public class UserServiceTest {
     assertEquals(1, userDtoList.size());
     assertEquals(1L, userDtoList.get(0).id().longValue());
     assertEquals("test@test.com", userDtoList.get(0).email());
-    assertEquals("testUser", userDtoList.get(0).username());
     assertEquals("Test", userDtoList.get(0).name());
     assertEquals("User", userDtoList.get(0).surname());
   }
