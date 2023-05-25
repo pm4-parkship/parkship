@@ -1,23 +1,26 @@
 package ch.zhaw.parkship.controllers;
 
+import ch.zhaw.parkship.ParkshipApplication;
 import ch.zhaw.parkship.offer.OfferEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
-import ch.zhaw.parkship.util.AbstractDataRollbackTest;
-import ch.zhaw.parkship.util.generator.ParkingLotGenerator;
-import ch.zhaw.parkship.util.generator.ReservationGenerator;
-import ch.zhaw.parkship.util.UserGenerator;
-import ch.zhaw.parkship.ParkshipApplication;
 import ch.zhaw.parkship.reservation.ReservationEntity;
 import ch.zhaw.parkship.user.UserEntity;
+import ch.zhaw.parkship.util.AbstractDataRollbackTest;
+import ch.zhaw.parkship.util.UserGenerator;
+import ch.zhaw.parkship.util.generator.ParkingLotGenerator;
+import ch.zhaw.parkship.util.generator.ReservationGenerator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
@@ -82,29 +85,62 @@ class ParkingLotRepositoryTest extends AbstractDataRollbackTest {
             Assertions.assertNull(result);
         }
     }
-    
+
+    @Test
     void hasParkingLotOffer_offered() {
-        LocalDate from = LocalDate.of(2023,5,1);
-        LocalDate to = LocalDate.of(2023,5,2);
+        LocalDate from = LocalDate.of(2023, 5, 1);
+        LocalDate to = LocalDate.of(2023, 5, 2);
 
         // act
-        ParkingLotEntity result = parkingLotRepository.isParkingLotOffered(parkingLot, from, to, true, true, false, false, false, false, false);
+        ParkingLotEntity result = parkingLotRepository.isParkingLotOffered(parkingLot, from, to,
+                true, true, false, false, false, false, false);
 
         // assert
         Assertions.assertNotNull(result);
     }
 
+    @Test
     void hasParkingLotOffer_notoffered() {
-        LocalDate from = LocalDate.of(2024,5,1);
-        LocalDate to = LocalDate.of(2024,5,2);
+        LocalDate from = LocalDate.of(2024, 5, 1);
+        LocalDate to = LocalDate.of(2024, 5, 2);
 
         // act
-        ParkingLotEntity result = parkingLotRepository.isParkingLotOffered(parkingLot, from, to, true, true, false, false, false, false, false);
+        ParkingLotEntity result = parkingLotRepository.isParkingLotOffered(parkingLot, from, to,
+                true, true, false, false, false, false, false);
 
         // assert
         Assertions.assertNull(result);
     }
-    
+
+    @Test
+    void parameterSearch() {
+        // arrange
+        ParkingLotEntity entityInRange = ParkingLotGenerator.generate(owner);
+
+        entityInRange.setLatitude(51.5007);
+        entityInRange.setLongitude(0.1246);
+
+        ParkingLotEntity entityOutOfRange = ParkingLotGenerator.generate(owner);
+
+        entityOutOfRange.setLatitude(100.0000);
+        entityOutOfRange.setLongitude(100.0000);
+
+        parkingLotRepository.save(entityInRange);
+        parkingLotRepository.save(entityOutOfRange);
+
+
+        // act
+
+         Page<ParkingLotEntity> result = parkingLotRepository.findParkingLotInGeoRange(40.6892, 74.0445,
+                 6000, PageRequest.of(0, 10));
+         // 5574.840456848555 K.M. distance
+
+
+        // assert
+        Assertions.assertEquals(1, result.getTotalElements());
+        Assertions.assertEquals(51.5007, result.getContent().get(0).getLatitude());
+
+    }
 
 
     @BeforeEach

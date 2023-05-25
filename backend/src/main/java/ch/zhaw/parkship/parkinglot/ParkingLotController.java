@@ -2,16 +2,13 @@ package ch.zhaw.parkship.parkinglot;
 
 import ch.zhaw.parkship.common.PaginatedResponse;
 import ch.zhaw.parkship.reservation.ReservationEntity;
+import ch.zhaw.parkship.reservation.ReservationHistoryDto;
+import ch.zhaw.parkship.reservation.ReservationService;
 import ch.zhaw.parkship.user.ParkshipUserDetails;
-import ch.zhaw.parkship.user.UserRepository;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -19,22 +16,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import ch.zhaw.parkship.common.PaginatedResponse;
-import ch.zhaw.parkship.reservation.ReservationHistoryDto;
-import ch.zhaw.parkship.reservation.ReservationService;
-import ch.zhaw.parkship.user.ParkshipUserDetails;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 
 /**
  * This class is a Rest Controller for managing ParkingLotDto objects
@@ -50,12 +39,18 @@ public class ParkingLotController {
     @Autowired
     private ParkingLotService parkingLotService;
     @Autowired
-    private ReservationService reservationService;
+    private  ReservationService reservationService;
 
     private final String DEFAULT_PAGE_NUM = "0";
     private final String DEFAULT_PAGE_SIZE = "100";
 
-    private final UserRepository userRepository;
+
+    @GetMapping(path = "/perimetersearch")
+    public ResponseEntity<PaginatedResponse<ParkingLotDto>> perimeterSearch(PerimeterSearchDto perimeterSearchDto) {
+        Page<ParkingLotEntity> result = parkingLotService.perimeterSearch(perimeterSearchDto);
+        return ResponseEntity.ok(PaginatedResponse.fromPage(result.map(ParkingLotDto::new)));
+    }
+
 
     /**
      * This end-point creates a new parking lot with the provided parking lot data.
@@ -136,9 +131,9 @@ public class ParkingLotController {
      * @param id The id of the parking lot to be deleted.
      * @return ResponseEntity<Void> Returns a no content status code if deleted successfully,
      * otherwise returns a not found status code.
-     */
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteParkingLot(@PathVariable Long id) {
+                */
+        @DeleteMapping(value = "/{id}")
+        public ResponseEntity<Void> deleteParkingLot(@PathVariable Long id) {
         Optional<ParkingLotDto> deletedParkingLot = parkingLotService.deleteById(id);
         if (deletedParkingLot.isPresent()) {
             return ResponseEntity.noContent().build();
