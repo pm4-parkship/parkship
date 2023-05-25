@@ -20,6 +20,7 @@ import {
 } from '../../src/models/reservation/reservation.model';
 import { makeStyles } from '@mui/styles';
 import { CreateParkingModal } from 'src/components/create-parking-modal/create-parking-modal';
+import Link from 'src/components/link/link';
 
 const initState = {
   error: null,
@@ -111,17 +112,12 @@ const MyParkingLotPage = ({ user }) => {
       <Loading loading={parkingLots.loading} />
 
       {parkingLots.result && parkingLots.result.length > 0 && (
-        <MyParkingLotList
+        <Link href="/create-parking-lot"><MyParkingLotList
           parkings={parkingLots.result}
-          createNewParking={() => setShowCreateParking(true)}
+          createNewParking={() => setShowCreateParking(false)}
         />
+        </Link>
       )}
-      <CreateParkingModal
-        showModal={showCreateParking}
-        setShowModal={setShowCreateParking}
-        addParkingLot={addParkingLot}
-        owner={user.username} // TODO: username wird ersetzt!
-      />
 
       <MyParkingLotReservationTable
         reservations={mappedReservations}

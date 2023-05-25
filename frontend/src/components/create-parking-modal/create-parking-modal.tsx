@@ -19,15 +19,11 @@ const dummyTags: TagData[] = [
 ];
 
 interface CreateParkingModalProps {
-  showModal: boolean;
-  setShowModal: (value: boolean) => void;
   addParkingLot: (value: CreateParkingLotModel, offers: OfferModel[]) => void;
   owner: string;
 }
 
 export const CreateParkingModal = ({
-  showModal = true,
-  setShowModal,
   addParkingLot,
   owner
 }: CreateParkingModalProps) => {
@@ -88,13 +84,6 @@ export const CreateParkingModal = ({
   };
 
   return (
-    <Modal
-      disablePortal
-      disableEnforceFocus
-      disableAutoFocus
-      open={showModal}
-      onClose={() => setShowModal(false)}
-    >
       <Box className={classes.boxRoot}>
         <form
           style={{ width: '80%' }}
@@ -278,29 +267,13 @@ export const CreateParkingModal = ({
           </Grid>
         </form>
       </Box>
-    </Modal>
   );
 };
 
 const useStyles = makeStyles((theme) => ({
   boxRoot: {
-    position: 'absolute',
     display: 'flex',
-    justifyContent: 'center',
-    overflow: 'scroll',
-    textOverflow: 'ellipsis',
-    padding: '20px',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '80%',
-    maxHeight: '90%',
-    [theme.breakpoints.down('sm')]: {
-      width: '90%',
-      borderRadius: '0%'
-    },
-    backgroundColor: theme.palette.background.default,
-    borderRadius: '4px'
+    justifyContent: 'center'
   },
   
   header: {
