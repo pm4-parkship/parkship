@@ -67,6 +67,7 @@ class ReservationServiceTest {
         parkingLotEntity.setId(1L);
         parkingLotEntity.setOwner(userEntity);
         userEntity.setId(1L);
+        userEntity.setUsername("test@test.ch");
 
         reservationEntity = new ReservationEntity();
         reservationEntity.setId(1L);
@@ -263,7 +264,7 @@ class ReservationServiceTest {
       ReservationEntity reservation2 = new ReservationEntity();
       reservation2.setId(2L);
       reservation2.setFrom(LocalDate.of(2023, 5, 8));
-      reservation2.setTo(LocalDate.of(2023, 5, 18));
+      reservation2.setTo(LocalDate.now().plusDays(1));
       reservation2.setTenant(userEntity);
       reservation2.setParkingLot(parkingLotEntity);
       reservations.add(reservation2);

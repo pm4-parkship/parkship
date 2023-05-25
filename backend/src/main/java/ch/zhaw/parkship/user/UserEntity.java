@@ -32,8 +32,6 @@ public class UserEntity {
     private Long id;
     @NotBlank
     @Email
-    private String email;
-    @NotBlank
     private String username;
     private String name;
     private String surname;
@@ -48,9 +46,8 @@ public class UserEntity {
     @OneToMany(mappedBy = "owner")
     private Set<ParkingLotEntity> parkingLots = new HashSet<>();
 
-    public UserEntity(String email, String username, String password) {
-        this.email = email;
-        this.username = username;
+    public UserEntity(String email, String password) {
+        this.username = email;
         this.password = password;
     }
 
@@ -72,8 +69,7 @@ public class UserEntity {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", email='" + email + '\'' +
-                ", username='" + username +
+                ", username='" + username + '\'' +
                 '}';
     }
 

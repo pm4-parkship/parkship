@@ -225,7 +225,7 @@ class ParkingLotControllerTest {
 
 
     @Test
-    public void getOwnParkingLotsTest() throws Exception {
+    public void getOwnParkingLotsTest() {
         ParkshipUserDetails user = createParkshipUserDetails(UserGenerator.generate(1L));
 
         ParkingLotDto parkingLotDto1 = new ParkingLotDto();
@@ -244,7 +244,7 @@ class ParkingLotControllerTest {
     }
 
     @Test
-    public void getOwnParkingLotsNoContentTest() throws Exception {
+    public void getOwnParkingLotsNoContentTest() {
         ParkshipUserDetails user = createParkshipUserDetails(UserGenerator.generate(1L));
 
         when(parkingLotService.getParkingLotsByUserId(eq(user.getId()))).thenReturn(Optional.empty());
@@ -255,7 +255,7 @@ class ParkingLotControllerTest {
     }
 
     @Test
-    public void getReservationsOfOwnedParkingLotsTest() throws Exception {
+    public void getReservationsOfOwnedParkingLotsTest(){
         ReservationHistoryDto expectedDto = new ReservationHistoryDto();
         ReservationDto reservationDto = new ReservationDto();
         reservationDto.setFrom(LocalDate.of(2023, 4, 10));
@@ -274,7 +274,7 @@ class ParkingLotControllerTest {
     }
 
     ParkshipUserDetails createParkshipUserDetails(UserEntity user) {
-        return new ParkshipUserDetails(user.getId(), user.getEmail(), user.getUsername(), user.getName(), user.getSurname(), user.getPassword(), user.getUserRole(), user.getUserState());
+        return new ParkshipUserDetails(user.getId(), user.getUsername(), user.getName(), user.getSurname(), user.getPassword(), user.getUserRole(), user.getUserState());
     }
 
 }
