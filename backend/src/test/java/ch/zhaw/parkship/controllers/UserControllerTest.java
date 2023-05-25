@@ -55,7 +55,7 @@ public class UserControllerTest {
         mockMvc.perform(get("/users").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].username", is("test@test.com")))
+                .andExpect(jsonPath("$[0].email", is("test@test.com")))
                 .andExpect(jsonPath("$[0].name", is("Test")))
                 .andExpect(jsonPath("$[0].surname", is("User")))
                 .andExpect(jsonPath("$[0].role", is("USER")));
@@ -78,7 +78,7 @@ public class UserControllerTest {
         assertNotNull(signUpResponseDTO, "SignUpResponseDTO is null");
         assertEquals(1L, signUpResponseDTO.id(), "User id in response is null");
         assertEquals(password, signUpResponseDTO.password(), "User password in response is null");
-        assertEquals("test@test.ch", signUpResponseDTO.username(), "Username in response is not correct");
+        assertEquals("test@test.ch", signUpResponseDTO.email(), "Username in response is not correct");
         assertEquals(UserRole.USER, signUpResponseDTO.userRole(), "Username in response is not correct");
 
         //Email already exists

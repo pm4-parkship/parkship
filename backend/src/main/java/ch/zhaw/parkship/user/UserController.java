@@ -6,7 +6,6 @@ import ch.zhaw.parkship.user.exceptions.UserStateCanNotBeChanged;
 import ch.zhaw.parkship.util.ParkshipUserDetailsContext;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,6 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
     private final PasswordGeneratorService passwordGeneratorService;
 
 
@@ -35,16 +33,16 @@ public class UserController {
      * Record for having the users request from the frontend to sign up in one clean object.
      *
      */
-    public record SignUpRequestDTO(@NotBlank String name, @NotBlank String surname, @NotBlank String username, @NotNull UserRole role) {
+    public record SignUpRequestDTO(@NotBlank String name, @NotBlank String surname, @NotBlank String email, @NotNull UserRole role) {
     }
 
     /**
      * Record for having the response to a users sign up request in one clean object.
      *
      * @param id
-     * @param username
+     * //@param username
      */
-    public record SignUpResponseDTO(Long id, String name, String surname, String username, UserRole userRole, String password) {
+    public record SignUpResponseDTO(Long id, String name, String surname, String email, UserRole userRole, String password) {
     }
 
 
@@ -74,12 +72,12 @@ public class UserController {
     @PostMapping("/signup")
     @Secured("ADMIN")
     public SignUpResponseDTO signUp(@Valid @RequestBody SignUpRequestDTO signUpRequestDTO) {
-        if (userService.existsByUsername(signUpRequestDTO.username)) {
+        if (userService.existsByUsername(signUpRequestDTO.email)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
 
         String password = passwordGeneratorService.generatePassword();
-        UserEntity newUser = userService.signUp(signUpRequestDTO.name, signUpRequestDTO.surname, signUpRequestDTO.username,
+        UserEntity newUser = userService.signUp(signUpRequestDTO.name, signUpRequestDTO.surname, signUpRequestDTO.email,
                 password, signUpRequestDTO.role);
         return new SignUpResponseDTO(newUser.getId(),
                 newUser.getName(),

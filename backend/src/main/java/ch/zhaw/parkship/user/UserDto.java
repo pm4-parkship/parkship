@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * A DTO for the {@link UserEntity} entity
  */
-public record UserDto(Long id, @NotBlank @Email String username, String name,
+public record UserDto(Long id, @NotBlank @Email String email, String name,
                       String surname, UserRole role, UserState userState) implements Serializable {
 
 

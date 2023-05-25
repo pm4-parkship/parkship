@@ -37,7 +37,7 @@ public class UserServiceTest {
     List<UserDto> userDtoList = userService.getAll();
     assertEquals(1, userDtoList.size());
     assertEquals(1L, userDtoList.get(0).id().longValue());
-    assertEquals("test@test.com", userDtoList.get(0).username());
+    assertEquals("test@test.com", userDtoList.get(0).email());
     assertEquals("Test", userDtoList.get(0).name());
     assertEquals("User", userDtoList.get(0).surname());
   }
