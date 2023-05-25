@@ -140,7 +140,7 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     alignItems: 'center'
   },
-  form: { display: 'grid', marginTop: '20px' },
+  form: { display: 'grid', marginTop: '20px', width: '25%' },
   button: {
     width: '80%'
   }

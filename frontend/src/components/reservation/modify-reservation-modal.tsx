@@ -10,6 +10,7 @@ import {
 import { User } from '../../../pages/api/user';
 import { toast } from 'react-toastify';
 import { logger } from '../../logger';
+import apiClient from '../../../pages/api/api-client';
 
 interface ModifyReservationProps {
   updateReservation: (newValue: ReservationModel) => void;
@@ -41,7 +42,8 @@ const ModifyReservationModal = ({
       from: modified.fromDate,
       to: modified.toDate
     };
-    modifyReservationCall(body, user)
+    apiClient()
+      .user.updateReservation(body, user)
       .then((result) => {
         result &&
           toast.success('Anpassung von ' + reservation.id + ' erfolgreich');
@@ -50,7 +52,11 @@ const ModifyReservationModal = ({
         updateReservation(reservation);
         close();
       })
-      .catch((reject) => toast.error(reject.message));
+      .catch(() =>
+        toast.error(
+          `Aktualisierung der Reservation ${reservation.id} konnte nicht durchgeführt werden.Versuchen Sie es später nochmal`
+        )
+      );
   };
 
   const modalData: ReservationConfirmationModalData = {
@@ -70,22 +76,5 @@ const ModifyReservationModal = ({
       />
     </>
   );
-};
-const modifyReservationCall = async (
-  body: ModifyReservationModel,
-  user: User
-): Promise<ReservationModel> => {
-  return await fetch(`/backend/reservations/${body.reservationID}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${user.token}`
-    },
-    body: JSON.stringify(body)
-  }).then(async (response) => {
-    if (response.ok) {
-      return await response.json();
-    }
-  });
 };
 export default ModifyReservationModal;

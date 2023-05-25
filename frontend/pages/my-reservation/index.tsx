@@ -7,11 +7,11 @@ import {
 } from '../../src/models/reservation/reservation.model';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
 import { RowDataType } from '../../src/components/table/table-row';
-import { User } from '../api/user';
-import { logger } from '../../src/logger';
 import CancelReservationModal from '../../src/components/reservation/cancel-reservation-modal';
 import ModifyReservationModal from '../../src/components/reservation/modify-reservation-modal';
 import NoData from '../../src/components/loading-buffer/no-data';
+import { toast } from 'react-toastify';
+import apiClient from '../api/api-client';
 
 export interface ReservationFilterData {
   states: Set<ReservationState>;
@@ -19,7 +19,6 @@ export interface ReservationFilterData {
 
 const initFilter: ReservationFilterData = { states: new Set() };
 const initState = {
-  error: null,
   loading: false,
   result: Array<ReservationModel>()
 };
@@ -40,7 +39,6 @@ const MyReservationPage = ({ user }) => {
   const updateReservation = (newValue: ReservationModel) => {
     reservations.result.map((obj) => (obj.id == newValue.id ? newValue : obj));
     setReservations({
-      error: null,
       loading: false,
       result: reservations.result
     });
@@ -61,14 +59,17 @@ const MyReservationPage = ({ user }) => {
   };
 
   useEffect(() => {
-    setReservations({ error: null, loading: true, result: [] });
-    fetchReservations(user)
+    setReservations({ loading: true, result: [] });
+    apiClient()
+      .user.getMyReservations(user)
       .then((result) => {
-        if (result) {
-          setReservations({ error: null, loading: false, result: result });
-        }
+        setReservations({ loading: false, result: result });
       })
-      .catch();
+      .catch(() =>
+        toast.error(
+          'Beim Laden Deiner Reservationen ist ein Fehler aufgetreten. Versuchen Sie es später nochmal.'
+        )
+      );
   }, []);
 
   const filteredReservations: ReservationModel[] = reservations.result.filter(
@@ -114,22 +115,6 @@ const MyReservationPage = ({ user }) => {
       )}
     </div>
   );
-};
-
-const fetchReservations = async (user: User): Promise<ReservationModel[]> => {
-  return await fetch('/backend/reservations', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${user.token}`
-    }
-  }).then(async (response) => {
-    if (response.ok) {
-      const data = await response.json();
-      logger.log(data);
-      return data;
-    }
-  });
 };
 
 export default MyReservationPage;

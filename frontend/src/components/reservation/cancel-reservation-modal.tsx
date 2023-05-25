@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { ReservationModel } from '../../models/reservation/reservation.model';
 import { toast } from 'react-toastify';
 import { User } from '../../../pages/api/user';
+import apiClient from '../../../pages/api/api-client';
 
 interface CancelReservationProps {
   updateReservation: (newValue: ReservationModel) => void;
@@ -26,8 +27,9 @@ const CancelReservationModal = ({
     handleClose();
   };
 
-  const cancelReservation = (reservation: ReservationModel) => {
-    cancelReservationCall(reservation.id, user)
+  const onConfirm = (reservation: ReservationModel) => {
+    apiClient()
+      .user.cancelReservation(reservation.id, user)
       .then((result) => {
         result &&
           toast.success('Stornierung von ' + reservation.id + ' erfolgreich');
@@ -36,7 +38,11 @@ const CancelReservationModal = ({
         reservation.cancelDate = result.cancelDate;
         updateReservation(reservation);
       })
-      .catch((reject) => toast.error(reject.message));
+      .catch(() =>
+        toast.error(
+          `Stornierung der Reservation ${reservation.id} konnte nicht durchgeführt werden. Versuchen Sie es später nochmal`
+        )
+      );
     close();
   };
   const modalData: ReservationConfirmationModalData = {
@@ -50,25 +56,9 @@ const CancelReservationModal = ({
       setShowModal={close}
       data={modalData}
       action={ReservationAction.CANCEL}
-      onConfirm={() => cancelReservation(reservation)}
+      onConfirm={() => onConfirm(reservation)}
     />
   );
 };
 
-const cancelReservationCall = async (
-  reservationID: number,
-  user: User
-): Promise<ReservationModel> => {
-  return await fetch(`/backend/reservations/${reservationID}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${user.token}`
-    }
-  }).then(async (response) => {
-    if (response.ok) {
-      return await response.json();
-    }
-  });
-};
 export default CancelReservationModal;

@@ -11,15 +11,21 @@ import {
   SelectChangeEvent,
   Typography
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextFieldElement, useForm } from 'react-hook-form-mui';
 import { toast } from 'react-toastify';
-import { z, ZodIssueOptionalMessage, ErrorMapCtx } from 'zod';
+import { ErrorMapCtx, z, ZodIssueOptionalMessage } from 'zod';
 import { makeStyles } from '@mui/styles';
 import { Icon } from '@iconify/react';
 import { User } from 'pages/api/user';
 import ShowPasswordModal from './show-password-modal';
-import { UserDto, UserRole } from 'src/models/user/user.model';
+import {
+  CreateUserModel,
+  UserDto,
+  UserRole,
+  UserRoleLabel
+} from 'src/models/user/user.model';
+import apiClient from '../../../../pages/api/api-client';
 
 const UserAdministrationModal = ({
   showModal = true,
@@ -32,39 +38,28 @@ const UserAdministrationModal = ({
   onAddedUser: (value: UserDto) => void;
   user: User;
 }) => {
+  const [roles, setRoles] = useState<UserRole[]>([]);
+  const [role, setRole] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [openShowPasswordModal, setOpenShowPasswordModal] = useState(false);
+  const classes = useStyles();
+
   const formSchema = z.object({
     firstname: z.string().min(3),
     lastname: z.string().min(1),
     email: z.string().email()
   });
 
-  const getRoles = (): UserRole[] => {
-    try {
-      fetch('/backend/users/roles', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`
-        }
-      }).then(async (response) => {
-        const rolesData = await response.json();
-        const tempRoles: any[] = [];
-
-        rolesData.forEach((role) => {
-          tempRoles.push(
-            <MenuItem value={role} key={role}>
-              {role}
-            </MenuItem>
-          );
-        });
-        setRoles(tempRoles);
-      });
-    } catch (error: any) {
-      toast.error(error.message);
-      return [UserRole.USER];
-    }
-    return [UserRole.USER];
-  };
+  useEffect(() => {
+    apiClient()
+      .admin.getUserRoles(user)
+      .then((result) => setRoles(result))
+      .catch(() =>
+        toast.error(
+          `Die Rollen konnten nicht geladen werden. Versuchen Sie es später nochmal`
+        )
+      );
+  }, []);
 
   const customErrorMap = () => {
     return (issue: ZodIssueOptionalMessage, ctx: ErrorMapCtx) => {
@@ -110,32 +105,26 @@ const UserAdministrationModal = ({
     lastname: string;
     email: string;
   }) => {
-    const body = {
+    const body: CreateUserModel = {
       name: data.firstname,
       surname: data.lastname,
       email: data.email,
-      role: role
+      role: UserRole[role]
     };
 
-    try {
-      await fetch('/backend/users/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`
-        },
-        body: JSON.stringify(body)
-      }).then(async (res: any) => {
-        if (res.ok) {
-          const data: UserDto = await res.json();
-          onAddedUser(data);
-          setPassword(data.password);
-          setOpenShowPasswordModal(true);
-        }
-      });
-    } catch (error: any) {
-      toast.error(error.message);
-    }
+    apiClient()
+      .admin.createUser(user, body)
+      .then((result) => {
+        onAddedUser(result);
+        setPassword(result.password);
+        setOpenShowPasswordModal(true);
+        toast.success(`Benutzer ${body.name} wurde erfolgreich gespeichert`);
+      })
+      .catch(() =>
+        toast.error(
+          `Benutzer konnte nicht gespeichert werden. Versuchen Sie es später nochmal`
+        )
+      );
   };
 
   const handleRoleChange = (event: SelectChangeEvent<typeof role>) => {
@@ -144,15 +133,9 @@ const UserAdministrationModal = ({
 
   const closePasswordModal = () => {
     control._reset();
-    setRole(null);
+    setRole('');
     setShowModal(false);
   };
-
-  const [roles, setRoles] = useState<UserRole[]>(() => getRoles());
-  const [role, setRole] = useState<string | null>('');
-  const [password, setPassword] = useState<string>('');
-  const [openShowPasswordModal, setOpenShowPasswordModal] = useState(false);
-  const classes = useStyles();
 
   return (
     <>
@@ -219,7 +202,11 @@ const UserAdministrationModal = ({
                   onChange={handleRoleChange}
                   sx={{ width: '100%', marginTop: '20px' }}
                 >
-                  {roles}
+                  {roles.map((role) => (
+                    <MenuItem value={role} key={role}>
+                      {UserRoleLabel.get(role)}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
 
@@ -249,7 +236,7 @@ const UserAdministrationModal = ({
   );
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   closeIconOnHeader: {
     right: '2%',
     float: 'right'

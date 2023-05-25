@@ -1,33 +1,31 @@
-import { makeStyles } from '@mui/styles';
-import { Paper } from '@mui/material';
+import { Card, CardActionArea, CardContent } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import React from 'react';
+import { useRouter } from 'next/router';
 
 const ParkingListEmptyItem = () => {
-  const { listItem } = useStyles();
-
+  const router = useRouter();
   return (
-    <Paper elevation={1} className={listItem} >
-      <AddIcon fontSize={'large'} />
-    </Paper>
+    <Card style={{ margin: 0, padding: 0 }} elevation={4}>
+      <CardActionArea
+        style={{
+          backgroundColor: 'lightgray',
+          margin: 0,
+          width: 160,
+          height: 230,
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          verticalAlign: 'middle'
+        }}
+        onClick={() => router.push('/create-parking-lot')}
+      >
+        <CardContent>
+          <AddIcon fontSize={'large'} />
+        </CardContent>
+      </CardActionArea>
+    </Card>
   );
 };
-
-const useStyles = makeStyles(() => ({
-  listItem: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
-    verticalAlign: 'middle',
-    backgroundColor: 'lightgray',
-    width: 150,
-    height: 250,
-    margin: 0,
-    '&:hover': {
-      opacity: '75%',
-      cursor: 'pointer'
-    }
-  }
-}));
 
 export default ParkingListEmptyItem;

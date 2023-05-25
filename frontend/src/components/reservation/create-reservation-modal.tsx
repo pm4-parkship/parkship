@@ -1,9 +1,4 @@
-import {
-  CreateReservationModel,
-  ReservationModel
-} from '../../models/reservation/reservation.model';
 import { User } from '../../../pages/api/user';
-import { logger } from '../../logger';
 import ConfirmationModal, {
   ReservationAction,
   ReservationConfirmationModalData
@@ -11,6 +6,7 @@ import ConfirmationModal, {
 import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
+import apiClient from '../../../pages/api/api-client';
 
 export interface CreateReservationConfirmationModalData
   extends ReservationConfirmationModalData {
@@ -30,23 +26,28 @@ const CreateReservationModal = ({
 }: CreateReservationProps) => {
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
 
-  const createReservation = (
+  const onConfirm = (
     user: User,
     data: CreateReservationConfirmationModalData
   ) => {
-    createReservationCall(
-      {
-        from: format(data.fromDate, 'yyyy-MM-dd'),
-        to: format(data.toDate, 'yyyy-MM-dd'),
-        parkingLotID: data.parkingLotID
-      },
-      user
-    )
+    apiClient()
+      .user.createReservation(
+        {
+          from: format(data.fromDate, 'yyyy-MM-dd'),
+          to: format(data.toDate, 'yyyy-MM-dd'),
+          parkingLotID: data.parkingLotID
+        },
+        user
+      )
       .then((response) => {
-        toast.success('Buchung erfolgreich ' + response.id);
+        toast.success('Reservation erfolgreich ' + response.id);
         close();
       })
-      .catch((reject) => toast.error(reject.message));
+      .catch(() =>
+        toast.error(
+          `Reservation konnte nicht durchgeführt werden. Versuchen Sie es später nochmal`
+        )
+      );
   };
 
   useEffect(() => {
@@ -63,34 +64,8 @@ const CreateReservationModal = ({
       setShowModal={close}
       data={data}
       action={ReservationAction.CREATE}
-      onConfirm={() => createReservation(user, data)}
+      onConfirm={() => onConfirm(user, data)}
     />
-  );
-};
-const createReservationCall = async (
-  body: CreateReservationModel,
-  user: User
-): Promise<ReservationModel> => {
-  return fetch('/backend/reservations', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  }).then(
-    async (response) => {
-      const data = await response.json();
-      if (response.ok) {
-        logger.log(data);
-        return data;
-      }
-      return Promise.reject(new Error(data.message.match(/"(.*)"/)[1]));
-    },
-    async (reject) => {
-      const data = await reject.json();
-      return data.message;
-    }
   );
 };
 

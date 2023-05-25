@@ -1,17 +1,15 @@
-
-import React, { useState } from 'react';
-import { Grid, Link, Typography } from '@mui/material';
+import React from 'react';
+import { Grid } from '@mui/material';
 import { CreateParkingModal } from 'src/components/create-parking-modal/create-parking-modal';
 import { logger } from 'src/logger';
 import {
   CreateParkingLotModel,
   OfferCreateModel,
-  OfferModel,
-  ParkingLotModel
+  OfferModel
 } from '../../src/models';
-import { User } from 'pages/api/user';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
+import apiClient from '../api/api-client';
 
 const CreatePage = ({ user }) => {
   const router = useRouter();
@@ -20,9 +18,10 @@ const CreatePage = ({ user }) => {
     newParkingLot: CreateParkingLotModel,
     offers: OfferModel[]
   ) => {
-     let parkingLotId = 0;
-    createParkingLotCall(user, newParkingLot).then((response) => {
-      if (response) {
+    let parkingLotId = 0;
+    apiClient()
+      .user.createParkingLot(user, newParkingLot)
+      .then((response) => {
         parkingLotId = response.id;
 
         const offersToCreate: OfferCreateModel[] = offers.map((offer) => {
@@ -32,70 +31,30 @@ const CreatePage = ({ user }) => {
           };
         });
 
-        createParkingLotOfferCall(user, offersToCreate).then((response) => {
-          if (response) {
-            logger.log("offer created");
+        apiClient()
+          .user.createParkingLotOffer(user, offersToCreate)
+          .then((response) => {
+            logger.log('offer created');
             logger.log(response);
-            toast.success(`Parkplatz erstellt!`);
-            router.push("/my-parking-lot");
-          }
-        });
-
-      }
-    }).catch(e => {
-      toast.error(`Parkplatz konnte nicht erstellt werden :(`);
-    });
+            toast.success(
+              `Parkplatz ${newParkingLot.name} wurde erfolgreich erstellt!`
+            );
+            router.push('/my-parking-lot');
+          })
+          .catch((e) => new Error(e)); // propagate error
+      })
+      .catch((e) => {
+        toast.error(
+          `Parkplatz konnte nicht erstellt werden. Versuchen Sie es später nochmal`
+        );
+      });
   };
-
 
   return (
     <Grid padding={2}>
-        <CreateParkingModal addParkingLot={addParkingLot} owner={user.username}/>
+      <CreateParkingModal addParkingLot={addParkingLot} owner={user.username} />
     </Grid>
   );
-};
-
-const createParkingLotCall = async (
-  user: User,
-  body: CreateParkingLotModel
-): Promise<ParkingLotModel> => {
-  logger.log("sende: ");
-  logger.log(body);
-
-  return await fetch('/backend/parking-lot', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${user.token}`
-    },
-    body: JSON.stringify(body)
-  }).then(async (response) => {
-    if (response.ok) {
-      const data = await response.json();
-      logger.log(data);
-      return data;
-    }
-  });
-};
-
-const createParkingLotOfferCall = async (
-  user: User,
-  body: OfferCreateModel[]
-): Promise<any> => {
-  return await fetch('/backend/offer', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${user.token}`
-    },
-    body: JSON.stringify(body)
-  }).then(async (response) => {
-    if (response.ok) {
-      const data = await response.json();
-      logger.log(data);
-      return data;
-    }
-  });
 };
 
 export default CreatePage;

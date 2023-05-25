@@ -1,4 +1,10 @@
-import { Card, CardActionArea, CardContent, Divider,Typography } from '@mui/material';
+import {
+  Card,
+  CardActionArea,
+  CardContent,
+  Divider,
+  Typography
+} from '@mui/material';
 import { ParkingLotModel } from 'src/models';
 import React from 'react';
 
@@ -15,14 +21,16 @@ const ParkingListItem = (props: Props) => {
         style={{
           backgroundColor: props.bcolor,
           margin: 0,
-          width: 150,
-          height: 250
+          width: 160,
+          height: 230
         }}
       >
         <CardContent>
           <Typography align={'center'}>{`${parking.name}`}</Typography>
-          <Divider/>
-          <Typography fontSize={"14px"} align={'center'}>CHF {parking.price} / Tag</Typography>
+          <Divider />
+          <Typography fontSize={'14px'} align={'center'}>
+            CHF {parking.price} / Tag
+          </Typography>
         </CardContent>
       </CardActionArea>
     </Card>

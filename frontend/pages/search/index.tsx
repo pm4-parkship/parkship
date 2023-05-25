@@ -5,16 +5,14 @@ import { TagData } from '../../src/components/search-bar/tag-bar';
 import SearchParkingLotTable from '../../src/components/search-parking-lot/search-parking-lot-table';
 import ParkingDetailModal from '../../src/components/parking-detail-modal/parking-detail-modal';
 import { ParkingLotModel } from '../../src/models';
-import { format } from 'date-fns';
-import { logger } from '../../src/logger';
 import { toast } from 'react-toastify';
-import { User } from '../api/user';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
 import { SearchResultModel } from '../../src/models/search/search-result.model';
 import CreateReservationModal, {
   CreateReservationConfirmationModalData
 } from '../../src/components/reservation/create-reservation-modal';
 import NoData from '../../src/components/loading-buffer/no-data';
+import apiClient from '../api/api-client';
 
 export interface SearchParameters {
   searchTerm: string;
@@ -25,13 +23,11 @@ export interface SearchParameters {
 
 const SearchPage = ({ user }) => {
   const initState: {
-    error: unknown;
     loading: boolean;
     result: SearchResultModel[] | null;
   } = {
-    error: null,
     loading: false,
-    result: null //Array<SearchResultModel>()
+    result: null
   };
 
   const [searchResult, setSearchResult] = useState(initState);
@@ -51,16 +47,23 @@ const SearchPage = ({ user }) => {
     useState<CreateReservationConfirmationModalData>();
 
   const onSelectParkingLot = (parkingLot: SearchResultModel) => {
-    fetchParkingSpot(parkingLot.id, user).then((result) => {
-      setSelectedParkingLot(() => result);
-      setCreateReservationData({
-        parkingLotID: parkingLot.id,
-        id: parkingLot.name,
-        fromDate: searchParameters.fromDate,
-        toDate: searchParameters.toDate
-      });
-      setShowDetails(true);
-    });
+    apiClient()
+      .user.getParkingLot(parkingLot.id, user)
+      .then((result) => {
+        setSelectedParkingLot(() => result);
+        setCreateReservationData({
+          parkingLotID: parkingLot.id,
+          id: parkingLot.name,
+          fromDate: searchParameters.fromDate,
+          toDate: searchParameters.toDate
+        });
+        setShowDetails(true);
+      })
+      .catch(() =>
+        toast.error(
+          `Daten zum Parkplatz ${parkingLot.name} konnte nicht geladen werden. Versuchen Sie es später nochmal`
+        )
+      );
   };
   const closeDetails = (value: boolean) => {
     setRequestConfirmation(value);
@@ -69,12 +72,17 @@ const SearchPage = ({ user }) => {
 
   const makeOnSearch = (searchParameters: SearchParameters) => {
     setSearchParameters(searchParameters);
-    setSearchResult({ error: null, loading: true, result: [] });
-    fetchSearch(searchParameters, user)
+    setSearchResult({ loading: true, result: [] });
+    apiClient()
+      .user.searchParkingLot(searchParameters, user)
       .then((result) => {
-        setSearchResult({ error: null, loading: false, result: result });
+        setSearchResult({ loading: false, result: result });
       })
-      .catch((error) => toast.error(error.message));
+      .catch(() =>
+        toast.error(
+          'Es gibt Schwierigkeiten bei der Suche von verfügbaren Parkplätze. Versuchen Sie es später nochmal.'
+        )
+      );
   };
 
   const createBookingOnClick = (searchItem: SearchResultModel) => {
@@ -137,45 +145,6 @@ const SearchPage = ({ user }) => {
       ) : null}
     </Grid>
   );
-};
-
-const fetchSearch = async (
-  searchParameters: SearchParameters,
-  user: User
-): Promise<SearchResultModel[]> => {
-  const query = new URLSearchParams({
-    searchTerm: searchParameters.searchTerm,
-    startDate: format(searchParameters.fromDate, 'yyyy-MM-dd'),
-    endDate: format(searchParameters.toDate, 'yyyy-MM-dd')
-  });
-  searchParameters.tags.forEach((tag) => query.append('tagList', tag.label));
-  return fetch('/backend/parking-lot/searchTerm?' + query, {
-    method: 'GET',
-    headers: { Authorization: `Bearer ${user.token}` }
-  }).then(
-    async (response) => {
-      const data = await response.json();
-      logger.log(data);
-      return data;
-    },
-    (reject) => {
-      return reject.message;
-    }
-  );
-};
-
-const fetchParkingSpot = async (
-  id: number,
-  user: User
-): Promise<ParkingLotModel> => {
-  return fetch('/backend/parking-lot/' + id, {
-    method: 'GET',
-    headers: { Authorization: `Bearer ${user.token}` }
-  }).then(async (response) => {
-    const data = await response.json();
-    logger.log(data);
-    return data;
-  });
 };
 
 export default SearchPage;

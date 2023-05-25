@@ -14,6 +14,7 @@ import { formatDate } from '../../date/date-formatter';
 import { DatePicker } from '@mui/x-date-pickers';
 import { toast } from 'react-toastify';
 import { logger } from '../../logger';
+import { startOfToday } from 'date-fns';
 
 export const enum ReservationAction {
   CREATE = 'reservieren',
@@ -48,12 +49,12 @@ interface ParkingReservationConfirmationModalProps {
 }
 
 const ConfirmationModal = ({
-  showModal = true,
-  setShowModal,
-  data,
-  action,
-  onConfirm
-}: ParkingReservationConfirmationModalProps) => {
+                             showModal = true,
+                             setShowModal,
+                             data,
+                             action,
+                             onConfirm
+                           }: ParkingReservationConfirmationModalProps) => {
   const classes = useStyles();
   const [fromDate, setFromDate] = useState<Date>(data.fromDate);
   const [toDate, setToDate] = useState<Date>(data.toDate);
@@ -62,8 +63,8 @@ const ConfirmationModal = ({
     logger.log({ fromDate, toDate });
     if (
       fromDate <= toDate &&
-      fromDate.getDate() >= new Date().getDate() &&
-      toDate.getDate() >= new Date().getDate()
+      fromDate >= startOfToday() &&
+      toDate >= startOfToday()
     ) {
       return true;
     } else {
@@ -73,9 +74,9 @@ const ConfirmationModal = ({
   };
   const DateRange = (date: Date, label: string, setter, minDate) => (
     <Grid item xs={12}>
-      <Grid container flex={1} justifyContent="center" alignItems="center">
+      <Grid container flex={1} justifyContent='center' alignItems='center'>
         <Grid item xs={3}>
-          <Typography variant="body2" display="inline">
+          <Typography variant='body2' display='inline'>
             {label}
           </Typography>
         </Grid>
@@ -90,7 +91,7 @@ const ConfirmationModal = ({
               renderInput={(props) => <TextField {...props} required={true} />}
             />
           ) : (
-            <Typography variant="body2" display="inline">
+            <Typography variant='body2' display='inline'>
               {formatDate(date)}
             </Typography>
           )}
@@ -113,26 +114,26 @@ const ConfirmationModal = ({
             <Icon
               onClick={() => setShowModal(false)}
               className={classes.closeIcon}
-              icon="ci:close-big"
+              icon='ci:close-big'
             />
           </div>
           <Stack spacing={3}>
-            <Typography align="center" variant="h4">
+            <Typography align='center' variant='h4'>
               {data.id}
             </Typography>
-            <Typography align="center">{HeaderText.get(action)}</Typography>
+            <Typography align='center'>{HeaderText.get(action)}</Typography>
             <Grid container rowSpacing={4} flex={1}>
               {DateRange(fromDate, 'von:', setFromDate, new Date())}
               {DateRange(toDate, 'bis:', setToDate, fromDate)}
             </Grid>
 
-            <Box textAlign="center">
+            <Box textAlign='center'>
               <Button
                 onClick={() =>
                   validateInput() &&
                   onConfirm({ toDate: toDate, fromDate: fromDate, id: data.id })
                 }
-                variant="contained"
+                variant='contained'
               >
                 {ButtonText.get(action)}
               </Button>
