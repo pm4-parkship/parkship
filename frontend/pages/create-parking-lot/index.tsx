@@ -18,27 +18,25 @@ const CreatePage = ({ user }) => {
     newParkingLot: CreateParkingLotModel,
     offers: OfferModel[]
   ) => {
-    logger.log("hello world");
-    let parkingLotId = 0;
+     let parkingLotId = 0;
     createParkingLotCall(user, newParkingLot).then((response) => {
       if (response) {
         parkingLotId = response.id;
-        // parkingLots.result.push(response);
-        // setParkingLots(parkingLots);
-      }
-    });
 
-    const offersToCreate: OfferCreateModel[] = offers.map((offer) => {
-      return {
-        parkingLotId: parkingLotId,
-        ...offer
-      };
-    });
+        const offersToCreate: OfferCreateModel[] = offers.map((offer) => {
+          return {
+            parkingLotId: parkingLotId,
+            ...offer
+          };
+        });
+    
+        createParkingLotOfferCall(user, offersToCreate).then((response) => {
+          if (response) {
+            logger.log("offer created");
+            logger.log(response);
+          }
+        });
 
-    createParkingLotOfferCall(user, offersToCreate).then((response) => {
-      if (response) {
-        logger.log("offer created");
-        logger.log(response);
       }
     });
   };
@@ -55,6 +53,9 @@ const createParkingLotCall = async (
   user: User,
   body: CreateParkingLotModel
 ): Promise<ParkingLotModel> => {
+  logger.log("sende: ");
+  logger.log(body);
+
   return await fetch('/backend/parking-lot', {
     method: 'POST',
     headers: {

@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import MyParkingLotList from '../../src/components/parking-list/my-parking-lot-list';
 import {
-  CreateParkingLotModel,
-  OfferCreateModel,
-  OfferModel,
   ParkingLotModel
 } from '../../src/models';
 import { User } from '../api/user';
@@ -19,7 +16,6 @@ import {
   ReservationState
 } from '../../src/models/reservation/reservation.model';
 import { makeStyles } from '@mui/styles';
-import { CreateParkingModal } from 'src/components/create-parking-modal/create-parking-modal';
 import Link from 'src/components/link/link';
 
 const initState = {
@@ -44,13 +40,6 @@ const MyParkingLotPage = ({ user }) => {
   const [reservations, setReservations] = useState<MyParkingLotsTableProps[]>(
     []
   );
-  useEffect(() => {
-    fetchParkingLots(user).then((response) =>
-      setParkingLots({ error: null, loading: false, result: response })
-    );
-  }, []);
-
-  
 
   useEffect(() => {
     fetchParkingLots(user).then((response) =>
