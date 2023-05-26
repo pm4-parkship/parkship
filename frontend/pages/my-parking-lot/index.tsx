@@ -44,42 +44,13 @@ const MyParkingLotPage = ({ user }) => {
   const [reservations, setReservations] = useState<MyParkingLotsTableProps[]>(
     []
   );
-
-  const [showCreateParking, setShowCreateParking] = useState(true);
   useEffect(() => {
     fetchParkingLots(user).then((response) =>
       setParkingLots({ error: null, loading: false, result: response })
     );
-  }, [parkingLots]);
+  }, []);
 
-  const addParkingLot = (
-    newParkingLot: CreateParkingLotModel,
-    offers: OfferModel[]
-  ) => {
-    setShowCreateParking(false);
-    let parkingLotId = 0;
-    createParkingLotCall(user, newParkingLot).then((response) => {
-      if (response) {
-        parkingLotId = response.id;
-        parkingLots.result.push(response);
-        setParkingLots(parkingLots);
-      }
-    });
-
-    const offersToCreate: OfferCreateModel[] = offers.map((offer) => {
-      return {
-        parkingLotId: parkingLotId,
-        ...offer
-      };
-    });
-
-    createParkingLotOfferCall(user, offersToCreate).then((response) => {
-      if (response) {
-        parkingLots.result.push(response);
-        setParkingLots(parkingLots);
-      }
-    });
-  };
+  
 
   useEffect(() => {
     fetchParkingLots(user).then((response) =>
@@ -112,10 +83,8 @@ const MyParkingLotPage = ({ user }) => {
       <Loading loading={parkingLots.loading} />
 
       {parkingLots.result && parkingLots.result.length > 0 && (
-        <Link href="/create-parking-lot"><MyParkingLotList
-          parkings={parkingLots.result}
-          createNewParking={() => setShowCreateParking(false)}
-        />
+        <Link href="/create-parking-lot">
+          <MyParkingLotList parkings={parkingLots.result} />
         </Link>
       )}
 
@@ -205,46 +174,6 @@ const buildReservationList = (
       };
     });
   return parkingSlotsDataFuture.concat(parkingSlotsDataPast);
-};
-
-const createParkingLotCall = async (
-  user: User,
-  body: CreateParkingLotModel
-): Promise<ParkingLotModel> => {
-  return await fetch('/backend/parking-lot', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${user.token}`
-    },
-    body: JSON.stringify(body)
-  }).then(async (response) => {
-    if (response.ok) {
-      const data = await response.json();
-      logger.log(data);
-      return data;
-    }
-  });
-};
-
-const createParkingLotOfferCall = async (
-  user: User,
-  body: OfferCreateModel[]
-): Promise<any> => {
-  return await fetch('/backend/offer', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${user.token}`
-    },
-    body: JSON.stringify(body)
-  }).then(async (response) => {
-    if (response.ok) {
-      const data = await response.json();
-      logger.log(data);
-      return data;
-    }
-  });
 };
 
 const useStyles = makeStyles((theme) => ({

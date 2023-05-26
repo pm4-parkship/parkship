@@ -2,11 +2,11 @@ import { makeStyles } from '@mui/styles';
 import { Paper } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-const ParkingListEmptyItem = ({ add }: { add: () => void }) => {
+const ParkingListEmptyItem = () => {
   const { listItem } = useStyles();
 
   return (
-    <Paper elevation={1} className={listItem} onClick={add}>
+    <Paper elevation={1} className={listItem} >
       <AddIcon fontSize={'large'} />
     </Paper>
   );
