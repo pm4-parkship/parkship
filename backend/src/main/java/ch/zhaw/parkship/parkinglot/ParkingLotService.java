@@ -1,9 +1,14 @@
 package ch.zhaw.parkship.parkinglot;
 
+import ch.zhaw.parkship.parkinglot.dtos.ParkingLotCreateDto;
+import ch.zhaw.parkship.parkinglot.dtos.ParkingLotDto;
+import ch.zhaw.parkship.parkinglot.dtos.ParkingLotSearchDto;
+import ch.zhaw.parkship.parkinglot.dtos.PerimeterSearchDto;
 import ch.zhaw.parkship.reservation.ReservationService;
 import ch.zhaw.parkship.tag.TagDto;
 import ch.zhaw.parkship.tag.TagEntity;
 import ch.zhaw.parkship.tag.TagRepository;
+import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
 import ch.zhaw.parkship.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -46,19 +51,15 @@ public class ParkingLotService {
      * data in the ParkingLotDto format if created successfully, otherwise returns an empty
      * Optional object.
      */
-    public Optional<ParkingLotDto> create(ParkingLotDto data) {
-        var owner = userRepository.findById(data.getOwner().id());
-        if (owner.isPresent()) {
-            var parkingLotEntity = new ParkingLotEntity();
-            parkingLotEntity.setOwner(owner.get());
-            parkingLotEntity.setTags(checkedTags(data.getTags()));
-            BeanUtils.copyProperties(data, parkingLotEntity);
-            parkingLotEntity.setId(null);
-            parkingLotEntity.setState(ParkingLotState.PENDING);
-            var savedEntity = parkingLotRepository.save(parkingLotEntity);
-            return Optional.of(new ParkingLotDto(savedEntity));
-        }
-        return Optional.empty();
+    public Optional<ParkingLotDto> create(ParkingLotCreateDto data, UserEntity owner) {
+        var parkingLotEntity = new ParkingLotEntity();
+        BeanUtils.copyProperties(data, parkingLotEntity);
+        parkingLotEntity.setOwner(owner);
+        parkingLotEntity.setTags(checkedTags(data.getTags().stream().map(TagDto::new).collect(Collectors.toSet())));
+        parkingLotEntity.setId(null);
+        parkingLotEntity.setState(ParkingLotState.PENDING);
+        var savedEntity = parkingLotRepository.save(parkingLotEntity);
+        return Optional.of(new ParkingLotDto(savedEntity));
     }
 
     /**
@@ -193,7 +194,7 @@ public class ParkingLotService {
 
     private Set<ParkingLotEntity> filterParkingLotsByDate(LocalDate startDate, LocalDate endDate, Set<ParkingLotEntity> parkingLots) {
         if (startDate != null && endDate != null) {
-            Boolean[] relevantDays = getRelevantDays(startDate,endDate);
+            Boolean[] relevantDays = getRelevantDays(startDate, endDate);
             parkingLots = parkingLots.stream()
                     .filter(lot -> (parkingLotRepository.isParkingLotAvailable(lot, startDate, endDate) != null))
                     .filter(lot -> (parkingLotRepository.isParkingLotOffered(lot, startDate, endDate,
@@ -204,11 +205,11 @@ public class ParkingLotService {
         return parkingLots;
     }
 
-    private Boolean[] getRelevantDays(LocalDate startDate, LocalDate endDate){
-        Boolean relevantDays[] = {false,false,false,false,false,false,false};
+    private Boolean[] getRelevantDays(LocalDate startDate, LocalDate endDate) {
+        Boolean relevantDays[] = {false, false, false, false, false, false, false};
         LocalDate current = LocalDate.of(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth());
-        while(!current.isEqual(endDate.plusDays(1))){
-            relevantDays[current.getDayOfWeek().getValue()-1] = true;
+        while (!current.isEqual(endDate.plusDays(1))) {
+            relevantDays[current.getDayOfWeek().getValue() - 1] = true;
             current = current.plusDays(1);
         }
         return relevantDays;
@@ -244,13 +245,14 @@ public class ParkingLotService {
         parkingLotRepository.save(entity);
     }
 
-    private Set<TagEntity> checkedTags (Set<TagDto> tagDtos){
+    private Set<TagEntity> checkedTags(Set<TagDto> tagDtos) {
         Set<TagEntity> tagEntities = new HashSet<>();
         for (TagDto tagDto : tagDtos) {
-            Optional<TagEntity> optionalTagEntity = tagRepository.findById(tagDto.getId());
-            if (tagDto.getId() == null || optionalTagEntity.isEmpty()) {
-                tagEntities.add(tagRepository.save(new TagEntity(tagDto)));
+            if (tagDto.getId() == null) {
+                TagEntity tagEntity = tagRepository.findByNameIgnoreCase(tagDto.getName());
+                tagEntities.add(tagEntity);
             } else {
+                Optional<TagEntity> optionalTagEntity = tagRepository.findById(tagDto.getId());
                 tagEntities.add(optionalTagEntity.get());
             }
         }

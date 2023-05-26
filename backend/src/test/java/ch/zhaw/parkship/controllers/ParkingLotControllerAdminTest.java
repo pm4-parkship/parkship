@@ -2,9 +2,9 @@ package ch.zhaw.parkship.controllers;
 
 import ch.zhaw.parkship.offer.OfferRepository;
 import ch.zhaw.parkship.parkinglot.ParkingLotController;
-import ch.zhaw.parkship.parkinglot.ParkingLotDto;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
 import ch.zhaw.parkship.parkinglot.ParkingLotService;
+import ch.zhaw.parkship.parkinglot.dtos.ParkingLotDto;
 import ch.zhaw.parkship.reservation.ReservationRepository;
 import ch.zhaw.parkship.reservation.ReservationService;
 import ch.zhaw.parkship.user.UserRepository;

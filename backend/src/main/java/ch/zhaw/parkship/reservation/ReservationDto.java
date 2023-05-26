@@ -1,6 +1,6 @@
 package ch.zhaw.parkship.reservation;
 
-import ch.zhaw.parkship.parkinglot.ParkingLotDto;
+import ch.zhaw.parkship.parkinglot.dtos.ParkingLotDto;
 import ch.zhaw.parkship.user.UserDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

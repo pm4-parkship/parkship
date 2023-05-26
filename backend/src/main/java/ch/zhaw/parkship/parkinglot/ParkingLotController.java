@@ -1,10 +1,15 @@
 package ch.zhaw.parkship.parkinglot;
 
 import ch.zhaw.parkship.common.PaginatedResponse;
+import ch.zhaw.parkship.parkinglot.dtos.ParkingLotCreateDto;
+import ch.zhaw.parkship.parkinglot.dtos.ParkingLotDto;
+import ch.zhaw.parkship.parkinglot.dtos.ParkingLotSearchDto;
+import ch.zhaw.parkship.parkinglot.dtos.PerimeterSearchDto;
 import ch.zhaw.parkship.reservation.ReservationEntity;
 import ch.zhaw.parkship.reservation.ReservationHistoryDto;
 import ch.zhaw.parkship.reservation.ReservationService;
 import ch.zhaw.parkship.user.ParkshipUserDetails;
+import ch.zhaw.parkship.user.UserEntity;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -39,7 +44,7 @@ public class ParkingLotController {
     @Autowired
     private ParkingLotService parkingLotService;
     @Autowired
-    private  ReservationService reservationService;
+    private ReservationService reservationService;
 
     private final String DEFAULT_PAGE_NUM = "0";
     private final String DEFAULT_PAGE_SIZE = "100";
@@ -62,9 +67,12 @@ public class ParkingLotController {
      */
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<ParkingLotDto> createParkingLot(
-            @Valid @RequestBody ParkingLotDto parkingLotDto) {
-        validateRequest(parkingLotDto);
-        Optional<ParkingLotDto> createdParkingLot = parkingLotService.create(parkingLotDto);
+            @Valid @RequestBody ParkingLotCreateDto parkingLotCreateDto,
+            @AuthenticationPrincipal ParkshipUserDetails user) {
+        //validateRequest(parkingLotDto);
+        var owner = new UserEntity();
+        owner.setId(user.getId());
+        Optional<ParkingLotDto> createdParkingLot = parkingLotService.create(parkingLotCreateDto, owner);
         return createdParkingLot.map(value -> ResponseEntity.status(HttpStatus.CREATED).body(value))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
@@ -131,9 +139,9 @@ public class ParkingLotController {
      * @param id The id of the parking lot to be deleted.
      * @return ResponseEntity<Void> Returns a no content status code if deleted successfully,
      * otherwise returns a not found status code.
-                */
-        @DeleteMapping(value = "/{id}")
-        public ResponseEntity<Void> deleteParkingLot(@PathVariable Long id) {
+     */
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> deleteParkingLot(@PathVariable Long id) {
         Optional<ParkingLotDto> deletedParkingLot = parkingLotService.deleteById(id);
         if (deletedParkingLot.isPresent()) {
             return ResponseEntity.noContent().build();
@@ -149,11 +157,11 @@ public class ParkingLotController {
             @RequestParam(defaultValue = "") LocalDate endDate,
             @RequestParam(defaultValue = DEFAULT_PAGE_NUM) int page,
             @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int size) {
-        return parkingLotService.getBySearchTerm(searchTerm,tagList, startDate, endDate, page, size);
+        return parkingLotService.getBySearchTerm(searchTerm, tagList, startDate, endDate, page, size);
 
 
     }
-    
+
     /**
      * Retrieves all reservations of parking lots owned by the authenticated user.
      * Returns a {@link ReservationHistoryDto} object that contains two lists of {@link ReservationEntity} objects,
@@ -163,7 +171,7 @@ public class ParkingLotController {
      * @return a {@link ResponseEntity} containing the {@link ReservationHistoryDto} object and HTTP status code 200 (OK).
      * @throws EntityNotFoundException if the authenticated user is not found in the system.
      */
-    @GetMapping(value = "/reservations", produces= "application/json")
+    @GetMapping(value = "/reservations", produces = "application/json")
     public ResponseEntity<ReservationHistoryDto> getReservations(@AuthenticationPrincipal ParkshipUserDetails user) {
         return ResponseEntity.ok(reservationService.getAllReservationsOfUserOwnedParkingLots(user.getId()));
     }
@@ -192,17 +200,17 @@ public class ParkingLotController {
     }
 
 
-    protected void validateRequest(ParkingLotDto parkingLotDto){
-        if(parkingLotDto == null){
+    protected void validateRequest(ParkingLotDto parkingLotDto) {
+        if (parkingLotDto == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given object is null");
         }
 
-        if(parkingLotDto.getLatitude() < -90 || parkingLotDto.getLatitude() > 90
-        || parkingLotDto.getLongitude() < -180 || parkingLotDto.getLongitude() > 180){
+        if (parkingLotDto.getLatitude() < -90 || parkingLotDto.getLatitude() > 90
+                || parkingLotDto.getLongitude() < -180 || parkingLotDto.getLongitude() > 180) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given coordinates are invalid");
         }
 
-        if(parkingLotDto.getPrice() < 0){
+        if (parkingLotDto.getPrice() < 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Price may not be smaller than 0");
         }
 

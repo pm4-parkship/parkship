@@ -51,7 +51,7 @@ public class ParkingLotEntity {
     @Column(nullable = true)
     private Integer floor;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String nr;
 
     @Column(nullable = true)
