@@ -246,9 +246,9 @@ public class ParkingLotService {
 
     private Set<TagEntity> checkedTags (Set<TagDto> tagDtos){
         Set<TagEntity> tagEntities = new HashSet<>();
-        for (TagDto tagDto: tagDtos){
+        for (TagDto tagDto : tagDtos) {
             Optional<TagEntity> optionalTagEntity = tagRepository.findById(tagDto.getId());
-            if (tagDto.getId() == null || optionalTagEntity.isEmpty()){
+            if (tagDto.getId() == null || optionalTagEntity.isEmpty()) {
                 tagEntities.add(tagRepository.save(new TagEntity(tagDto)));
             } else {
                 tagEntities.add(optionalTagEntity.get());
@@ -256,4 +256,12 @@ public class ParkingLotService {
         }
         return tagEntities;
     }
+
+    public Page<ParkingLotEntity> perimeterSearch(PerimeterSearchDto perimeterSearchDto) {
+        return parkingLotRepository.findParkingLotInGeoRange(
+                perimeterSearchDto.latitude(), perimeterSearchDto.longitude(), perimeterSearchDto.radiusInKM(),
+                PageRequest.of(perimeterSearchDto.page(),
+                        perimeterSearchDto.pageSize() == 0 ? 1 : perimeterSearchDto.pageSize()));
+    }
+
 }
