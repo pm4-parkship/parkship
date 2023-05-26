@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { DatePicker } from '@mui/x-date-pickers';
 import TagBar, { TagData } from './tag-bar';
 import { SearchParameters } from '../../../pages/search';
+import { startOfTomorrow } from 'date-fns';
 
 const dummyTags: TagData[] = [
   { key: 0, label: 'überdacht' },
@@ -15,8 +16,8 @@ const dummyTags: TagData[] = [
 const SearchBar = (props: {
   makeOnSearch: (arg: SearchParameters) => void;
 }) => {
-  const [fromDate, setFromDate] = useState<Date>(new Date());
-  const [toDate, setToDate] = useState<Date>(new Date());
+  const [fromDate, setFromDate] = useState<Date>(startOfTomorrow());
+  const [toDate, setToDate] = useState<Date>(startOfTomorrow());
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedTags, setSelectedTag] = React.useState<TagData[]>([]);
 

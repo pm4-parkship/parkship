@@ -195,7 +195,7 @@ public class ReservationController {
         if (from == null || to == null) {
             return false;
         }
-        return from.isBefore(to);
+        return from.isEqual(to) || from.isBefore(to);
     }
 
 }

@@ -5,9 +5,7 @@ import { toast } from 'react-toastify';
 import { User } from '../../api/user';
 import { Button, Grid, Typography } from '@mui/material';
 import { Loading } from '../../../src/components/loading-buffer/loading-buffer';
-import { RowDataType } from '../../../src/components/table/table-row';
 import UsersTable from '../../../src/components/user-list/users-table';
-import UserStateToggleButton from '../../../src/components/user-list/user-state-toggle-button';
 import UsersFilter from '../../../src/components/user-list/user-filter';
 import UserAdministrationModal from 'src/components/user-administration/user-administration-modal/user-administration-modal';
 
@@ -38,24 +36,20 @@ const UserPage = ({ user }) => {
   const [filter, setFilter] = useState<UserFilterData>(initFilter);
   const [users, setUsers] = useState(initState);
 
-  const changeUserState = (selected) => {
-    const us = users.result.find((value) => value.id == selected.id);
-
-    if (!us || !user) return;
-    us.userState =
-      us.userState == UserState.LOCKED ? UserState.UNLOCKED : UserState.LOCKED;
-
-    updateUsers(us, user).then((result) => {
+  const updateUser = (userUpdated: UserModel) => {
+    updateUsers(userUpdated, user).then((result) => {
       if (result) {
-        users.result.map((obj) => (obj.id == us.id ? us : obj));
+        users.result.map((obj) =>
+          obj.id == userUpdated.id ? userUpdated : obj
+        );
         setUsers({
           error: null,
           loading: false,
           result: users.result
         });
-        toast.success(`Benutzer ${us.id} erfolgreich aktualisiert`);
+        toast.success(`Benutzer ${userUpdated.id} erfolgreich aktualisiert`);
       } else {
-        toast.error(`Benutzer ${us.id} Update fehlerhaft`);
+        toast.error(`Benutzer ${userUpdated.id} Update fehlerhaft`);
       }
     });
   };
@@ -82,22 +76,8 @@ const UserPage = ({ user }) => {
         user.email.includes(filter.searchTerm))
     );
   };
-  const filteredUsers: Array<RowDataType> =
-    users.result &&
-    users.result
-      .filter((user) => filterUsers(user))
-      .map((user) => {
-        return [
-          `${user.name}`,
-          `${user.surname}`,
-          `${user.email}`,
-          `${user.role}`,
-          <UserStateToggleButton
-            user={user}
-            changeUserState={changeUserState}
-          />
-        ];
-      });
+  const filteredUsers =
+    users.result && users.result.filter((user) => filterUsers(user));
 
   return (
     <Grid padding={2}>
@@ -123,7 +103,7 @@ const UserPage = ({ user }) => {
           <Loading loading={users.loading} />
 
           {users.result.length > 0 ? (
-            <UsersTable users={filteredUsers} />
+            <UsersTable users={filteredUsers} updateUser={updateUser} />
           ) : (
             <NoData size={users.result.length} />
           )}

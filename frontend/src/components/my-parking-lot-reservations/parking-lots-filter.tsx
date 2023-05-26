@@ -9,12 +9,13 @@ import {
   SelectChangeEvent,
   TextField
 } from '@mui/material';
-import { ParkingLotsFilterData } from '../../../pages/admin/parking-lots';
 import { logger } from '../../logger';
-import { ParkingLotState, ParkingLotStateLabel } from '../../models';
+import { ParkingLotModel } from '../../models';
+import { MyParkingLotsFilterData } from '../../../pages/my-parking-lot';
 
 interface ParkingLotsFilterProps {
-  updateFilter: (data: ParkingLotsFilterData) => void;
+  updateFilter: (filter: MyParkingLotsFilterData) => void;
+  parkingLots: ParkingLotModel[];
 }
 
 const ITEM_HEIGHT = 48;
@@ -28,26 +29,24 @@ const MenuProps = {
   }
 };
 
-const ParkingLotsFilter = ({ updateFilter }: ParkingLotsFilterProps) => {
+const ParkingLotsFilter = ({
+  updateFilter,
+  parkingLots
+}: ParkingLotsFilterProps) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
 
-  const [parkingLotState, setParkingLotState] = React.useState<string[]>([]);
-  const handleChange = (event: SelectChangeEvent<typeof parkingLotState>) => {
+  const [parkingLotName, setParkingLotName] = React.useState<string[]>([]);
+  const handleChange = (event: SelectChangeEvent<typeof parkingLotName>) => {
     logger.log(event);
     const {
       target: { value }
     } = event;
-    setParkingLotState(typeof value === 'string' ? value.split(',') : value);
+    setParkingLotName(typeof value === 'string' ? value.split(',') : value);
   };
 
   useEffect(() => {
-    const states = new Set(
-      parkingLotState.map(
-        (value) => ParkingLotState[value as keyof typeof ParkingLotState]
-      )
-    );
-    updateFilter({ states: states, searchTerm: searchTerm });
-  }, [parkingLotState, searchTerm]);
+    updateFilter({ names: new Set(parkingLotName), searchTerm: searchTerm });
+  }, [parkingLotName, searchTerm]);
 
   return (
     <Grid
@@ -68,20 +67,20 @@ const ParkingLotsFilter = ({ updateFilter }: ParkingLotsFilterProps) => {
       </Grid>
       <Grid item xs={3}>
         <FormControl fullWidth>
-          <InputLabel id="parking-lot-state-label">Parkplatzstatus</InputLabel>
+          <InputLabel id="parking-lot-name-label">Parkplatz</InputLabel>
           <Select
-            labelId="parking-lot-state-label"
-            id="parking-lot-state"
+            labelId="parking-lot-name-label"
+            id="parking-lot-name"
             multiple
-            value={parkingLotState}
+            value={parkingLotName}
             onChange={handleChange}
-            input={<OutlinedInput label="Parkplatzstatus" />}
+            input={<OutlinedInput label="Parkplatz" />}
             MenuProps={MenuProps}
             fullWidth
           >
-            {Object.entries(ParkingLotState).map(([key, state]) => (
-              <MenuItem key={key} value={key}>
-                {ParkingLotStateLabel.get(state)}
+            {parkingLots.map((lot) => (
+              <MenuItem key={lot.id} value={lot.name}>
+                {lot.name}
               </MenuItem>
             ))}
           </Select>
