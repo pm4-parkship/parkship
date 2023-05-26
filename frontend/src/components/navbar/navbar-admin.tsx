@@ -42,7 +42,7 @@ function NavbarUser({
                     colorMode.toggleColorMode();
                   }}
                 >
-                  Willkommen {user?.username}
+                  Willkommen {user?.surname}
                 </Typography>
 
                 <Link href="/logout">
