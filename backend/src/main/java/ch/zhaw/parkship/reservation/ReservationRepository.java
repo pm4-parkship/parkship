@@ -1,8 +1,8 @@
 package ch.zhaw.parkship.reservation;
 
+import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -24,5 +24,14 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
             "SELECT r FROM ReservationEntity r WHERE r.tenant.id = ?1"
     )
     List<ReservationEntity> findAllByUser(long userID);
-  
+
+    @Query(
+            "SELECT r FROM ReservationEntity r WHERE r.parkingLot = ?2 AND r.to < ?1 AND r.state=ch.zhaw.parkship.reservation.ReservationState.ACTIVE ORDER BY r.to DESC LIMIT 1"
+    )
+    List<ReservationEntity> findClosestReservationBefore (LocalDate startDate, ParkingLotEntity parkingLotEntity);
+
+    @Query(
+            "SELECT r FROM ReservationEntity r WHERE r.parkingLot = ?2 AND r.from > ?1 AND r.state=ch.zhaw.parkship.reservation.ReservationState.ACTIVE ORDER BY r.from ASC LIMIT 1"
+    )
+    List<ReservationEntity> findClosestReservationAfter (LocalDate endDate, ParkingLotEntity parkingLotEntity);
 }

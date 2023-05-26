@@ -38,6 +38,7 @@ public class ReservationEntity {
     private LocalDate to;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ReservationState state;
 
     private LocalDate cancelDate;

@@ -1,5 +1,7 @@
 package ch.zhaw.parkship.parkinglot;
 
+import ch.zhaw.parkship.reservation.ReservationEntity;
+import ch.zhaw.parkship.reservation.ReservationRepository;
 import ch.zhaw.parkship.reservation.ReservationService;
 import ch.zhaw.parkship.tag.TagDto;
 import ch.zhaw.parkship.tag.TagEntity;
@@ -33,11 +35,14 @@ public class ParkingLotService {
     private final UserRepository userRepository;
     private final ReservationService reservationService;
     private final UserService userService;
+    private final ReservationRepository reservationRepository;
+
 
     @Value("${search.blacklist}")
     private Set<String> blackList;
     private final TagRepository tagRepository;
 
+    private static final int dateRange  = 7;
     /**
      * This method creates a new parking lot with the provided parking lot data.
      *
@@ -154,8 +159,8 @@ public class ParkingLotService {
         List<ParkingLotSearchDto> parkingLotSearchDtos = availableParkingLots.stream().map(
                 parkingLotEntity -> {
                     ParkingLotSearchDto parkingLotSearchDto = new ParkingLotSearchDto(parkingLotEntity, parkingLotEntity.getOwner());
-                    parkingLotSearchDto.setFrom(startDate);
-                    parkingLotSearchDto.setTo(endDate);
+                    parkingLotSearchDto.setFrom(getEarliestAvaliableDate(startDate, parkingLotEntity));
+                    parkingLotSearchDto.setTo(getLatestAvaliableDate(endDate, parkingLotEntity));
                     return parkingLotSearchDto;
                 }
         ).toList();
@@ -177,7 +182,7 @@ public class ParkingLotService {
 
     private Set<ParkingLotEntity> getParkingLotsFromDatabase(String searchTerm) {
         Set<ParkingLotEntity> parkingLots = new HashSet<>();
-        Set<String> searchTerms = new HashSet<String>(Arrays.asList(searchTerm.toLowerCase().replaceAll("\\W", " ").split("\\s+")));
+        Set<String> searchTerms = new HashSet<>(Arrays.asList(searchTerm.toLowerCase().replaceAll("\\W", " ").split("\\s+")));
         searchTerms.removeAll(blackList);
 
         for (String term : searchTerms) {
@@ -255,5 +260,36 @@ public class ParkingLotService {
             }
         }
         return tagEntities;
+    }
+
+    private LocalDate getEarliestAvaliableDate (LocalDate startDate, ParkingLotEntity parkingLotEntity){
+        List<ReservationEntity> reservationEntitys = reservationRepository.findClosestReservationBefore(startDate, parkingLotEntity);
+        if (reservationEntitys.isEmpty()){
+            return startDate.minusDays(dateRange);
+        } else {
+            ReservationEntity reservationEntity = reservationEntitys.get(0);
+            if (reservationEntity.getTo().isBefore(LocalDate.now())){
+                return LocalDate.now();
+            }
+            if (reservationEntity.getTo().isAfter(startDate.minusDays(dateRange))){
+                return reservationEntity.getTo();
+            } else {
+                return startDate.minusDays(dateRange);
+            }
+        }
+    }
+
+    private LocalDate getLatestAvaliableDate (LocalDate endDate, ParkingLotEntity parkingLotEntity){
+        List<ReservationEntity> reservationEntitys = reservationRepository.findClosestReservationAfter(endDate, parkingLotEntity);
+        if (reservationEntitys.isEmpty()){
+            return endDate.plusDays(dateRange);
+        } else {
+            ReservationEntity reservationEntity = reservationEntitys.get(0);
+            if (reservationEntity.getFrom().isAfter(endDate.plusDays(dateRange))){
+                return endDate.plusDays(dateRange);
+            } else {
+                return reservationEntity.getFrom();
+            }
+        }
     }
 }
