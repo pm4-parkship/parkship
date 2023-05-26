@@ -17,6 +17,27 @@ export interface ParkingLotModel {
   state: ParkingLotState;
 }
 
+export type CreateParkingLotModel = Omit<
+  ParkingLotModel,
+  'id' | 'owner' | 'state' | 'longitude' | 'latitude' |'floor' | 'nr' | 'pictures'
+>;
+
+export interface OfferModel {
+  from: Date;
+  to: Date;
+  monday: boolean;
+  tuesday: boolean;
+  wednesday: boolean;
+  thursday: boolean;
+  friday: boolean;
+  saturday: boolean;
+  sunday: boolean;
+}
+
+export type OfferCreateModel =Omit<OfferModel, ''> & {
+  parkingLotId : number;
+};
+
 export enum ParkingLotState {
   active = 'ACTIVE',
   locked = 'LOCKED',

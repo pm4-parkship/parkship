@@ -1,14 +1,20 @@
 import ReservationFilter from '../../src/components/my-reservation/reservation-filter';
 import ReservationTable from '../../src/components/my-reservation/reservation-table';
 import React, { useEffect, useState } from 'react';
-import { ReservationModel, ReservationState } from '../../src/models/reservation/reservation.model';
+import {
+  ReservationModel,
+  ReservationState
+} from '../../src/models/reservation/reservation.model';
+import { Typography } from '@mui/material';
+import { formatDate } from '../../src/date/date-formatter';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
 import { RowDataType } from '../../src/components/table/table-row';
 import { User } from '../api/user';
 import { logger } from '../../src/logger';
+import ReservationStateIcon from '../../src/components/my-reservation/reservation-state-icon';
 import CancelReservationModal from '../../src/components/reservation/cancel-reservation-modal';
 import ModifyReservationModal from '../../src/components/reservation/modify-reservation-modal';
-import NoData from '../../src/components/loading-buffer/no-data';
+import CancelCell from '../../src/components/my-reservation/reservation-cancel-cell';
 
 export interface ReservationFilterData {
   states: Set<ReservationState>;
@@ -67,10 +73,27 @@ const MyReservationPage = ({ user }) => {
       })
       .catch();
   }, []);
+  const filterReservation = (reservation: ReservationModel): boolean => {
+    return (
+      filter.states.has(reservation.reservationState) || !filter.states.size
+    );
+  };
 
-  const filteredReservations: ReservationModel[] = reservations.result.filter(
-    (item) => filter.states.has(item.reservationState) || !filter.states.size
-  );
+  const filteredReservations: Array<RowDataType> = reservations.result
+    .filter((item) => filterReservation(item))
+    .map((item) => {
+      return [
+        `${item.id}`,
+        ReservationStateIcon(item.reservationState),
+        `${item.parkingLot.address} ${item.parkingLot.addressNr}`,
+        `${item.tenant.name} ${item.tenant.surname}`,
+        `${formatDate(new Date(item.from))} - ${formatDate(new Date(item.to))}`,
+        CancelCell({
+          reservation: item,
+          onClick: () => setSelectedCancelReservation(item)
+        })
+      ];
+    });
 
   return (
     <div>
@@ -84,13 +107,9 @@ const MyReservationPage = ({ user }) => {
           <ReservationTable
             reservations={filteredReservations}
             openModifyModal={openModifyModal}
-            onCancel={setSelectedCancelReservation}
           ></ReservationTable>
         ) : (
-          <NoData
-            resultSize={reservations.result.length}
-            text={'Keine Reservationen gefunden :('}
-          />
+          <NoData size={reservations.result.length} />
         )}
       </>
       {selectedCancelReservation && (
@@ -112,6 +131,9 @@ const MyReservationPage = ({ user }) => {
     </div>
   );
 };
+
+const NoData = ({ size }) =>
+  size > 0 ? <Typography>Keine Reservationen gefunden :(</Typography> : null;
 
 const fetchReservations = async (user: User): Promise<ReservationModel[]> => {
   return await fetch('/backend/reservations', {

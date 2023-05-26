@@ -61,7 +61,7 @@ const ParkingLotsFilter = ({ updateFilter }: ParkingLotsFilterProps) => {
       <Grid item md={5} lg={5} xl={5} sm={8}>
         <TextField
           label={'Suchbegriff'}
-          fullWidth
+          fullWidth={true}
           value={searchTerm}
           onChange={(event) => setSearchTerm(event.currentTarget.value)}
         />
