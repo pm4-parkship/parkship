@@ -1,10 +1,7 @@
 import ReservationFilter from '../../src/components/my-reservation/reservation-filter';
 import ReservationTable from '../../src/components/my-reservation/reservation-table';
 import React, { useEffect, useState } from 'react';
-import {
-  ReservationModel,
-  ReservationState
-} from '../../src/models/reservation/reservation.model';
+import { ReservationModel, ReservationState } from '../../src/models/reservation/reservation.model';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
 import { RowDataType } from '../../src/components/table/table-row';
 import { User } from '../api/user';
