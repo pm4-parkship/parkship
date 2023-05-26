@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { CreateParkingLotModel, OfferModel } from '../../models';
 import TagBar, { TagData } from '../search-bar/tag-bar';
 import { OfferComponent } from './bookings/bookings';
+import Link from '../link/link';
 
 const dummyTags: TagData[] = [
   { key: 0, label: 'überdacht' },
@@ -84,94 +85,84 @@ export const CreateParkingModal = ({
   };
 
   return (
-      <Box className={classes.boxRoot}>
-        <form
-          style={{ width: '80%' }}
-          onSubmit={handleSubmit((data) => handleFormSubmit(data))}
-        >
-          <Grid container justifyContent="left" alignItems="center">
-            <Grid item xs={4}>
-              <Typography variant="h6">Bezeichnung:*</Typography>
+    <Box className={classes.boxRoot}>
+      <form
+        style={{ width: '80%' }}
+        onSubmit={handleSubmit((data) => handleFormSubmit(data))}
+      >
+        <Grid container justifyContent="left" alignItems="center">
+          <Grid item xs={4}>
+            <Typography variant="h6">Bezeichnung:*</Typography>
+          </Grid>
+          <Grid item xs={8} sx={{ pt: 1, pl: 1 }}>
+            <TextFieldElement
+              required
+              fullWidth
+              id="parkingName"
+              label="Bezeichnung:"
+              name="parkingName"
+              control={control}
+              className={classes.input}
+            />
+          </Grid>
+
+          <Grid item container justifyContent="left" alignItems="center">
+            <Grid xs={4}>
+              <Typography variant="h6">Besitzer: </Typography>
             </Grid>
-            <Grid item xs={8} sx={{ pt: 1, pl: 1 }}>
+            <Grid xs={6} sx={{ mx: 2, mb: 2 }}>
+              <Typography variant="h6">{owner}</Typography>
+            </Grid>
+          </Grid>
+
+          <Grid container justifyContent="left" alignItems="center" spacing={3}>
+            <Grid item xs={4}>
+              <Typography variant="h6" className={classes.input}>
+                Wo:*
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
               <TextFieldElement
                 required
                 fullWidth
-                id="parkingName"
-                label="Bezeichnung:"
-                name="parkingName"
+                id="address"
+                name="address"
                 control={control}
                 className={classes.input}
               />
             </Grid>
-
-            <Grid item container justifyContent="left" alignItems="center">
-              <Grid xs={4}>
-                <Typography variant="h6">Besitzer: </Typography>
-              </Grid>
-              <Grid xs={6} sx={{ mx: 2, mb: 2 }}>
-                <Typography variant="h6">{owner}</Typography>
-              </Grid>
+            <Grid item xs={2}>
+              <TextFieldElement
+                required
+                id="addressNr"
+                name="addressNr"
+                control={control}
+                className={classes.input}
+              />
             </Grid>
+          </Grid>
 
-            <Grid
-              container
-              justifyContent="left"
-              alignItems="center"
-              spacing={3}
-            >
-              <Grid item xs={4}>
-                <Typography variant="h6" className={classes.input}>
-                  Wo:*
-                </Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <TextFieldElement
-                  required
-                  fullWidth
-                  id="address"
-                  name="address"
-                  control={control}
-                  className={classes.input}
-                />
-              </Grid>
-              <Grid item xs={2}>
-                <TextFieldElement
-                  required
-                  id="addressNr"
-                  name="addressNr"
-                  control={control}
-                  className={classes.input}
-                />
-              </Grid>
+          <Grid container justifyContent="left" alignItems="center" spacing={3}>
+            <Grid item xs={4}>
+              <Typography variant="h6" className={classes.input}>
+                Kosten [CHFr. / Tag]:*{' '}
+              </Typography>
             </Grid>
-
-            <Grid
-              container
-              justifyContent="left"
-              alignItems="center"
-              spacing={3}
-            >
-              <Grid item xs={4}>
-                <Typography variant="h6" className={classes.input}>
-                  Kosten [CHFr. / Tag]:*{' '}
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <TextFieldElement
-                  required
-                  sx={{ maxWidth: 250 }}
-                  fullWidth
-                  id="price"
-                  name="price"
-                  type={'number'}
-                  control={control}
-                  className={classes.input}
-                />
-              </Grid>
+            <Grid item xs={3}>
+              <TextFieldElement
+                required
+                sx={{ maxWidth: 250 }}
+                fullWidth
+                id="price"
+                name="price"
+                type={'number'}
+                control={control}
+                className={classes.input}
+              />
             </Grid>
-            <Divider variant="middle" />
-            {/* <div
+          </Grid>
+          <Divider variant="middle" />
+          {/* <div
               style={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -179,14 +170,9 @@ export const CreateParkingModal = ({
                 marginBottom: '1rem'
               }}
             > */}
-            <Grid
-              container
-              justifyContent="left"
-              alignItems="center"
-              spacing={3}
-            >
-              <Grid item xs={4}></Grid>
-              <Grid item xs={4}>
+          <Grid container justifyContent="left" alignItems="center" spacing={3}>
+            <Grid item xs={4}></Grid>
+            <Grid item xs={4}>
               <Button
                 variant="outlined"
                 type="button"
@@ -201,9 +187,9 @@ export const CreateParkingModal = ({
               >
                 Add offer time
               </Button>
-              </Grid>
+            </Grid>
 
-              <Grid item xs={4}>
+            <Grid item xs={4}>
               <Button
                 variant="outlined"
                 type="button"
@@ -212,61 +198,59 @@ export const CreateParkingModal = ({
               >
                 Remove offer time
               </Button>
-              </Grid>
-              </Grid>
-
-            {Array.from({ length: offerCount }, (_, i) => i + 1).map((key) => {
-              return (
-                <OfferComponent
-                  key={key}
-                  onValuesChange={handleOfferDataSubmit}
-                />
-              );
-            })}
-
-            <Grid
-              container
-              justifyContent="left"
-              alignItems="center"
-              spacing={3}
-            >
-              <Grid item xs={4}>
-                <Typography variant="h6">Beschreibung:</Typography>
-              </Grid>
-              <Grid xs={12} sx={{ ml: 3 }}>
-                <TextFieldElement
-                  fullWidth
-                  multiline
-                  rows={4}
-                  id="description"
-                  label="Beschreibung: "
-                  name="description"
-                  control={control}
-                />
-              </Grid>
-            </Grid>
-            <Grid item>
-              <TagBar
-                options={dummyTags}
-                addTag={addTag}
-                handleDelete={handleDelete}
-                selected={selectedTags}
-              />
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              container
-              justifyContent="right"
-              alignItems="right"
-            >
-              <Button type={'submit'} variant={'contained'}>
-                Speichern
-              </Button>
             </Grid>
           </Grid>
-        </form>
-      </Box>
+
+          {Array.from({ length: offerCount }, (_, i) => i + 1).map((key) => {
+            return (
+              <OfferComponent
+                key={key}
+                onValuesChange={handleOfferDataSubmit}
+              />
+            );
+          })}
+
+          <Grid container justifyContent="left" alignItems="center" spacing={3}>
+            <Grid item xs={4}>
+              <Typography variant="h6">Beschreibung:</Typography>
+            </Grid>
+            <Grid xs={12} sx={{ ml: 3 }}>
+              <TextFieldElement
+                fullWidth
+                multiline
+                rows={4}
+                id="description"
+                label="Beschreibung: "
+                name="description"
+                control={control}
+              />
+            </Grid>
+          </Grid>
+          <Grid item>
+            <TagBar
+              options={dummyTags}
+              addTag={addTag}
+              handleDelete={handleDelete}
+              selected={selectedTags}
+            />
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            container
+            justifyContent="right"
+            alignItems="right"
+          >
+            <Link href='/my-parking-lot'>
+              <Button variant={'outlined'}>Abbrechen</Button>
+            </Link>
+            <Button type={'submit'} variant={'contained'}>
+              Speichern
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+    </Box>
   );
 };
 
@@ -275,7 +259,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center'
   },
-  
+
   header: {
     display: 'flex',
     marginBottom: '20px',
