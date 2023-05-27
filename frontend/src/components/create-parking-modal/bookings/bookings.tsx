@@ -2,7 +2,7 @@ import { Grid, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { CheckboxButtonGroup, DatePickerElement } from 'react-hook-form-mui';
 import { z } from 'zod';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { OfferModel } from '../../../models';
@@ -21,23 +21,30 @@ export const offerSchema = z.object({
 
 export type OfferType = z.infer<typeof offerSchema>;
 
+const today = new Date()
+const todayInAWeek = new Date()
+todayInAWeek.setDate(today.getDate() + 7)
+
 export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
   const classes = useStyles();
 
-  const { handleSubmit, control } = useForm({
+  const [startDate, setStartDate] = useState(() => today)
+  const [endDate, setEndDate] = useState(() => todayInAWeek)
+
+  const { handleSubmit, control, getValues, setValue } = useForm({
     resolver: zodResolver(offerSchema),
     mode: 'onChange',
     defaultValues: {
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: today,
+      endDate: todayInAWeek,
       days: []
     }
   });
 
   const handleFormSubmit = (data: OfferType) => {
     const offerModel: OfferModel = {
-      from: data.startDate,
-      to: data.endDate,
+      from: startDate,
+      to: endDate,
       monday: data.days.filter((e) => e.id === 0).length > 0,
       tuesday: data.days.filter((e) => e.id === 1).length > 0,
       wednesday: data.days.filter((e) => e.id === 2).length > 0,
@@ -49,11 +56,13 @@ export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
     onValuesChange(offerModel);
   };
 
+
+  const fn = handleSubmit((data) => handleFormSubmit(data))
   return (
     <>
       <form
         style={{ width: '100%' }}
-        onChange={handleSubmit((data) => handleFormSubmit(data))}
+        onChange={fn}
       >
         <Grid
           container
@@ -73,8 +82,12 @@ export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
               required
               label="von"
               disablePast
-              name={`startDate`} // <== Changed here
+              name={`startDate`}
               control={control}
+              onChange={(e => {
+                setStartDate(e)
+                fn()
+              })}
               className={classes.input}
             />
           </Grid>
@@ -82,9 +95,13 @@ export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
             <DatePickerElement
               required
               label="bis"
-              name={`endDate`} // <== Changed here
+              name={`endDate`}
               control={control}
               disablePast
+              onChange={(e => {
+                setEndDate(e)
+                fn()
+              })}
               className={classes.input}
             />
           </Grid>

@@ -185,7 +185,7 @@ export const CreateParkingModal = ({
                 }}
                 disabled={offerCount >= 5}
               >
-                Add offer time
+                Buchbaren Zeitraum hinzufügen
               </Button>
             </Grid>
 
@@ -196,7 +196,7 @@ export const CreateParkingModal = ({
                 onClick={() => setOfferCount(offerCount - 1)}
                 disabled={offerCount == 1}
               >
-                Remove offer time
+                Buchbaren Zeitraum entfernen
               </Button>
             </Grid>
           </Grid>

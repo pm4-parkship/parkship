@@ -14,8 +14,6 @@ import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRole;
 import ch.zhaw.parkship.user.UserService;
 import ch.zhaw.parkship.user.UserState;
-
-import com.github.javafaker.Faker;
 import jakarta.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -25,9 +23,7 @@ import org.springframework.context.annotation.Profile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 public class ParkshipApplication {
@@ -36,8 +32,8 @@ public class ParkshipApplication {
     private final OfferRepository offerRepository;
 
     public ParkshipApplication(ParkingLotRepository parkingLotRepository,
-            ReservationRepository reservationRepository,
-            OfferRepository offerRepository) {
+                               ReservationRepository reservationRepository,
+                               OfferRepository offerRepository) {
         this.parkingLotRepository = parkingLotRepository;
         this.reservationRepository = reservationRepository;
         this.offerRepository = offerRepository;
@@ -48,9 +44,9 @@ public class ParkshipApplication {
     }
 
     @Bean
-    @Profile({ "dev", "production" })
+    @Profile({"dev", "production"})
     @Transactional
-    CommandLineRunner initTemplate(UserService userService, TagRepository tagRepository) {
+    public CommandLineRunner initTemplate(UserService userService, TagRepository tagRepository) {
         return args -> {
             UserEntity lukas = userService.signUp("Lukas", "Müller", "lukas.mueller@bluewin.ch", "pass123",
                     UserRole.USER);

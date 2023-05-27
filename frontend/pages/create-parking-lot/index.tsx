@@ -10,9 +10,11 @@ import {
   ParkingLotModel
 } from '../../src/models';
 import { User } from 'pages/api/user';
-
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/router';
 
 const CreatePage = ({ user }) => {
+  const router = useRouter()
 
   const addParkingLot = (
     newParkingLot: CreateParkingLotModel,
@@ -29,15 +31,19 @@ const CreatePage = ({ user }) => {
             ...offer
           };
         });
-    
+
         createParkingLotOfferCall(user, offersToCreate).then((response) => {
           if (response) {
             logger.log("offer created");
             logger.log(response);
+            toast.success(`Parkplatz erstellt!`);
+            router.push("/my-parking-lot")
           }
         });
 
       }
+    }).catch(e => {
+      toast.error(`Parkplatz konnte nicht erstellt werden :(`);
     });
   };
 
