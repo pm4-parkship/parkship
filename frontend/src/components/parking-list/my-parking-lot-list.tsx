@@ -33,7 +33,7 @@ const MyParkingLotList = ({ parkings }: { parkings: ParkingLotModel[] }) => {
             />
           );
         })}
-        {parkings?.length == 0 ? <ParkingListEmptyItem /> : <></>}
+        <ParkingListEmptyItem/>
       </div>
     </Paper>
   );
@@ -48,7 +48,8 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'row',
     overflow: 'scroll',
     justifyContent: 'flex-start',
-    columnGap: '2rem'
+    columnGap: '2rem',
+    maxWidth: '100%'
   }
 }));
 

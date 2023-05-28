@@ -1,6 +1,12 @@
 package ch.zhaw.parkship.services;
 
-import ch.zhaw.parkship.parkinglot.*;
+import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
+import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
+import ch.zhaw.parkship.parkinglot.ParkingLotService;
+import ch.zhaw.parkship.parkinglot.ParkingLotState;
+import ch.zhaw.parkship.parkinglot.dtos.ParkingLotCreateDto;
+import ch.zhaw.parkship.parkinglot.dtos.ParkingLotDto;
+import ch.zhaw.parkship.parkinglot.dtos.ParkingLotSearchDto;
 import ch.zhaw.parkship.reservation.ReservationService;
 import ch.zhaw.parkship.tag.TagDto;
 import ch.zhaw.parkship.tag.TagEntity;
@@ -23,6 +29,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -107,14 +114,27 @@ class ParkingLotServiceTest {
         return data;
     }
 
+    private ParkingLotCreateDto createParkingLotCreateDto() {
+        ParkingLotCreateDto data = new ParkingLotCreateDto();
+        Set<TagDto> tagDtos = new HashSet<>();
+        tagDtos.add(new TagDto("schoener Parkplatz", 1L));
+        data.setLongitude(15.5);
+        data.setLatitude(16.22);
+        data.setPrice(15.55);
+        data.setAddress("Muster Street");
+        data.setAddressNr("44");
+        data.setDescription("next to the entrance");
+        data.setTags(tagDtos.stream().map(TagDto::getName).collect(Collectors.toSet()));
+        return data;
+    }
+
     @Test
     public void testCreate() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(parkingLotEntity.getOwner()));
         when(parkingLotRepository.save(any(ParkingLotEntity.class))).thenReturn(parkingLotEntity);
 
-        var data = createParkingLotDto();
+        var data = createParkingLotCreateDto();
 
-        var result = parkingLotService.create(data);
+        var result = parkingLotService.create(data, userEntity);
 
         assertEquals(1, result.get().getId());
 
@@ -150,7 +170,7 @@ class ParkingLotServiceTest {
     public void testSearchByTags() {
         // arrange
         List<ParkingLotEntity> parkingLotEntities = new ArrayList<>();
-        parkingLotEntities.add(parkingLotEntity)   ;
+        parkingLotEntities.add(parkingLotEntity);
 
         TagEntity garage = new TagEntity();
         garage.setName("Garage");
@@ -205,7 +225,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance",List.of(), null, null, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", List.of(), null, null, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
         // Add assertions for other properties
         verify(parkingLotRepository, times(1)).findAllByDescriptionContainsIgnoreCase("entrance");
@@ -219,7 +239,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository behavior
         when(parkingLotRepository.findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase("max", "max")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("max",List.of(), null, null, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("max", List.of(), null, null, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
         // Add assertions for other properties
         verify(parkingLotRepository, times(1)).findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase("max", "max");
@@ -234,7 +254,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository behavior
         when(parkingLotRepository.findAllByAddressContainsIgnoreCase("muster")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("Muster Street 44",List.of(), null, null, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("Muster Street 44", List.of(), null, null, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
         // Add assertions for other properties
         verify(parkingLotRepository, times(1)).findAllByAddressContainsIgnoreCase("muster");
@@ -253,7 +273,7 @@ class ParkingLotServiceTest {
         when(parkingLotRepository.isParkingLotAvailable(parkingLotEntity, startDate, endDate)).thenReturn(parkingLotEntity);
         when(parkingLotRepository.isParkingLotOffered(parkingLotEntity, startDate, endDate, false, false, false, false, false, true, true)).thenReturn(parkingLotEntity);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance",List.of(), startDate, endDate, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", List.of(), startDate, endDate, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
 
     }
@@ -269,7 +289,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance",List.of(), startDate, endDate, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", List.of(), startDate, endDate, 0, 100);
         assertTrue(actualReturnValue.isEmpty());
 
     }
@@ -282,12 +302,12 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance",List.of(), null, null, 1, 1);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", List.of(), null, null, 1, 1);
         assertTrue(actualReturnValue.isEmpty());
     }
 
     @Test
-    public void testGetBySearchTermInactive(){
+    public void testGetBySearchTermInactive() {
         List<ParkingLotEntity> expectedReturnValue = new ArrayList<>();
         ParkingLotEntity p1 = new ParkingLotEntity();
         p1.setId(1L);
@@ -301,7 +321,7 @@ class ParkingLotServiceTest {
 
         List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance", null, null, null, 0, 100);
         assertTrue(actualReturnValue.isEmpty());
-      }
+    }
 
     @Test
     public void testGetBySearchTermPageOneEntry() {
@@ -323,7 +343,7 @@ class ParkingLotServiceTest {
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("entrance",List.of(), null, null, 1, 1);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("entrance", List.of(), null, null, 1, 1);
 
         assertEquals(expectedReturnValue.get(1).getId(), actualReturnValue.get(0).getId());
     }
@@ -374,7 +394,7 @@ class ParkingLotServiceTest {
 
 
     @Test
-    void updateStateTest(){
+    void updateStateTest() {
         // arrange
         ParkingLotEntity entity = ParkingLotGenerator.generate(UserGenerator.generate());
         entity.setId(1L);

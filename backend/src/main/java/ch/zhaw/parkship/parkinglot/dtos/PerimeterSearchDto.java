@@ -1,4 +1,4 @@
-package ch.zhaw.parkship.parkinglot;
+package ch.zhaw.parkship.parkinglot.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -12,8 +12,6 @@ import { makeStyles } from '@mui/styles';
 import { Icon } from '@iconify/react';
 import { formatDate } from '../../date/date-formatter';
 import { DatePicker } from '@mui/x-date-pickers';
-import { toast } from 'react-toastify';
-import { logger } from '../../logger';
 
 export const enum ReservationAction {
   CREATE = 'reservieren',
@@ -59,16 +57,7 @@ const ConfirmationModal = ({
   const [toDate, setToDate] = useState<Date>(data.toDate);
 
   const validateInput = (): boolean => {
-    if (
-      fromDate <= toDate &&
-      fromDate.getDate() >= new Date().getDate() &&
-      toDate.getDate() >= new Date().getDate()
-    ) {
-      return true;
-    } else {
-      toast.error('Datum ungültig');
-      return false;
-    }
+    return fromDate <= toDate && fromDate >= new Date() && toDate >= new Date();
   };
   const DateRange = (date: Date, label: string, setter, minDate) => (
     <Grid item xs={12}>
@@ -120,7 +109,7 @@ const ConfirmationModal = ({
               {data.id}
             </Typography>
             <Typography align="center">{HeaderText.get(action)}</Typography>
-            <Grid container rowSpacing={4} flex={1}>
+            <Grid container rowSpacing={4} flex={1} xs={12}>
               {DateRange(fromDate, 'von:', setFromDate, new Date())}
               {DateRange(toDate, 'bis:', setToDate, fromDate)}
             </Grid>

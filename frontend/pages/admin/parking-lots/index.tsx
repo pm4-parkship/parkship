@@ -4,8 +4,10 @@ import { Grid, Typography } from '@mui/material';
 import { logger } from '../../../src/logger';
 import { ParkingLotModel, ParkingLotState } from '../../../src/models';
 import ParkingLotsFilter from '../../../src/components/parking-lots-list/parking-lots-filter';
+import { RowDataType } from '../../../src/components/table/table-row';
 import ParkingLotsTable from '../../../src/components/parking-lots-list/parking-lots-table';
 import { User } from '../../api/user';
+import ParkingLotStateToggleButton from '../../../src/components/parking-lots-list/parking-lot-state-toggle-button';
 import { toast } from 'react-toastify';
 
 export interface ParkingLotsFilterData {
@@ -24,20 +26,26 @@ const ParkingLotsPage = ({ user }) => {
   const [filter, setFilter] = useState<ParkingLotsFilterData>(initFilter);
   const [parkingLots, setParkingLots] = useState(initState);
 
-  const updateParkingLot = (parkingLot) => {
-    updateParkingLotCall(parkingLot, user).then((result) => {
+  const changeParkingLotState = (selected) => {
+    const lot = parkingLots.result.find((value) => value.id == selected.id);
+
+    if (!lot || !user) return;
+    lot.state =
+      lot.state == ParkingLotState.locked
+        ? ParkingLotState.active
+        : ParkingLotState.locked;
+
+    updateParkingLot(lot, user).then((result) => {
       if (result) {
-        parkingLots.result.map((obj) =>
-          obj.id == parkingLot.id ? parkingLot : obj
-        );
+        parkingLots.result.map((obj) => (obj.id == lot.id ? lot : obj));
         setParkingLots({
           error: null,
           loading: false,
           result: parkingLots.result
         });
-        toast.success(`Parkplatz ${parkingLot.id} erfolgreich aktualisiert`);
+        toast.success(`Parkplatz ${lot.id} erfolgreich aktualisiert`);
       } else {
-        toast.error(`Parkplatz ${parkingLot.id} Update fehlerhaft`);
+        toast.error(`Parkplatz ${lot.id} Update fehlerhaft`);
       }
     });
   };
@@ -65,9 +73,22 @@ const ParkingLotsPage = ({ user }) => {
     );
   };
 
-  const filteredParkingLots =
+  const filteredParkingLots: Array<RowDataType> =
     parkingLots.result &&
-    parkingLots.result.filter((parkingLot) => parkingLotFilter(parkingLot));
+    parkingLots.result
+      .filter((parkingLot) => parkingLotFilter(parkingLot))
+      .map((parkingLot) => {
+        return [
+          `${parkingLot.id}`,
+          `${parkingLot.name}`,
+          `${parkingLot.address} ${parkingLot.addressNr}`,
+          `${parkingLot.owner.name} ${parkingLot.owner.surname}`,
+          <ParkingLotStateToggleButton
+            parkingLot={parkingLot}
+            changeParkingLotState={changeParkingLotState}
+          />
+        ];
+      });
 
   return (
     <Grid padding={2}>
@@ -80,10 +101,7 @@ const ParkingLotsPage = ({ user }) => {
           <Loading loading={parkingLots.loading} />
 
           {parkingLots.result.length > 0 ? (
-            <ParkingLotsTable
-              parkingLots={filteredParkingLots}
-              updateParkingLot={updateParkingLot}
-            />
+            <ParkingLotsTable parkingLots={filteredParkingLots} />
           ) : (
             <NoData size={parkingLots.result.length} />
           )}
@@ -94,7 +112,7 @@ const ParkingLotsPage = ({ user }) => {
 };
 
 const NoData = ({ size }) =>
-  size == 0 ? <Typography>Keine Parkplätze gefunden :(</Typography> : null;
+  size > 0 ? <Typography>Keine Parkplätze gefunden :(</Typography> : null;
 
 const fetchAllParkingLots = async (user: User): Promise<ParkingLotModel[]> => {
   const query = new URLSearchParams({
@@ -115,7 +133,7 @@ const fetchAllParkingLots = async (user: User): Promise<ParkingLotModel[]> => {
     }
   });
 };
-const updateParkingLotCall = async (
+const updateParkingLot = async (
   parkingLot: ParkingLotModel,
   user: User
 ): Promise<boolean> => {
