@@ -24,6 +24,11 @@ const initState = {
   result: Array<ParkingLotModel>()
 };
 
+export interface MyParkingLotsFilterData {
+  names: Set<string>;
+  searchTerm: string;
+}
+
 interface MyParkingLotsTableProps {
   id: number;
   parkingLotName: string;
@@ -179,4 +184,6 @@ const useStyles = makeStyles((theme) => ({
         : 'rgba(255, 255, 255, 0.08)'
   }
 }));
+
+
 export default MyParkingLotPage;
