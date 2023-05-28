@@ -108,6 +108,7 @@ public class ParkshipApplication {
             parkingLotMoTue.setLongitude(8.5389393156127);
             parkingLotMoTue.setNr("25");
             parkingLotMoTue.setAddress("Bahnhofstrasse");
+            parkingLotMoTue.setAddressNr("78");
             parkingLotMoTue.setPrice(150.0);
             parkingLotMoTue.setState(ParkingLotState.ACTIVE);
             parkingLotMoTue.setDescription(
@@ -125,6 +126,7 @@ public class ParkshipApplication {
             parkingLotWorkdays.setLongitude(8.507525639760503);
             parkingLotWorkdays.setNr("8");
             parkingLotWorkdays.setAddress("Gehrenholzstrasse");
+            parkingLotWorkdays.setAddressNr("45");
             parkingLotWorkdays.setPrice(180.0);
             parkingLotWorkdays.setState(ParkingLotState.ACTIVE);
             parkingLotWorkdays.setDescription(
@@ -141,6 +143,7 @@ public class ParkshipApplication {
             parkingLotInactive.setLongitude(8.5529563397625);
             parkingLotInactive.setNr("N/A");
             parkingLotInactive.setAddress("Wohnstadion Kirchenacker");
+            parkingLotInactive.setAddressNr("99");
             parkingLotInactive.setPrice(160.0);
             parkingLotInactive.setState(ParkingLotState.INACTIVE);
             parkingLotInactive.setDescription(
@@ -158,6 +161,7 @@ public class ParkshipApplication {
             parkingLotWeek.setLongitude(8.568585250628265);
             parkingLotWeek.setNr("8");
             parkingLotWeek.setAddress("Walter Mittelholzerstrasse");
+            parkingLotWeek.setAddressNr("123");
             parkingLotWeek.setPrice(170.0);
             parkingLotWeek.setState(ParkingLotState.ACTIVE);
             parkingLotWeek.setDescription(

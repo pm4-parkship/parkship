@@ -21,7 +21,7 @@ const useStyles = makeStyles(() => ({
     verticalAlign: 'middle',
     backgroundColor: 'lightgray',
     width: 150,
-    height: 200,
+    height: 250,
     margin: 0,
     '&:hover': {
       opacity: '75%',
