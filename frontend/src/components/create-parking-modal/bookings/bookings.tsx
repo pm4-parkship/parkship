@@ -9,7 +9,6 @@ import { OfferModel } from '../../../models';
 
 interface OfferProps {
   onValuesChange: (values: OfferModel) => void;
-  offer: OfferModel;
 }
 
 export const offerSchema = z.object({
