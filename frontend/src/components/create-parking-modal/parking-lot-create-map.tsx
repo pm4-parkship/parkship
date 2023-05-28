@@ -11,14 +11,34 @@ L.Icon.Default.mergeOptions({
     shadowUrl: iconShadow.src,
 });
 
-export default function ParkingLotDetailMap({ coordinates }) {
+const zhawCoords: LatLngExpression = [47.37773821639167, 8.53285841502799];
+
+function MapController({ onChange }) {
+    const map = useMap();
+
+    useEffect(() => {
+        map.on("click", (e) => {
+            const { lat, lng } = e.latlng;
+            onChange([lat, lng]);
+        });
+    }, []);
+
+    return null;
+}
+
+export default function ParkingLotCreateMap({ onPositionChange }) {
+    const [position, setPosition] = useState(() => zhawCoords);
+    useEffect(() => {
+        onPositionChange(position);
+    }, [position]);
     return (
-        <MapContainer center={coordinates} zoom={17} scrollWheelZoom={false}>
+        <MapContainer center={position} zoom={17} scrollWheelZoom={false}>
+            <MapController onChange={setPosition} />
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker position={coordinates} />
+            <Marker position={position} />
         </MapContainer>
     );
 }

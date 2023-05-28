@@ -21,7 +21,7 @@ import { nanoid } from 'nanoid';
 import Checkbox from '@mui/material/Checkbox';
 import dynamic from 'next/dynamic';
 
-const PartkingLotDetailMap = dynamic(() => import('./PartkingLotDetailMap'), {
+const PartkingLotDetailMap = dynamic(() => import('./partking-lot-detail-map'), {
   ssr: false
 });
 

@@ -12,7 +12,7 @@ import { OfferComponent } from './bookings/bookings';
 import Link from '../link/link';
 import dynamic from 'next/dynamic';
 
-const ParkingLotCreateMap = dynamic(() => import('./ParkingLotCreateMap'), {
+const ParkingLotCreateMap = dynamic(() => import('./parking-lot-create-map'), {
   ssr: false
 });
 
@@ -35,7 +35,7 @@ export const CreateParkingModal = ({
 }: CreateParkingModalProps) => {
   const classes = useStyles();
 
-  const [coords, setCoords] = useState([0, 0])
+  const [coords, setCoords] = useState([0, 0]);
 
   const [selectedTags, setSelectedTag] = useState<TagData[]>([]);
   const [offerCount, setOfferCount] = useState<number>(2);
