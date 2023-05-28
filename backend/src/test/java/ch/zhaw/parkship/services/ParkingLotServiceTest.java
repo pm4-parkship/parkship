@@ -1,6 +1,8 @@
 package ch.zhaw.parkship.services;
 
 import ch.zhaw.parkship.parkinglot.*;
+import ch.zhaw.parkship.reservation.ReservationEntity;
+import ch.zhaw.parkship.reservation.ReservationRepository;
 import ch.zhaw.parkship.reservation.ReservationService;
 import ch.zhaw.parkship.tag.TagDto;
 import ch.zhaw.parkship.tag.TagEntity;
@@ -46,6 +48,9 @@ class ParkingLotServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private ReservationRepository reservationRepository;
 
     @Captor
     ArgumentCaptor<ParkingLotEntity> parkingLotEntityArgumentCaptor;
@@ -151,7 +156,9 @@ class ParkingLotServiceTest {
     public void testSearchByTags() {
         // arrange
         List<ParkingLotEntity> parkingLotEntities = new ArrayList<>();
-        parkingLotEntities.add(parkingLotEntity)   ;
+        parkingLotEntities.add(parkingLotEntity);
+        LocalDate startDate = LocalDate.of(2023, 4, 8);
+        LocalDate endDate = LocalDate.of(2023, 4, 9);
 
         TagEntity garage = new TagEntity();
         garage.setName("Garage");
@@ -161,9 +168,16 @@ class ParkingLotServiceTest {
         parkingLotEntities.add(entityWithTag);
 
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase(Mockito.any())).thenReturn(parkingLotEntities);
+        when(parkingLotRepository.isParkingLotAvailable(entityWithTag, startDate, endDate)).thenReturn(entityWithTag);
+        when(parkingLotRepository.isParkingLotOffered(entityWithTag,startDate,endDate,false,false,false,false,false,true,true)).thenReturn(entityWithTag);
+        when(reservationRepository.findClosestReservationBefore(startDate,entityWithTag)).thenReturn(new ArrayList<ReservationEntity>());
+        when(reservationRepository.findClosestReservationAfter(endDate,entityWithTag)).thenReturn(new ArrayList<ReservationEntity>());
+
+        when(parkingLotRepository.isParkingLotAvailable(parkingLotEntity, startDate, endDate)).thenReturn(parkingLotEntity);
+        when(parkingLotRepository.isParkingLotOffered(parkingLotEntity,startDate,endDate,false,false,false,false,false,true,true)).thenReturn(parkingLotEntity);
 
         // act
-        var result = parkingLotService.getBySearchTerm("", List.of("Garage"), null, null,
+        var result = parkingLotService.getBySearchTerm("", List.of("Garage"), startDate, endDate,
                 0, 100);
 
         // assertEquals(1, result.size());
@@ -203,10 +217,16 @@ class ParkingLotServiceTest {
     public void testGetBySearchTermDescription() {
         List<ParkingLotEntity> expectedReturnValue = new ArrayList<>();
         expectedReturnValue.add(parkingLotEntity);
+        LocalDate startDate = LocalDate.of(2023, 4, 8);
+        LocalDate endDate = LocalDate.of(2023, 4, 9);
         // Mock the necessary ParkingLotRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
+        when(parkingLotRepository.isParkingLotAvailable(parkingLotEntity, startDate, endDate)).thenReturn(parkingLotEntity);
+        when(parkingLotRepository.isParkingLotOffered(parkingLotEntity,startDate,endDate,false,false,false,false,false,true,true)).thenReturn(parkingLotEntity);
+        when(reservationRepository.findClosestReservationBefore(startDate,parkingLotEntity)).thenReturn(new ArrayList<ReservationEntity>());
+        when(reservationRepository.findClosestReservationAfter(endDate,parkingLotEntity)).thenReturn(new ArrayList<ReservationEntity>());
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance",List.of(), null, null, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance",List.of(), startDate, endDate, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
         // Add assertions for other properties
         verify(parkingLotRepository, times(1)).findAllByDescriptionContainsIgnoreCase("entrance");
@@ -217,10 +237,16 @@ class ParkingLotServiceTest {
     public void testGetBySearchTermOwner() {
         List<ParkingLotEntity> expectedReturnValue = new ArrayList<>();
         expectedReturnValue.add(parkingLotEntity);
+        LocalDate startDate = LocalDate.of(2023, 4, 8);
+        LocalDate endDate = LocalDate.of(2023, 4, 9);
         // Mock the necessary ParkingLotRepository behavior
         when(parkingLotRepository.findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase("max", "max")).thenReturn(expectedReturnValue);
+        when(parkingLotRepository.isParkingLotAvailable(parkingLotEntity, startDate, endDate)).thenReturn(parkingLotEntity);
+        when(parkingLotRepository.isParkingLotOffered(parkingLotEntity,startDate,endDate,false,false,false,false,false,true,true)).thenReturn(parkingLotEntity);
+        when(reservationRepository.findClosestReservationBefore(startDate,parkingLotEntity)).thenReturn(new ArrayList<ReservationEntity>());
+        when(reservationRepository.findClosestReservationAfter(endDate,parkingLotEntity)).thenReturn(new ArrayList<ReservationEntity>());
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("max",List.of(), null, null, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("max",List.of(), startDate, endDate, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
         // Add assertions for other properties
         verify(parkingLotRepository, times(1)).findAllByOwner_NameContainsIgnoreCaseOrOwner_SurnameContainsIgnoreCase("max", "max");
@@ -232,10 +258,16 @@ class ParkingLotServiceTest {
     public void testGetBySearchTermAddress() {
         List<ParkingLotEntity> expectedReturnValue = new ArrayList<ParkingLotEntity>();
         expectedReturnValue.add(parkingLotEntity);
+        LocalDate startDate = LocalDate.of(2023, 4, 8);
+        LocalDate endDate = LocalDate.of(2023, 4, 9);
         // Mock the necessary ParkingLotRepository behavior
         when(parkingLotRepository.findAllByAddressContainsIgnoreCase("muster")).thenReturn(expectedReturnValue);
+        when(parkingLotRepository.isParkingLotAvailable(parkingLotEntity, startDate, endDate)).thenReturn(parkingLotEntity);
+        when(parkingLotRepository.isParkingLotOffered(parkingLotEntity,startDate,endDate,false,false,false,false,false,true,true)).thenReturn(parkingLotEntity);
+        when(reservationRepository.findClosestReservationBefore(startDate,parkingLotEntity)).thenReturn(new ArrayList<ReservationEntity>());
+        when(reservationRepository.findClosestReservationAfter(endDate,parkingLotEntity)).thenReturn(new ArrayList<ReservationEntity>());
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("Muster Street 44",List.of(), null, null, 0, 100);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("Muster Street 44",List.of(), startDate, endDate, 0, 100);
         assertEquals(expectedReturnValue.get(0).getId(), actualReturnValue.get(0).getId());
         // Add assertions for other properties
         verify(parkingLotRepository, times(1)).findAllByAddressContainsIgnoreCase("muster");
@@ -279,11 +311,16 @@ class ParkingLotServiceTest {
     public void testGetBySearchTermPageOneEmpty() {
         List<ParkingLotEntity> expectedReturnValue = new ArrayList<ParkingLotEntity>();
         expectedReturnValue.add(parkingLotEntity);
-
+        LocalDate startDate = LocalDate.of(2023, 4, 8);
+        LocalDate endDate = LocalDate.of(2023, 4, 9);
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
+        when(parkingLotRepository.isParkingLotAvailable(parkingLotEntity, startDate, endDate)).thenReturn(parkingLotEntity);
+        when(parkingLotRepository.isParkingLotOffered(parkingLotEntity,startDate,endDate,false,false,false,false,false,true,true)).thenReturn(parkingLotEntity);
+        when(reservationRepository.findClosestReservationBefore(startDate,parkingLotEntity)).thenReturn(new ArrayList<ReservationEntity>());
+        when(reservationRepository.findClosestReservationAfter(endDate,parkingLotEntity)).thenReturn(new ArrayList<ReservationEntity>());
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance",List.of(), null, null, 1, 1);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("near the entrance",List.of(), startDate, endDate, 1, 1);
         assertTrue(actualReturnValue.isEmpty());
     }
 
@@ -321,10 +358,21 @@ class ParkingLotServiceTest {
         p2.setOwner(userEntity);
         expectedReturnValue.add(p2);
 
+        LocalDate startDate = LocalDate.of(2023, 4, 8);
+        LocalDate endDate = LocalDate.of(2023, 4, 9);
+
         // Mock the necessary ParkingLotRepository and ReservationRepository behavior
         when(parkingLotRepository.findAllByDescriptionContainsIgnoreCase("entrance")).thenReturn(expectedReturnValue);
+        when(parkingLotRepository.isParkingLotAvailable(p1, startDate, endDate)).thenReturn(p1);
+        when(parkingLotRepository.isParkingLotOffered(p1,startDate,endDate,false,false,false,false,false,true,true)).thenReturn(p1);
+        when(reservationRepository.findClosestReservationBefore(startDate,p1)).thenReturn(new ArrayList<ReservationEntity>());
+        when(reservationRepository.findClosestReservationAfter(endDate,p1)).thenReturn(new ArrayList<ReservationEntity>());
+        when(parkingLotRepository.isParkingLotAvailable(p2, startDate, endDate)).thenReturn(p2);
+        when(parkingLotRepository.isParkingLotOffered(p2,startDate,endDate,false,false,false,false,false,true,true)).thenReturn(p2);
+        when(reservationRepository.findClosestReservationBefore(startDate,p2)).thenReturn(new ArrayList<ReservationEntity>());
+        when(reservationRepository.findClosestReservationAfter(endDate,p2)).thenReturn(new ArrayList<ReservationEntity>());
 
-        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("entrance",List.of(), null, null, 1, 1);
+        List<ParkingLotSearchDto> actualReturnValue = parkingLotService.getBySearchTerm("entrance",List.of(), startDate, endDate, 1, 1);
 
         assertEquals(expectedReturnValue.get(1).getId(), actualReturnValue.get(0).getId());
     }
