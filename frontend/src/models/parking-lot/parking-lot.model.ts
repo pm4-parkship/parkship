@@ -19,7 +19,7 @@ export interface ParkingLotModel {
 
 export type CreateParkingLotModel = Omit<
   ParkingLotModel,
-  'id' | 'owner' | 'state' | 'longitude' | 'latitude' |'floor' | 'nr' | 'pictures'
+  'id' | 'owner' | 'state' |'floor' | 'nr' | 'pictures'
 >;
 
 export interface OfferModel {

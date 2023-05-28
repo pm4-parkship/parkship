@@ -46,3 +46,7 @@ a:link {
     background: transparent;
     border-radius: 4px;
 }
+
+.leaflet-container {
+    min-height: 600px;
+}

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Divider, Grid, Modal, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TextFieldElement } from 'react-hook-form-mui';
 import { toast } from 'react-toastify';
@@ -10,6 +10,11 @@ import { CreateParkingLotModel, OfferModel } from '../../models';
 import TagBar, { TagData } from '../search-bar/tag-bar';
 import { OfferComponent } from './bookings/bookings';
 import Link from '../link/link';
+import dynamic from 'next/dynamic';
+
+const ParkingLotCreateMap = dynamic(() => import('./ParkingLotCreateMap'), {
+  ssr: false
+});
 
 const dummyTags: TagData[] = [
   { key: 0, label: 'überdacht' },
@@ -29,6 +34,8 @@ export const CreateParkingModal = ({
   owner
 }: CreateParkingModalProps) => {
   const classes = useStyles();
+
+  const [coords, setCoords] = useState([0, 0])
 
   const [selectedTags, setSelectedTag] = useState<TagData[]>([]);
   const [offerCount, setOfferCount] = useState<number>(2);
@@ -70,6 +77,8 @@ export const CreateParkingModal = ({
 
   const handleFormSubmit = async (data: ParkingCreationSchema) => {
     const createData: CreateParkingLotModel = {
+      latitude: coords[0],
+      longitude: coords[1],
       address: data.address,
       addressNr: data.addressNr || '',
       description: data.description || '',
@@ -162,6 +171,10 @@ export const CreateParkingModal = ({
             </Grid>
           </Grid>
           <Divider variant="middle" />
+          <Grid item xs={12} width={100}>
+            <Typography variant="h6">Karte (Lat: {coords[0].toFixed(4)}, Lng: {coords[1].toFixed(4)})</Typography>
+            <ParkingLotCreateMap onPositionChange={setCoords}/>
+          </Grid>
           {/* <div
               style={{
                 display: 'flex',

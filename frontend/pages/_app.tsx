@@ -20,6 +20,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { enGB } from 'date-fns/locale';
 import useSession from '../src/auth/use-session';
 import { useAuthRedirect } from 'src/auth/use-redirect';
+import "leaflet/dist/leaflet.css";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();

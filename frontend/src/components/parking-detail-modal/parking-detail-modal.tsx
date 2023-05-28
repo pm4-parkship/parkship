@@ -19,6 +19,12 @@ import { Icon } from '@iconify/react';
 import ImageCustom from '../image/image-custom';
 import { nanoid } from 'nanoid';
 import Checkbox from '@mui/material/Checkbox';
+import dynamic from 'next/dynamic';
+
+const PartkingLotDetailMap = dynamic(() => import('./PartkingLotDetailMap'), {
+  ssr: false
+});
+
 
 interface ParkingDetailModalProps {
   showModal: boolean;
@@ -202,11 +208,16 @@ const ParkingDetailModal = ({
                 </TableBody>
               </Table>
             </Grid>
+
+
+
           </Grid>
           <Divider variant="middle" />
 
           <Paper elevation={0}>{parkingLotModel.description}</Paper>
-
+          <Grid item xs={12}>
+            <PartkingLotDetailMap coordinates={[parkingLotModel.latitude, parkingLotModel.longitude]}/>
+            </Grid>
           <Divider variant="middle" />
           <Stack direction="row" spacing={2}>
             {parkingLotModel.pictures &&

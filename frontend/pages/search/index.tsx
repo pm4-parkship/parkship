@@ -158,8 +158,8 @@ const fetchSearch = async (
 ): Promise<SearchResultModel[]> => {
   const query = new URLSearchParams({
     searchTerm: searchParameters.searchTerm,
-    startDate: format(searchParameters.fromDate, 'yyy-MM-dd'),
-    endDate: format(searchParameters.toDate, 'yyy-MM-dd')
+    //startDate: format(searchParameters.fromDate, 'yyyy-MM-dd'),
+   // endDate: format(searchParameters.toDate, 'yyyy-MM-dd')
   });
   searchParameters.tags.forEach(tag => query.append('tagList', tag.label));
   return fetch('/backend/parking-lot/searchTerm?' + query, {
