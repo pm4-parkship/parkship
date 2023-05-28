@@ -31,6 +31,8 @@ const TagBar = ({ options, selected, addTag, handleDelete }: TagbarProps) => {
       component="ul"
     >
       <Typography>Tags:</Typography>
+      <TagMenu options={options} selected={selected} addTag={addTag} />
+
       {selected.map((data) => {
         return (
           <TagItem
@@ -40,7 +42,6 @@ const TagBar = ({ options, selected, addTag, handleDelete }: TagbarProps) => {
           ></TagItem>
         );
       })}
-      <TagMenu options={options} selected={selected} addTag={addTag} />
     </Stack>
   );
 };

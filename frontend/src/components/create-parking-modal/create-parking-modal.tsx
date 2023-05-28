@@ -103,7 +103,7 @@ export const CreateParkingModal = ({
           <Grid item xs={4}>
             <Typography variant="h6">Bezeichnung:*</Typography>
           </Grid>
-          <Grid item xs={8} sx={{ pt: 1, pl: 1 }}>
+          <Grid item xs={12} sx={{ pt: 1, pl: 1 }}>
             <TextFieldElement
               required
               fullWidth
@@ -116,33 +116,35 @@ export const CreateParkingModal = ({
           </Grid>
 
           <Grid item container justifyContent="left" alignItems="center">
-            <Grid xs={4}>
+            <Grid item xs={12} md={4}>
               <Typography variant="h6">Besitzer: </Typography>
             </Grid>
-            <Grid xs={6} sx={{ mx: 2, mb: 2 }}>
+            <Grid item xs={12} md={6}>
               <Typography variant="h6">{owner}</Typography>
             </Grid>
           </Grid>
 
           <Grid container justifyContent="left" alignItems="center" spacing={3}>
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4}>
               <Typography variant="h6" className={classes.input}>
                 Wo:*
               </Typography>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <TextFieldElement
                 required
                 fullWidth
+                placeholder='Adresse'
                 id="address"
                 name="address"
                 control={control}
                 className={classes.input}
               />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={12} md={2}>
               <TextFieldElement
                 required
+                placeholder='Nr'
                 id="addressNr"
                 name="addressNr"
                 control={control}
@@ -152,12 +154,12 @@ export const CreateParkingModal = ({
           </Grid>
 
           <Grid container justifyContent="left" alignItems="center" spacing={3}>
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4}>
               <Typography variant="h6" className={classes.input}>
                 Kosten [CHFr. / Tag]:*{' '}
               </Typography>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={8} md={6}>
               <TextFieldElement
                 required
                 sx={{ maxWidth: 250 }}
@@ -173,7 +175,7 @@ export const CreateParkingModal = ({
           <Divider variant="middle" />
           <Grid item xs={12} width={100}>
             <Typography variant="h6">Karte (Lat: {coords[0].toFixed(4)}, Lng: {coords[1].toFixed(4)})</Typography>
-            <ParkingLotCreateMap onPositionChange={setCoords}/>
+            <ParkingLotCreateMap onPositionChange={setCoords} />
           </Grid>
           {/* <div
               style={{
@@ -183,9 +185,8 @@ export const CreateParkingModal = ({
                 marginBottom: '1rem'
               }}
             > */}
-          <Grid container justifyContent="left" alignItems="center" spacing={3}>
-            <Grid item xs={4}></Grid>
-            <Grid item xs={4}>
+          <Grid container justifyContent="left" alignItems="center" spacing={3} style={{ textAlign: "center" }}>
+            <Grid item xs={12}>
               <Button
                 variant="outlined"
                 type="button"
@@ -202,16 +203,16 @@ export const CreateParkingModal = ({
               </Button>
             </Grid>
 
-            <Grid item xs={4}>
-              <Button
-                variant="outlined"
-                type="button"
+            <Grid item xs={12}>
+                  <Button
+                    variant="contained"
+                    type="button"
                 onClick={() => setOfferCount(offerCount - 1)}
                 disabled={offerCount == 1}
-              >
-                Buchbaren Zeitraum entfernen
-              </Button>
-            </Grid>
+                  >
+                    Buchbaren Zeitraum entfernen
+                  </Button>
+                </Grid>
           </Grid>
 
           {Array.from({ length: offerCount }, (_, i) => i + 1).map((key) => {

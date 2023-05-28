@@ -103,7 +103,7 @@ public class ParkshipApplication {
             parkingLotMoTue.setId(1L);
             parkingLotMoTue.getTags().add(ueberwacht);
             parkingLotMoTue.getTags().add(zugangskontrolle);
-            parkingLotMoTue.setName("Überdacher Parkplatz mit Schatten");
+            parkingLotMoTue.setName("Überdachter Parkplatz mit Schatten");
             parkingLotMoTue.setLatitude(47.370349275337354);
             parkingLotMoTue.setLongitude(8.5389393156127);
             parkingLotMoTue.setNr("25");

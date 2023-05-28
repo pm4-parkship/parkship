@@ -56,8 +56,8 @@ const ReservationFilter = ({ updateFilter }: ReservationFilterProps) => {
       alignItems={'center'}
       padding={2}
     >
-      <Grid item xs={3}>
-        <FormControl sx={{ m: 1, width: 400 }} fullWidth>
+      <Grid item xs={12} md={3}>
+        <FormControl sx={{ m: 1}} fullWidth>
           <InputLabel id="reservation-state-label">
             Reservationsstatus
           </InputLabel>

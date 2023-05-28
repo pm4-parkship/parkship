@@ -9,6 +9,7 @@ import { OfferModel } from '../../../models';
 
 interface OfferProps {
   onValuesChange: (values: OfferModel) => void;
+  offer: OfferModel;
 }
 
 export const offerSchema = z.object({
@@ -71,13 +72,13 @@ export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
           columnSpacing={3}
           rowSpacing={0}
         >
-          <Grid item xs={4}>
+          <Grid item xs={12}>
             <Typography variant="h6" className={classes.input}>
               Buchbarer Zeitraum:*
             </Typography>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={12}>
             <DatePickerElement
               required
               label="von"
@@ -91,7 +92,7 @@ export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
               className={classes.input}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12}>
             <DatePickerElement
               required
               label="bis"
