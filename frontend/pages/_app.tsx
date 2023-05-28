@@ -46,9 +46,9 @@ const App = ({
   }, [mode]);
 
   useEffect(() => {
-    const mode = localStorage.getItem("mode") || "light"
-    setMode(mode)
-  }, [])
+    const mode = localStorage.getItem("mode") || "light";
+    setMode(mode);
+  }, []);
 
   const colorMode = useMemo(
     () => ({
