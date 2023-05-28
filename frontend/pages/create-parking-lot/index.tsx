@@ -14,7 +14,7 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 
 const CreatePage = ({ user }) => {
-  const router = useRouter()
+  const router = useRouter();
 
   const addParkingLot = (
     newParkingLot: CreateParkingLotModel,
@@ -37,7 +37,7 @@ const CreatePage = ({ user }) => {
             logger.log("offer created");
             logger.log(response);
             toast.success(`Parkplatz erstellt!`);
-            router.push("/my-parking-lot")
+            router.push("/my-parking-lot");
           }
         });
 

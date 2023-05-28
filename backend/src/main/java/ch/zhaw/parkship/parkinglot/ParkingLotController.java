@@ -60,7 +60,7 @@ public class ParkingLotController {
     /**
      * This end-point creates a new parking lot with the provided parking lot data.
      *
-     * @param parkingLotDto The parking lot data to be saved.
+     * @param parkingLotCreateDto The parking lot data to be saved.
      * @return ResponseEntity<ParkingLotDto> Returns the saved parking lot data in the HTTP response
      * body with a status code of 201 if created successfully, otherwise returns a bad request
      * status code.
@@ -69,7 +69,7 @@ public class ParkingLotController {
     public ResponseEntity<ParkingLotDto> createParkingLot(
             @Valid @RequestBody ParkingLotCreateDto parkingLotCreateDto,
             @AuthenticationPrincipal ParkshipUserDetails user) {
-        //validateRequest(parkingLotDto);
+        //validateRequest(parkingLotCreateDto);
         var owner = new UserEntity();
         owner.setId(user.getId());
         Optional<ParkingLotDto> createdParkingLot = parkingLotService.create(parkingLotCreateDto, owner);
@@ -204,11 +204,12 @@ public class ParkingLotController {
         if (parkingLotDto == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given object is null");
         }
-
+        // TODO
+        /*
         if (parkingLotDto.getLatitude() < -90 || parkingLotDto.getLatitude() > 90
                 || parkingLotDto.getLongitude() < -180 || parkingLotDto.getLongitude() > 180) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Given coordinates are invalid");
-        }
+        }*/
 
         if (parkingLotDto.getPrice() < 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Price may not be smaller than 0");

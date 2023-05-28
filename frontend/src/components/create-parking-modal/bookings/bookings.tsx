@@ -21,17 +21,17 @@ export const offerSchema = z.object({
 
 export type OfferType = z.infer<typeof offerSchema>;
 
-const today = new Date()
-const todayInAWeek = new Date()
-todayInAWeek.setDate(today.getDate() + 7)
+const today = new Date();
+const todayInAWeek = new Date();
+todayInAWeek.setDate(today.getDate() + 7);
 
 export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
   const classes = useStyles();
 
-  const [startDate, setStartDate] = useState(() => today)
-  const [endDate, setEndDate] = useState(() => todayInAWeek)
+  const [startDate, setStartDate] = useState(() => today);
+  const [endDate, setEndDate] = useState(() => todayInAWeek);
 
-  const { handleSubmit, control, getValues, setValue } = useForm({
+  const { handleSubmit, control } = useForm({
     resolver: zodResolver(offerSchema),
     mode: 'onChange',
     defaultValues: {
@@ -57,7 +57,7 @@ export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
   };
 
 
-  const fn = handleSubmit((data) => handleFormSubmit(data))
+  const fn = handleSubmit((data) => handleFormSubmit(data));
   return (
     <>
       <form
@@ -85,8 +85,8 @@ export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
               name={`startDate`}
               control={control}
               onChange={(e => {
-                setStartDate(e)
-                fn()
+                setStartDate(e);
+                fn();
               })}
               className={classes.input}
             />
@@ -99,8 +99,8 @@ export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
               control={control}
               disablePast
               onChange={(e => {
-                setEndDate(e)
-                fn()
+                setEndDate(e);
+                fn();
               })}
               className={classes.input}
             />

@@ -58,7 +58,8 @@ public class OfferController {
         List<OfferDto> returnOfferDots = new ArrayList<>();
         for (OfferDto offerDto : offerDtos) {
             ParkingLotEntity parkingLot = parkingLotRepository.getByIdLocked(offerDto.getParkingLotId());
-            returnOfferDots.add(new OfferDto(offerService.create(parkingLot, offerDto)));
+            var offerEntity = offerService.create(parkingLot, offerDto);
+            returnOfferDots.add(new OfferDto(offerEntity));
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(returnOfferDots);

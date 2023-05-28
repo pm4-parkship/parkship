@@ -4,6 +4,7 @@ import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
 import ch.zhaw.parkship.parkinglot.ParkingLotService;
 import ch.zhaw.parkship.parkinglot.ParkingLotState;
+import ch.zhaw.parkship.parkinglot.dtos.ParkingLotCreateDto;
 import ch.zhaw.parkship.parkinglot.dtos.ParkingLotDto;
 import ch.zhaw.parkship.parkinglot.dtos.ParkingLotSearchDto;
 import ch.zhaw.parkship.reservation.ReservationService;
@@ -28,6 +29,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -112,14 +114,27 @@ class ParkingLotServiceTest {
         return data;
     }
 
+    private ParkingLotCreateDto createParkingLotCreateDto() {
+        ParkingLotCreateDto data = new ParkingLotCreateDto();
+        Set<TagDto> tagDtos = new HashSet<>();
+        tagDtos.add(new TagDto("schoener Parkplatz", 1L));
+        data.setLongitude(15.5);
+        data.setLatitude(16.22);
+        data.setPrice(15.55);
+        data.setAddress("Muster Street");
+        data.setAddressNr("44");
+        data.setDescription("next to the entrance");
+        data.setTags(tagDtos.stream().map(TagDto::getName).collect(Collectors.toSet()));
+        return data;
+    }
+
     @Test
     public void testCreate() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(parkingLotEntity.getOwner()));
         when(parkingLotRepository.save(any(ParkingLotEntity.class))).thenReturn(parkingLotEntity);
 
-        var data = createParkingLotDto();
+        var data = createParkingLotCreateDto();
 
-        var result = parkingLotService.create(data);
+        var result = parkingLotService.create(data, userEntity);
 
         assertEquals(1, result.get().getId());
 
