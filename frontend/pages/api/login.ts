@@ -10,7 +10,6 @@ export default withIronSessionApiRoute(async function loginRoute(req, res) {
   }).then(async (response) => {
     if (response.ok) {
       const data = await response.json();
-      //FETCH GET REQUEST backend/users/user
       const userResponse = await fetch('http://localhost:8080/backend/users/user', {
         method: 'GET',
         headers: {
