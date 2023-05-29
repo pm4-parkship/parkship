@@ -7,7 +7,7 @@ export interface User {
   token: string;
   username: string;
   role: string;
-  surname: string;
+  name: string;
 }
 
 async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
@@ -16,7 +16,7 @@ async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
     // to get more information on the user if needed
     res.json({
       ...req.session.user,
-      surname: req.session.user.surname,
+      name: req.session.user.name,
       username: req.session.user.username,
       token: req.session.user.token,
       role: req.session.user.role,
@@ -28,7 +28,7 @@ async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
       username: '',
       token: '',
       role: '',
-      surname: '',
+      name: '',
     });
   }
 }
