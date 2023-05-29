@@ -9,7 +9,7 @@ import {
 } from '../../src/models';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
-import apiClient from '../api/api-client';
+import apiClient from 'pages/api/api-client';
 
 const CreatePage = ({ user }) => {
   const router = useRouter();
@@ -52,7 +52,7 @@ const CreatePage = ({ user }) => {
 
   return (
     <Grid padding={2}>
-      <CreateParkingModal addParkingLot={addParkingLot} owner={user.username} />
+      <CreateParkingModal addParkingLot={addParkingLot} owner={user.name} />
     </Grid>
   );
 };

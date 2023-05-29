@@ -7,7 +7,8 @@ import React, { useContext } from 'react';
 import { ColorModeContext } from '../../../context';
 import { User } from '../../../pages/api/user';
 import { useRouter } from 'next/router';
-import Image from "next/image";
+import Image from 'next/image';
+import { logger } from '../../logger';
 
 function NavbarUser({
   user,
@@ -21,6 +22,8 @@ function NavbarUser({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const router = useRouter();
+
+  logger.log(user);
   return (
     <AppBar position="static">
       <Toolbar>
@@ -31,8 +34,13 @@ function NavbarUser({
             <>
               {' '}
               <div className={classes.navlinks}>
-              <Link href="/search">
-              <Image src="/parkship-heart.png" alt="logo" width={64} height={64}/>
+                <Link href="/search">
+                  <Image
+                    src="/parkship-heart.png"
+                    alt="logo"
+                    width={64}
+                    height={64}
+                  />
                 </Link>
                 <Link href="/search">Parkplatz finden</Link>
                 <Link href="/my-reservation">Meine Reservation</Link>
@@ -46,7 +54,7 @@ function NavbarUser({
                     colorMode.toggleColorMode();
                   }}
                 >
-                  Willkommen {user?.name}
+                  {user?.greeting}
                 </Typography>
 
                 <Link href="/logout">
