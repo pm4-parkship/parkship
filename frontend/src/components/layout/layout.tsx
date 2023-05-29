@@ -22,7 +22,7 @@ export function Layout({ user, signOut, children }: LayoutProps) {
       ) : user?.role === UserRole.ADMIN ? (
         <NavbarAdmin user={user} signOut={signOut} />
       ) : null}
-      <main style={{ paddingTop: '1rem' }}>
+      <main style={{ paddingTop: '0.5rem' }}>
         <div className={classes.root}>{children}</div>
       </main>
       <div className={classes.bottomBar}>

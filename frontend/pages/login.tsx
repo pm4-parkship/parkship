@@ -63,6 +63,7 @@ export default function Login({ signIn }) {
             role: UserRole[data.user.role],
             token: data.user.token,
             username: data.user.username,
+            name: data.user.name
           };
           signIn(userData);
           router.push(

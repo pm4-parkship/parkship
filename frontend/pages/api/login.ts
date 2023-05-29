@@ -7,16 +7,16 @@ export default withIronSessionApiRoute(async function loginRoute(req, res) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(req.body)
-  }).then(async (response: any) => {
+  }).then(async (response) => {
     if (response.ok) {
       const data = await response.json();
-      // get user from database then:
       logger.log(data);
       req.session.user = {
         isLoggedIn: true,
         role: data.role,
         token: data.token,
-        username: data.username
+        username: data.username,
+        name: data.name
       };
       await req.session.save();
       res.send({ user: req.session.user });
