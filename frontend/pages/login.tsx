@@ -58,7 +58,6 @@ export default function Login({ signIn }) {
       }).then(async (res: any) => {
         if (res.ok) {
           const data = await res.json();
-          console.log(data)
           const userData = {
             isLoggedIn: true,
             role: UserRole[data.user.role],
