@@ -28,7 +28,7 @@ async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
       username: '',
       token: '',
       role: '',
-      surname: ''
+      surname: '',
     });
   }
 }
