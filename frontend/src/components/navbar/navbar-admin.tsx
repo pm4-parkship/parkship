@@ -7,6 +7,7 @@ import React, { useContext } from 'react';
 import { ColorModeContext } from '../../../context';
 import { User } from '../../../pages/api/user';
 import { useRouter } from 'next/router';
+import Image from "next/image";
 
 function NavbarUser({
   user,
@@ -31,6 +32,9 @@ function NavbarUser({
             <>
               {' '}
               <div className={classes.navlinks}>
+                <Link href="/">
+                  <Image src="/parkship-heart.png" alt="logo" width={64} height={64}/>
+                </Link>
                 <Link href="/admin/parking-lots">Parkplatzverwaltung</Link>
                 <Link href="/admin/users">Benutzerverwaltung</Link>
               </div>

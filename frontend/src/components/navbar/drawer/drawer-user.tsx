@@ -13,6 +13,7 @@ import { Icon } from '@iconify/react';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { ColorModeContext } from '../../../../context';
 import { useRouter } from 'next/router';
+import Image from "next/image";
 
 function DrawerComponent({ user, signOut }) {
   const classes = useStyles();
@@ -23,6 +24,13 @@ function DrawerComponent({ user, signOut }) {
     <div className={classes.root}>
       <Drawer open={openDrawer} onClose={() => setOpenDrawer(false)}>
         <List>
+        <ListItem onClick={() => setOpenDrawer(false)}>
+            <ListItemText style={{display: "flex", justifyContent: "center"}}>
+            <Link href="/">
+                  <Image src="/parkship-heart.png" alt="logo" width={64} height={64}/>
+            </Link>
+            </ListItemText>
+          </ListItem>
           <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
               <Link href="/search">Parkplatz finden</Link>
