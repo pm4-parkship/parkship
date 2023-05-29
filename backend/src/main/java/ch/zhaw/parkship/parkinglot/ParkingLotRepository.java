@@ -34,8 +34,9 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLotEntity, Lo
             "WHERE p.state = ch.zhaw.parkship.parkinglot.ParkingLotState.ACTIVE AND " +
             "NOT EXISTS (SELECT r FROM ReservationEntity r " +
             "                  WHERE r.parkingLot = p " +
-            "                  AND (r.from >= :fromDate AND r.from < :toDate " +
-            "                       OR r.to > :fromDate AND r.to <= :toDate))")
+            "                  AND (r.from >= :fromDate AND r.from <= :toDate " +
+            "                       OR r.to >= :fromDate AND r.to <= :toDate " +
+            "                       OR r.from <= :fromDate AND r.to >= :toDate))")
     List<ParkingLotEntity> findAvailableParkingLotsInRange(
             @Param("fromDate") LocalDate fromDate,
             @Param("toDate") LocalDate toDate);
@@ -45,8 +46,9 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLotEntity, Lo
             "WHERE p = :parkingLot AND p.state = ch.zhaw.parkship.parkinglot.ParkingLotState.ACTIVE AND " +
             "NOT EXISTS (SELECT r FROM ReservationEntity r " +
             "                  WHERE r.parkingLot = p " +
-            "                  AND (r.from >= :fromDate AND r.from < :toDate " +
-            "                       OR r.to > :fromDate AND r.to <= :toDate))")
+            "                  AND (r.from >= :fromDate AND r.from <= :toDate " +
+            "                       OR r.to >= :fromDate AND r.to <= :toDate " +
+            "                       OR r.from <= :fromDate AND r.to >= :toDate))")
     ParkingLotEntity isParkingLotAvailable(
             @Param("parkingLot") ParkingLotEntity parkingLotEntity,
             @Param("fromDate") LocalDate fromDate,

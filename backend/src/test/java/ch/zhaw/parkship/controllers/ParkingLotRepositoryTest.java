@@ -47,11 +47,11 @@ class ParkingLotRepositoryTest extends AbstractDataRollbackTest {
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(
                     Arguments.of(LocalDate.now(), LocalDate.now().plusDays(1), false),
-                    Arguments.of(LocalDate.now().minusDays(1), LocalDate.now(), true),
+                    Arguments.of(LocalDate.now().minusDays(1), LocalDate.now(), false),
                     Arguments.of(LocalDate.now().minusDays(1), LocalDate.now().plusDays(1), false),
                     Arguments.of(LocalDate.now().minusDays(1), LocalDate.now().plusDays(20), false),
                     Arguments.of(LocalDate.now().plusDays(1), LocalDate.now().plusDays(11), false),
-                    Arguments.of(LocalDate.now().plusDays(1), LocalDate.now().plusDays(10), true),
+                    Arguments.of(LocalDate.now().plusDays(1), LocalDate.now().plusDays(10), false),
                     Arguments.of(LocalDate.now().plusDays(4), LocalDate.now().plusDays(7), true)
             );
         }
