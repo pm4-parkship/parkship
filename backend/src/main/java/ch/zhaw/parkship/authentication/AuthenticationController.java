@@ -3,7 +3,6 @@ package ch.zhaw.parkship.authentication;
 import ch.zhaw.parkship.user.ParkshipUserDetails;
 import ch.zhaw.parkship.user.UserRole;
 import ch.zhaw.parkship.user.UserService;
-import ch.zhaw.parkship.util.ParkshipUserDetailsContext;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,7 +38,7 @@ public class AuthenticationController {
      * @param token    JWT token.
      * @param username
      */
-    public record SignInResponseDTO(String token, String username, UserRole role) {
+    public record SignInResponseDTO(String token, String username, String name, UserRole role) {
     }
 
     private final UserService userService;
@@ -76,6 +75,6 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         ParkshipUserDetails parkshipUserDetails = (ParkshipUserDetails) authentication.getPrincipal();
         String token = jwtService.generateToken(parkshipUserDetails);
-        return new SignInResponseDTO(token, parkshipUserDetails.getUsername(), parkshipUserDetails.getUserRole());
+        return new SignInResponseDTO(token, parkshipUserDetails.getUsername(), parkshipUserDetails.getName(), parkshipUserDetails.getUserRole());
     }
 }

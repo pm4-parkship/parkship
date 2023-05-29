@@ -10,27 +10,13 @@ export default withIronSessionApiRoute(async function loginRoute(req, res) {
   }).then(async (response) => {
     if (response.ok) {
       const data = await response.json();
-      const userResponse = await fetch('http://localhost:8080/backend/users/user', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${data.token}` // Verwenden Sie den Token aus der vorherigen Antwort
-        }
-      });
-      let name = '';
-      if (userResponse.ok) {
-        const data = await userResponse.json();
-        name = data.name
-      }
-
-      // get user from database then:
       logger.log(data);
       req.session.user = {
         isLoggedIn: true,
         role: data.role,
         token: data.token,
         username: data.username,
-        name: name
+        name: data.name
       };
       await req.session.save();
       res.send({ user: req.session.user });

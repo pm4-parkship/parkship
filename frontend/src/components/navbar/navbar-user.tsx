@@ -20,6 +20,7 @@ function NavbarUser({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const router = useRouter();
+  console.log(user, "nav")
   return (
     <AppBar position="static">
       <Toolbar>

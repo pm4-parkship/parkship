@@ -62,7 +62,7 @@ function DrawerComponent({ user, signOut }) {
           colorMode.toggleColorMode();
         }}
       >
-        Hi {user?.username}
+        Hi {user?.name}
       </Typography>
     </div>
   );
