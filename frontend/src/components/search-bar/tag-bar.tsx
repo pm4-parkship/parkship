@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import React from 'react';
 
 import TagItem from './tag-item';
@@ -30,6 +30,9 @@ const TagBar = ({ options, selected, addTag, handleDelete }: TagbarProps) => {
       }}
       component="ul"
     >
+      <Typography>Tags:</Typography>
+      <TagMenu options={options} selected={selected} addTag={addTag} />
+
       {selected.map((data) => {
         return (
           <TagItem
@@ -39,7 +42,6 @@ const TagBar = ({ options, selected, addTag, handleDelete }: TagbarProps) => {
           ></TagItem>
         );
       })}
-      <TagMenu options={options} selected={selected} addTag={addTag} />
     </Stack>
   );
 };

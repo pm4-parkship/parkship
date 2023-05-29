@@ -2,10 +2,10 @@ name: Build Push Deploy Docker Image
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "staging" ]
   pull_request:
     branches-ignore:
-      - main
+      - staging
 
 jobs:
   buildpush:

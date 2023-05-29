@@ -35,18 +35,18 @@ public class OfferControllerTest {
     private ParkingLotRepository parkingLotRepository;
 
     @BeforeEach
-    public void setup(){
+    public void setup() {
         offerController = new OfferController(offerService, parkingLotRepository);
     }
 
-    private OfferDto createBasicOfferDto(Long id){
+    private OfferDto createBasicOfferDto(Long id) {
         return new OfferDto(createBasicOfferEntity(id));
     }
 
-    private OfferEntity createBasicOfferEntity(Long id){
+    private OfferEntity createBasicOfferEntity(Long id) {
         OfferEntity offerEntity = new OfferEntity();
         offerEntity.setId(id);
-        offerEntity.setParkingLot(ParkingLotGenerator.generate(UserGenerator.generate(1L),1L));
+        offerEntity.setParkingLot(ParkingLotGenerator.generate(UserGenerator.generate(1L), 1L));
         offerEntity.setFrom(LocalDate.now());
         offerEntity.setTo(LocalDate.now().plusDays(7));
         offerEntity.setMonday(true);
@@ -98,7 +98,7 @@ public class OfferControllerTest {
     }
 
     @Test
-    void getOffersByParkingLotTest(){
+    void getOffersByParkingLotTest() {
         // arrange
         OfferDto offer1 = createBasicOfferDto(1L);
         OfferDto offer2 = createBasicOfferDto(2L);
@@ -121,7 +121,7 @@ public class OfferControllerTest {
     }
 
     @Test
-    void createOfferTest(){
+    void createOfferTest() {
         //arrange
         OfferEntity offerEntity = createBasicOfferEntity(1L);
         OfferDto offer = new OfferDto(offerEntity);
@@ -145,7 +145,7 @@ public class OfferControllerTest {
     }
 
     @Test
-    void createOfferDatesInPastTest(){
+    void createOfferDatesInPastTest() {
         //arrange
 
         OfferDto offer = createBasicOfferDto(1L);
@@ -156,18 +156,20 @@ public class OfferControllerTest {
         ParkingLotEntity lot = ParkingLotGenerator.generate(UserGenerator.generate(1L), 1L);
         lot.setOfferEntitySet(new HashSet<OfferEntity>());
         when(parkingLotRepository.getByIdLocked(offer.getParkingLotId())).thenReturn(lot);
-
+        var offerEntity = new OfferEntity();
+        offerEntity.setParkingLot(lot);
+        when(offerService.create(any(), any())).thenReturn(offerEntity);
         // act
         try {
             ResponseEntity<List<OfferDto>> result = offerController.createOffer(offerDtos);
         } // assert
-        catch (ResponseStatusException act){
+        catch (ResponseStatusException act) {
             Assertions.assertEquals(HttpStatus.BAD_REQUEST, act.getStatusCode());
         }
     }
 
     @Test
-    void createOfferDatesAlreadyExistsTest(){
+    void createOfferDatesAlreadyExistsTest() {
         //arrange
         OfferEntity offerEntity = createBasicOfferEntity(1L);
         OfferDto offer = new OfferDto(offerEntity);
@@ -185,7 +187,7 @@ public class OfferControllerTest {
         try {
             ResponseEntity<List<OfferDto>> result = offerController.createOffer(offerDtos);
         } // assert
-        catch (ResponseStatusException act){
+        catch (ResponseStatusException act) {
             Assertions.assertEquals(HttpStatus.CONFLICT, act.getStatusCode());
         }
 
@@ -193,7 +195,7 @@ public class OfferControllerTest {
     }
 
     @Test
-    void createOfferDatesLessThanSevenDays(){
+    void createOfferDatesLessThanSevenDays() {
         //arrange
 
         OfferDto offer = createBasicOfferDto(1L);
@@ -205,18 +207,20 @@ public class OfferControllerTest {
         ParkingLotEntity lot = ParkingLotGenerator.generate(UserGenerator.generate(1L), 1L);
         lot.setOfferEntitySet(new HashSet<OfferEntity>());
         when(parkingLotRepository.getByIdLocked(offer.getParkingLotId())).thenReturn(lot);
-
+        var offerEntity = new OfferEntity();
+        offerEntity.setParkingLot(lot);
+        when(offerService.create(any(), any())).thenReturn(offerEntity);
         // act
         try {
             ResponseEntity<List<OfferDto>> result = offerController.createOffer(offerDtos);
         } // assert
-        catch (ResponseStatusException act){
+        catch (ResponseStatusException act) {
             Assertions.assertEquals(HttpStatus.BAD_REQUEST, act.getStatusCode());
         }
     }
 
     @Test
-    void createOfferDatesLessThanOneDayTrue(){
+    void createOfferDatesLessThanOneDayTrue() {
         //arrange
 
         OfferDto offer = createBasicOfferDto(1L);
@@ -233,16 +237,17 @@ public class OfferControllerTest {
         ParkingLotEntity lot = ParkingLotGenerator.generate(UserGenerator.generate(1L), 1L);
         lot.setOfferEntitySet(new HashSet<OfferEntity>());
         when(parkingLotRepository.getByIdLocked(offer.getParkingLotId())).thenReturn(lot);
-
+        var offerEntity = new OfferEntity();
+        offerEntity.setParkingLot(lot);
+        when(offerService.create(any(), any())).thenReturn(offerEntity);
         // act
         try {
             ResponseEntity<List<OfferDto>> result = offerController.createOffer(offerDtos);
         } // assert
-        catch (ResponseStatusException act){
+        catch (ResponseStatusException act) {
             Assertions.assertEquals(HttpStatus.BAD_REQUEST, act.getStatusCode());
         }
     }
-
 
 
 }

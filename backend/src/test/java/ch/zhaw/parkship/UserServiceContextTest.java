@@ -36,10 +36,10 @@ public class UserServiceContextTest extends AbstractDataRollbackTest {
     @Test
     public void testSignUp() {
         UserEntity userEntity = userService.signUp("test2", "test2Surname",  "test2@test.ch", "test2",  UserRole.USER);
-        assertTrue(userService.existsByEmail("test2@test.ch"), "Registered email does not exist");
-        assertEquals("test2@test.ch", userEntity.getEmail(), "Email is not correct");
+        assertTrue(userService.existsByUsername("test2@test.ch"), "Registered email does not exist");
+        assertEquals("test2@test.ch", userEntity.getUsername(), "Email is not correct");
         assertNotEquals("testtest2", userEntity.getPassword(), "Password is not encoded.");
-        UserEntity userEntity1 = userRepository.findByEmail("test2@test.ch");
+        UserEntity userEntity1 = userRepository.findByUsername("test2@test.ch");
         assertEquals(UserState.LOCKED, userEntity1.getUserState(), "Wrong default userstate");
 
     }
@@ -47,7 +47,7 @@ public class UserServiceContextTest extends AbstractDataRollbackTest {
     @Test
     public void testChangeUserState() {
         userService.signUp("test2", "test2Surname",  "test2@test.ch", "test2",  UserRole.USER);
-        UserEntity userEntity1 = userRepository.findByEmail("test2@test.ch");
+        UserEntity userEntity1 = userRepository.findByUsername("test2@test.ch");
         Long userID = userEntity1.getId();
 
         try {
@@ -55,7 +55,7 @@ public class UserServiceContextTest extends AbstractDataRollbackTest {
         } catch (Exception e) {
             fail(e);
         }
-        userEntity1 = userRepository.findByEmail("test2@test.ch");
+        userEntity1 = userRepository.findByUsername("test2@test.ch");
         assertEquals(UserState.UNLOCKED, userEntity1.getUserState());
 
         assertThrows(UserStateCanNotBeChanged.class, () -> {

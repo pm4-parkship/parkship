@@ -25,6 +25,7 @@ const MyParkingLotReservationTable = ({
       styles={styles}
       paginationLabel={'Reservationen pro Seite'}
     ></TableComponent>
+    
   );
 };
 

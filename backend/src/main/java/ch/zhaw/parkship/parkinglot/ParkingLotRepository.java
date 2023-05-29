@@ -1,11 +1,8 @@
 package ch.zhaw.parkship.parkinglot;
 
-import ch.zhaw.parkship.offer.OfferEntity;
 import jakarta.persistence.LockModeType;
-
-import java.util.List;
-import java.util.Set;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface ParkingLotRepository extends JpaRepository<ParkingLotEntity, Long> {
@@ -79,4 +77,14 @@ public interface ParkingLotRepository extends JpaRepository<ParkingLotEntity, Lo
             @Param("sunday") boolean sunday);
 
     Set<ParkingLotEntity> findByOwnerId(Long userId);
+
+    @Query("SELECT p from ParkingLotEntity p where (6371 * acos(cos(radians(:latitude)) * cos(radians(p.latitude)) * cos(radians(p.longitude) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(p.latitude)))) < :distanceWithInKM")
+    Page<ParkingLotEntity> findParkingLotInGeoRange(
+            @Param("latitude") double latitude,
+            @Param("longitude") double longitude,
+            @Param("distanceWithInKM") double distanceWithInKM,
+            Pageable pageable);
+
+
+
 }

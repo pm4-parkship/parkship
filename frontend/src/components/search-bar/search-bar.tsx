@@ -74,8 +74,10 @@ const SearchBar = (props: {
           renderInput={(props) => <TextField {...props} required={true} />}
         />
       </Grid>
-      <Grid item xs={1}>
-        <Button variant="contained" onClick={onSubmit}>
+      <Grid item md={1} xs={12}  style={{
+        textAlign:'center' // this does the magic
+    }}>
+        <Button style={{ flex: 1}} variant="contained" onClick={onSubmit}>
           suchen
         </Button>
       </Grid>

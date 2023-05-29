@@ -1,6 +1,5 @@
 package ch.zhaw.parkship.offer;
 
-import ch.zhaw.parkship.parkinglot.ParkingLotDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,7 +43,7 @@ public class OfferDto implements Serializable {
     @NotNull
     private Boolean sunday;
 
-    public OfferDto(OfferEntity offerEntity){
+    public OfferDto(OfferEntity offerEntity) {
         this.id = offerEntity.getId();
         this.parkingLotId = offerEntity.getParkingLot().getId();
         this.from = offerEntity.getFrom();
@@ -58,7 +57,7 @@ public class OfferDto implements Serializable {
         this.sunday = offerEntity.getSunday();
     }
 
-    public OfferDto(){
+    public OfferDto() {
 
     }
 
@@ -68,6 +67,7 @@ public class OfferDto implements Serializable {
                 ", monday" + monday + ", tuesday" + tuesday + ", wednesday" + wednesday + ", thursday" + thursday +
                 ", friday" + friday + ", saturday" + saturday + ", sunday" + sunday + '}';
     }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);

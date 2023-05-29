@@ -1,6 +1,7 @@
-package ch.zhaw.parkship.parkinglot;
+package ch.zhaw.parkship.parkinglot.dtos;
 
-import ch.zhaw.parkship.offer.OfferDto;
+import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
+import ch.zhaw.parkship.parkinglot.ParkingLotState;
 import ch.zhaw.parkship.tag.TagDto;
 import ch.zhaw.parkship.user.UserDto;
 import jakarta.validation.constraints.NotBlank;

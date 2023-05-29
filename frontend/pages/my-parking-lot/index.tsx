@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import MyParkingLotList from '../../src/components/parking-list/my-parking-lot-list';
-import { ParkingLotModel } from '../../src/models';
+import {
+  ParkingLotModel
+} from '../../src/models';
 import { User } from '../api/user';
 import { logger } from '../../src/logger';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
@@ -14,12 +16,18 @@ import {
   ReservationState
 } from '../../src/models/reservation/reservation.model';
 import { makeStyles } from '@mui/styles';
+import Link from 'src/components/link/link';
 
 const initState = {
   error: null,
   loading: false,
   result: Array<ParkingLotModel>()
 };
+
+export interface MyParkingLotsFilterData {
+  names: Set<string>;
+  searchTerm: string;
+}
 
 interface MyParkingLotsTableProps {
   id: number;
@@ -69,8 +77,11 @@ const MyParkingLotPage = ({ user }) => {
       <Loading loading={parkingLots.loading} />
 
       {parkingLots.result && parkingLots.result.length > 0 && (
-        <MyParkingLotList parkings={parkingLots.result} />
+        <Link href="/create-parking-lot">
+          <MyParkingLotList parkings={parkingLots.result} />
+        </Link>
       )}
+
       <MyParkingLotReservationTable
         reservations={mappedReservations}
         styles={rowStyleMap}
@@ -173,4 +184,6 @@ const useStyles = makeStyles((theme) => ({
         : 'rgba(255, 255, 255, 0.08)'
   }
 }));
+
+
 export default MyParkingLotPage;
