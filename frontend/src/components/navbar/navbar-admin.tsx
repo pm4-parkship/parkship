@@ -32,7 +32,7 @@ function NavbarUser({
             <>
               {' '}
               <div className={classes.navlinks}>
-                <Link href="/">
+                <Link href="/search">
                   <Image src="/parkship-heart.png" alt="logo" width={64} height={64}/>
                 </Link>
                 <Link href="/admin/parking-lots">Parkplatzverwaltung</Link>

@@ -26,7 +26,7 @@ function DrawerComponent({ user, signOut }) {
         <List>
         <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText style={{display: "flex", justifyContent: "center"}}>
-            <Link href="/">
+            <Link href="/search">
                   <Image src="/parkship-heart.png" alt="logo" width={64} height={64}/>
             </Link>
             </ListItemText>
