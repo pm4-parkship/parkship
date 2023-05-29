@@ -18,10 +18,10 @@ export default withIronSessionApiRoute(async function loginRoute(req, res) {
           Authorization: `Bearer ${data.token}` // Verwenden Sie den Token aus der vorherigen Antwort
         }
       });
-      let surname = '';
+      let name = '';
       if (userResponse.ok) {
         const data = await userResponse.json();
-        surname = data.surname
+        name = data.name
       }
 
       // get user from database then:
@@ -31,7 +31,7 @@ export default withIronSessionApiRoute(async function loginRoute(req, res) {
         role: data.role,
         token: data.token,
         username: data.username,
-        surname: surname
+        name: name
       };
       await req.session.save();
       res.send({ user: req.session.user });
