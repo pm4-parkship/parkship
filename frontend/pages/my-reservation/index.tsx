@@ -12,6 +12,7 @@ import ModifyReservationModal from '../../src/components/reservation/modify-rese
 import NoData from '../../src/components/loading-buffer/no-data';
 import { toast } from 'react-toastify';
 import apiClient from '../api/api-client';
+import { logger } from '../../src/logger';
 
 export interface ReservationFilterData {
   states: Set<ReservationState>;
@@ -63,7 +64,8 @@ const MyReservationPage = ({ user }) => {
     apiClient()
       .user.getMyReservations(user)
       .then((result) => {
-        setReservations({ loading: false, result: result });
+        logger.log(result);
+        setReservations({ loading: false, result: result || [] });
       })
       .catch(() =>
         toast.error(

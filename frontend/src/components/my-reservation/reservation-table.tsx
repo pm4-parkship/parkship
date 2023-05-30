@@ -82,7 +82,7 @@ const ReservationTable = ({
         `${item.id}`,
         ReservationStateIcon(item.reservationState),
         `${item.parkingLot.address} ${item.parkingLot.addressNr}`,
-        `${item.tenant.name} ${item.tenant.surname}`,
+        `${item.parkingLot.owner.name} ${item.parkingLot.owner.surname}`,
         `${formatDate(new Date(item.from))} - ${formatDate(new Date(item.to))}`,
         CancelCell({
           reservation: item,

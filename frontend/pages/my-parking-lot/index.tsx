@@ -69,10 +69,10 @@ const MyParkingLotPage = ({ user }) => {
     <div className={classes.root}>
       <Loading loading={parkingLots.loading} />
 
-      {parkingLots.result && parkingLots.result.length > 0 && (
-        <MyParkingLotList parkings={parkingLots.result} />
-      )}
-
+      {/*{parkingLots.result && parkingLots.result.length > 0 && (*/}
+      {/*  <MyParkingLotList parkings={parkingLots.result} />*/}
+      {/*)}*/}
+      <MyParkingLotList parkings={parkingLots.result} />
       <ParkingLotsFilter
         parkingLots={parkingLots.result}
         updateFilter={updateFilter}

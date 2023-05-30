@@ -37,7 +37,7 @@ const fetchData = async <T>(
   });
 
   const contentType = response.headers.get('Content-Type') || '';
-  if (!contentType.includes('application/json')) return response.ok as T;
+  if (!contentType.includes('application/json')) return '' as T; //response.ok as T;
   const data = await response.json();
 
   if (!response.ok) {
@@ -46,6 +46,20 @@ const fetchData = async <T>(
   }
   logger.log(data);
   return data;
+};
+const emptyValue = <T>(): T => {
+  if ((typeof {} as T) === 'object') {
+    return {} as T; // Return an empty object as T
+  } else if ((typeof [] as T) === 'object') {
+    return [] as T; // Return an empty array as T
+  } else if ((typeof '' as T) === 'string') {
+    return '' as T; // Return an empty string as T
+  } else if ((typeof 0 as T) === 'number') {
+    return 0 as T; // Return 0 as T
+  } else if ((typeof true as T) === 'boolean') {
+    return true as T; // Return false as T
+  }
+  return undefined as T;
 };
 
 export interface PaginationResponse<T> {
