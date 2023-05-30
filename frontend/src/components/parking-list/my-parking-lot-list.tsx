@@ -24,16 +24,17 @@ const MyParkingLotList = ({ parkings }: { parkings: ParkingLotModel[] }) => {
   return (
     <Paper className={classes.root}>
       <div className={classes.parkingList}>
-        {parkings.map((parking) => {
-          return (
-            <ParkingListItem
-              key={parking.id}
-              bcolor={randomColor(parking.name)}
-              parking={parking}
-            />
-          );
-        })}
-        <ParkingListEmptyItem/>
+        {parkings &&
+          parkings.map((parking) => {
+            return (
+              <ParkingListItem
+                key={parking.id}
+                bcolor={randomColor(parking.name)}
+                parking={parking}
+              />
+            );
+          })}
+        <ParkingListEmptyItem />
       </div>
     </Paper>
   );

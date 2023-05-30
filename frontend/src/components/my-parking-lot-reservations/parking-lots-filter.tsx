@@ -78,11 +78,12 @@ const ParkingLotsFilter = ({
             MenuProps={MenuProps}
             fullWidth
           >
-            {parkingLots.map((lot) => (
-              <MenuItem key={lot.id} value={lot.name}>
-                {lot.name}
-              </MenuItem>
-            ))}
+            {parkingLots &&
+              parkingLots.map((lot) => (
+                <MenuItem key={lot.id} value={lot.name}>
+                  {lot.name}
+                </MenuItem>
+              ))}
           </Select>
         </FormControl>
       </Grid>

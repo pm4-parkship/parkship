@@ -66,15 +66,21 @@ public class ParkshipApplication {
             simon.setUserState(UserState.UNLOCKED);
 
             UserEntity laura = userService.signUp("Laura", "Keller", "laura.keller@swissonline.ch", "securepass123",
-                    UserRole.ADMIN);
+                    UserRole.USER);
             laura.setName("Laura");
             laura.setSurname("Keller");
             laura.setUserState(UserState.UNLOCKED);
+            UserEntity admin = userService.signUp("Harry", "Admin", "admin@parkship.ch", "admin",
+                    UserRole.ADMIN);
+            admin.setName("Harry");
+            admin.setSurname("Admin");
+            admin.setUserState(UserState.UNLOCKED);
 
             userService.save(lukas);
             userService.save(nina);
             userService.save(simon);
             userService.save(laura);
+            userService.save(admin);
 
             TagEntity ueberdacht = new TagEntity();
             ueberdacht.setName("überdacht");
