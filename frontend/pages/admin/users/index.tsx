@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { UserModel, UserRole, UserState } from '../../../src/models';
-import { logger } from '../../../src/logger';
+import { UserDto, UserModel, UserRole, UserState } from '../../../src/models';
 import { toast } from 'react-toastify';
-import { User } from '../../api/user';
 import { Button, Grid, Typography } from '@mui/material';
 import { Loading } from '../../../src/components/loading-buffer/loading-buffer';
-import { RowDataType } from '../../../src/components/table/table-row';
 import UsersTable from '../../../src/components/user-list/users-table';
-import UserStateToggleButton from '../../../src/components/user-list/user-state-toggle-button';
 import UsersFilter from '../../../src/components/user-list/user-filter';
 import UserAdministrationModal from 'src/components/user-administration/user-administration-modal/user-administration-modal';
+import apiClient from '../../api/api-client';
 
 export interface UserFilterData {
   states: Set<UserState>;
@@ -23,13 +20,8 @@ const initFilter: UserFilterData = {
   searchTerm: ''
 };
 const initState = {
-  error: null,
   loading: false,
   result: Array<UserModel>()
-};
-
-const handleAddedUser = (data) => {
-  logger.log(data);
 };
 
 const UserPage = ({ user }) => {
@@ -38,39 +30,44 @@ const UserPage = ({ user }) => {
   const [filter, setFilter] = useState<UserFilterData>(initFilter);
   const [users, setUsers] = useState(initState);
 
-  const changeUserState = (selected) => {
-    const us = users.result.find((value) => value.id == selected.id);
-
-    if (!us || !user) return;
-    us.userState =
-      us.userState == UserState.LOCKED ? UserState.UNLOCKED : UserState.LOCKED;
-
-    updateUsers(us, user).then((result) => {
-      if (result) {
-        users.result.map((obj) => (obj.id == us.id ? us : obj));
+  const makeUpdate = (userUpdated: UserModel) => {
+    apiClient()
+      .admin.updateUserState(userUpdated, user)
+      .then(() => {
+        users.result.map((obj) =>
+          obj.id == userUpdated.id ? userUpdated : obj
+        );
         setUsers({
-          error: null,
           loading: false,
           result: users.result
         });
-        toast.success(`Benutzer ${us.id} erfolgreich aktualisiert`);
-      } else {
-        toast.error(`Benutzer ${us.id} Update fehlerhaft`);
-      }
+        toast.success(`Benutzer ${userUpdated.id} erfolgreich aktualisiert`);
+      })
+      .catch(() => toast.error(`Benutzer ${userUpdated.id} Update fehlerhaft`));
+  };
+  const handleAddedUser = (data: UserDto) => {
+    users.result.push({
+      role: UserRole[data.userRole],
+      surname: data.surname,
+      name: data.name,
+      email: data.email,
+      userState: UserState.LOCKED,
+      id: data.id.toString()
     });
   };
 
   useEffect(() => {
-    if (user) {
-      setUsers({ error: null, loading: true, result: [] });
-      fetchUsers(user)
-        .then((result) => {
-          if (result) {
-            setUsers({ error: null, loading: false, result: result });
-          }
-        })
-        .catch();
-    }
+    setUsers({ loading: true, result: [] });
+    apiClient()
+      .admin.getAllUsers(user)
+      .then((result) => {
+        setUsers({ loading: false, result: result });
+      })
+      .catch(() =>
+        toast.error(
+          `Die Benutzerliste konnte nicht geladen werden. Versuchen Sie es später nochmal`
+        )
+      );
   }, []);
 
   const filterUsers = (user: UserModel): boolean => {
@@ -82,22 +79,8 @@ const UserPage = ({ user }) => {
         user.email.includes(filter.searchTerm))
     );
   };
-  const filteredUsers: Array<RowDataType> =
-    users.result &&
-    users.result
-      .filter((user) => filterUsers(user))
-      .map((user) => {
-        return [
-          `${user.name}`,
-          `${user.surname}`,
-          `${user.email}`,
-          `${user.role}`,
-          <UserStateToggleButton
-            user={user}
-            changeUserState={changeUserState}
-          />
-        ];
-      });
+  const filteredUsers =
+    users.result && users.result.filter((user) => filterUsers(user));
 
   return (
     <Grid padding={2}>
@@ -123,7 +106,7 @@ const UserPage = ({ user }) => {
           <Loading loading={users.loading} />
 
           {users.result.length > 0 ? (
-            <UsersTable users={filteredUsers} />
+            <UsersTable users={filteredUsers} updateUser={makeUpdate} />
           ) : (
             <NoData size={users.result.length} />
           )}
@@ -135,41 +118,4 @@ const UserPage = ({ user }) => {
 
 const NoData = ({ size }) =>
   size > 0 ? <Typography>Kein Benutzer gefunden :(</Typography> : null;
-
-const fetchUsers = async (user: User): Promise<UserModel[]> => {
-  const query = new URLSearchParams({
-    page: '1',
-    size: '100'
-  });
-  return await fetch('/backend/users?' + query, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${user.token}`
-    }
-  }).then(async (response) => {
-    if (response.ok) {
-      const data = await response.json();
-      logger.log(data);
-      return data;
-    }
-  });
-};
-
-const updateUsers = async (users: UserModel, user: User): Promise<boolean> => {
-  return await fetch(
-    `/backend/users/${users.id}/${
-      users.userState == UserState.UNLOCKED ? 'unlock' : 'lock'
-    }`,
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${user.token}`
-      }
-    }
-  ).then((response) => {
-    return response.ok;
-  });
-};
 export default UserPage;

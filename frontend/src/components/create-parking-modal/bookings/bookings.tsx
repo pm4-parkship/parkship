@@ -56,14 +56,10 @@ export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
     onValuesChange(offerModel);
   };
 
-
   const fn = handleSubmit((data) => handleFormSubmit(data));
   return (
     <>
-      <form
-        style={{ width: '100%' }}
-        onChange={fn}
-      >
+      <form style={{ width: '100%' }} onChange={fn}>
         <Grid
           container
           justifyContent="left"
@@ -77,31 +73,31 @@ export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
             </Typography>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid item xs={2}>
             <DatePickerElement
               required
               label="von"
               disablePast
               name={`startDate`}
               control={control}
-              onChange={(e => {
+              onChange={(e) => {
                 setStartDate(e);
                 fn();
-              })}
+              }}
               className={classes.input}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={2}>
             <DatePickerElement
               required
               label="bis"
               name={`endDate`}
               control={control}
               disablePast
-              onChange={(e => {
+              onChange={(e) => {
                 setEndDate(e);
                 fn();
-              })}
+              }}
               className={classes.input}
             />
           </Grid>
@@ -113,7 +109,11 @@ export const OfferComponent: FC<OfferProps> = ({ onValuesChange }) => {
               columnGap: '1rem'
             }}
           >
-            <Typography variant="h6" className={classes.input}>
+            <Typography
+              variant="h6"
+              className={classes.input}
+              style={{ margin: 0 }}
+            >
               an:
             </Typography>
             <CheckboxButtonGroup

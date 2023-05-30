@@ -55,7 +55,7 @@ const ParkingLotsFilter = ({
       display="flex"
       spacing={1}
       rowSpacing={2}
-      padding={2}
+      // padding={2}
     >
       <Grid item md={5} lg={5} xl={5} sm={8}>
         <TextField

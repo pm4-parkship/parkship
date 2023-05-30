@@ -7,6 +7,13 @@ export interface UserModel {
   userState: UserState;
 }
 
+export interface CreateUserModel {
+  name: string;
+  surname: string;
+  email: string;
+  role: UserRole;
+}
+
 export enum UserRole {
   USER = 'USER',
   ADMIN = 'ADMIN'

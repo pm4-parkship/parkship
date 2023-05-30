@@ -63,7 +63,8 @@ export default function Login({ signIn }) {
             role: UserRole[data.user.role],
             token: data.user.token,
             username: data.user.username,
-            name: data.user.name
+            name: data.user.name,
+            greeting: data.user.greeting
           };
           signIn(userData);
           router.push(
@@ -140,7 +141,7 @@ const useStyles = makeStyles(() => ({
     flexDirection: 'column',
     alignItems: 'center'
   },
-  form: { display: 'grid', marginTop: '20px' },
+  form: { display: 'grid', marginTop: '20px', width: '25%' },
   button: {
     width: '80%'
   }

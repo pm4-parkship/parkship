@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, Divider, Grid, Modal, Typography } from '@mui/material';
+import { Box, Button, Divider, Grid, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TextFieldElement } from 'react-hook-form-mui';
 import { toast } from 'react-toastify';
@@ -124,7 +124,7 @@ export const CreateParkingModal = ({
             </Grid>
           </Grid>
 
-          <Divider/>
+          <Divider />
 
           <Grid container justifyContent="left" alignItems="center" spacing={3}>
             <Grid item xs={12} md={4}>
@@ -136,7 +136,7 @@ export const CreateParkingModal = ({
               <TextFieldElement
                 required
                 fullWidth
-                placeholder='Adresse'
+                placeholder="Adresse"
                 id="address"
                 name="address"
                 control={control}
@@ -146,7 +146,7 @@ export const CreateParkingModal = ({
             <Grid item xs={12} md={2}>
               <TextFieldElement
                 required
-                placeholder='Nr'
+                placeholder="Nr"
                 id="addressNr"
                 name="addressNr"
                 control={control}
@@ -176,7 +176,9 @@ export const CreateParkingModal = ({
           </Grid>
           <Divider variant="middle" />
           <Grid item xs={12} width={100}>
-            <Typography variant="h6">Karte (Lat: {coords[0].toFixed(4)}, Lng: {coords[1].toFixed(4)})</Typography>
+            <Typography variant="h6">
+              Karte (Lat: {coords[0].toFixed(4)}, Lng: {coords[1].toFixed(4)})
+            </Typography>
             <ParkingLotCreateMap onPositionChange={setCoords} />
           </Grid>
           {/* <div
@@ -187,7 +189,13 @@ export const CreateParkingModal = ({
                 marginBottom: '1rem'
               }}
             > */}
-          <Grid container justifyContent="left" alignItems="center" spacing={3} style={{ textAlign: "center" }}>
+          <Grid
+            container
+            justifyContent="left"
+            alignItems="center"
+            spacing={3}
+            style={{ textAlign: 'center' }}
+          >
             <Grid item xs={12}>
               <Button
                 variant="outlined"
@@ -206,15 +214,15 @@ export const CreateParkingModal = ({
             </Grid>
 
             <Grid item xs={12}>
-                  <Button
-                    variant="contained"
-                    type="button"
+              <Button
+                variant="contained"
+                type="button"
                 onClick={() => setOfferCount(offerCount - 1)}
                 disabled={offerCount == 1}
-                  >
-                    Buchbaren Zeitraum entfernen
-                  </Button>
-                </Grid>
+              >
+                Buchbaren Zeitraum entfernen
+              </Button>
+            </Grid>
           </Grid>
 
           {Array.from({ length: offerCount }, (_, i) => i + 1).map((key) => {
@@ -257,7 +265,7 @@ export const CreateParkingModal = ({
             justifyContent="right"
             alignItems="right"
           >
-            <Link href='/my-parking-lot'>
+            <Link href="/my-parking-lot">
               <Button variant={'outlined'}>Abbrechen</Button>
             </Link>
             <Button type={'submit'} variant={'contained'}>
@@ -270,7 +278,7 @@ export const CreateParkingModal = ({
   );
 };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   boxRoot: {
     display: 'flex',
     justifyContent: 'center'
