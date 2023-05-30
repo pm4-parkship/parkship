@@ -85,9 +85,7 @@ const MyParkingLotReservationTable = ({
     .map((item, index) => {
       rowStyleMap.set(
         index,
-        new Date(item.to).getDate() <= startOfToday().getDate()
-          ? classes.pastReservation
-          : ''
+        new Date(item.to) <= startOfToday() ? classes.pastReservation : ''
       );
 
       return [
@@ -108,7 +106,6 @@ const MyParkingLotReservationTable = ({
       paginationLabel={'Reservationen pro Seite'}
       onColumnClick={changeSorting}
     ></TableComponent>
-    
   );
 };
 
