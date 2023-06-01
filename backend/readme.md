@@ -159,3 +159,44 @@ public class AuthTestController {
 }
 
 ```
+
+The following tables show you the relationship and data that exists on startup.
+
+**Benutzer:**
+
+| Benutzer | Rolle  | Status   |
+| -------- | ------ | -------- |
+| Lukas    | Benutzer | Entsperrt |
+| Nina     | Benutzer | Entsperrt |
+| Simon    | Benutzer | Entsperrt |
+| Laura    | Benutzer | Entsperrt |
+| Harry    | Admin  | Entsperrt |
+
+**Parkplätze:**
+
+| Parkplatz   | Besitzer | Status  | Tags                                  | Preis |
+| ----------- | -------- | ------- | ------------------------------------- | ----- |
+| Parkplatz 1 | Laura    | Aktiv   | Überwacht, Zugangskontrolle           | 150   |
+| Parkplatz 2 | Laura    | Aktiv   | Ladestation, Überwacht, Zugangskontrolle | 180   |
+| Parkplatz 3 | Laura    | Inaktiv | Überdacht, Nahverkehrsanbindung       | 160   |
+| Parkplatz 4 | Lukas    | Aktiv   | Überdacht, Schatten, Niedrige Einfahrtshöhe | 170   |
+
+**Angebote:**
+
+| Angebot    | Parkplatz   | Verfügbarkeit                 | Zeitraum              |
+| ----------- | ----------- | ----------------------------- | --------------------- |
+| Angebot 1 | Parkplatz 1 | Mo, Di | 03.07.2023 - 04.07.2023 |
+| Angebot 2 | Parkplatz 4 | Mo, Di, Mi, Do, Fr, Sa, So | 03.07.2023 - 29.10.2023 |
+| Angebot 3 | Parkplatz 2 | Mo, Di, Mi, Do, Fr | 18.07.2023 - 25.08.2023 |
+
+**Reservierungen:**
+
+| Reservierung   | Parkplatz   | Mieter | Zeitraum              |
+| -------------- | ----------- | ------ | --------------------- |
+| Reservierung 1 | Parkplatz 4 | Simon  | 03.07.2023 - 04.07.2023 |
+| Reservierung 2 | Parkplatz 4 | Nina   | 05.08.2023 - 06.08.2023 |
+| Reservierung 3 | Parkplatz 4 | Laura  | 17.09.2023 - 18.09.2023 |
+| Reservierung 4 | Parkplatz 4 | Admin  | 28.10.2023 - 29.10.2023 |
+| Reservierung 5 | Parkplatz 2 | Nina   | 18.07.2023 - 20.07.2023 |
+| Reservierung 6 | Parkplatz 2 | Simon  | 23.08.2023 - 25.08.2023 |
+

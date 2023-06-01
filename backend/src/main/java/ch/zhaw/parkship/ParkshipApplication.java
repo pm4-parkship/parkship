@@ -220,28 +220,28 @@ public class ParkshipApplication {
             reservationWeek1.setFrom(LocalDate.of(2023, 7, 3));
             reservationWeek1.setTo(LocalDate.of(2023, 7, 4));
             reservationWeek1.setParkingLot(parkingLotWeek);
-            reservationWeek1.setTenant(parkingLotWeek.getOwner());
+            reservationWeek1.setTenant(simon);
             reservationWeek1.setState(ReservationState.ACTIVE);
 
             var reservationWeek2 = new ReservationEntity();
             reservationWeek2.setFrom(LocalDate.of(2023, 8, 5));
             reservationWeek2.setTo(LocalDate.of(2023, 8, 6));
             reservationWeek2.setParkingLot(parkingLotWeek);
-            reservationWeek2.setTenant(parkingLotWeek.getOwner());
+            reservationWeek2.setTenant(nina);
             reservationWeek2.setState(ReservationState.ACTIVE);
 
             var reservationWeek3 = new ReservationEntity();
             reservationWeek3.setFrom(LocalDate.of(2023, 9, 17));
             reservationWeek3.setTo(LocalDate.of(2023, 9, 18));
             reservationWeek3.setParkingLot(parkingLotWeek);
-            reservationWeek3.setTenant(parkingLotWeek.getOwner());
+            reservationWeek3.setTenant(laura);
             reservationWeek3.setState(ReservationState.ACTIVE);
 
             var reservationWeek4 = new ReservationEntity();
             reservationWeek4.setFrom(LocalDate.of(2023, 10, 28));
             reservationWeek4.setTo(LocalDate.of(2023, 10, 29));
             reservationWeek4.setParkingLot(parkingLotWeek);
-            reservationWeek4.setTenant(parkingLotWeek.getOwner());
+            reservationWeek4.setTenant(admin);
             reservationWeek4.setState(ReservationState.ACTIVE);
 
             // create two reservations each three days long for offerWorkdays
@@ -249,14 +249,14 @@ public class ParkshipApplication {
             reservationWorkdays1.setFrom(LocalDate.of(2023, 7, 18));
             reservationWorkdays1.setTo(LocalDate.of(2023, 7, 20));
             reservationWorkdays1.setParkingLot(parkingLotWorkdays);
-            reservationWorkdays1.setTenant(parkingLotWorkdays.getOwner());
+            reservationWorkdays1.setTenant(nina);
             reservationWorkdays1.setState(ReservationState.ACTIVE);
 
             var reservationWorkdays2 = new ReservationEntity();
             reservationWorkdays2.setFrom(LocalDate.of(2023, 8, 23));
             reservationWorkdays2.setTo(LocalDate.of(2023, 8, 25));
             reservationWorkdays2.setParkingLot(parkingLotWorkdays);
-            reservationWorkdays2.setTenant(parkingLotWorkdays.getOwner());
+            reservationWorkdays2.setTenant(simon);
             reservationWorkdays2.setState(ReservationState.ACTIVE);
 
             reservationRepository.saveAll(List.of(reservationWeek1, reservationWeek2, reservationWeek3,
