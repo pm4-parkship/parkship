@@ -18,7 +18,7 @@ const ParkingListEmptyItem = () => {
           textAlign: 'center',
           verticalAlign: 'middle'
         }}
-        onClick={() => router.push('/create-parking-lot')}
+        onClick={() => router.push({ pathname: '/create-parking-lot' })}
       >
         <CardContent>
           <AddIcon fontSize={'large'} />

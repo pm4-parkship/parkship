@@ -1,9 +1,6 @@
 package ch.zhaw.parkship.parkinglot;
 
-import ch.zhaw.parkship.parkinglot.dtos.ParkingLotCreateDto;
-import ch.zhaw.parkship.parkinglot.dtos.ParkingLotDto;
-import ch.zhaw.parkship.parkinglot.dtos.ParkingLotSearchDto;
-import ch.zhaw.parkship.parkinglot.dtos.PerimeterSearchDto;
+import ch.zhaw.parkship.parkinglot.dtos.*;
 import ch.zhaw.parkship.reservation.ReservationService;
 import ch.zhaw.parkship.tag.TagDto;
 import ch.zhaw.parkship.tag.TagEntity;
@@ -107,12 +104,13 @@ public class ParkingLotService {
      * data in the ParkingLotDto format if updated successfully, otherwise returns an empty
      * Optional object.
      */
-    public Optional<ParkingLotDto> update(ParkingLotDto data) {
+    public Optional<ParkingLotDto> update(ParkingLotUpdateDto data) {
         var optionalEntity = parkingLotRepository.findById(data.getId());
         if (optionalEntity.isPresent()) {
             var parkingLotEntity = optionalEntity.get();
             parkingLotEntity.setTags(checkedTags(data.getTags()));
             BeanUtils.copyProperties(data, parkingLotEntity);
+
             var updatedEntity = parkingLotRepository.save(parkingLotEntity);
             return Optional.of(new ParkingLotDto(updatedEntity));
         }

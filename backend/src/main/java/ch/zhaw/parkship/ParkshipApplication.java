@@ -186,8 +186,20 @@ public class ParkshipApplication {
             offerMoTue.setSaturday(false);
             offerMoTue.setSunday(false);
             offerMoTue.setFrom(LocalDate.of(2023, 7, 3));
-            offerMoTue.setTo(LocalDate.of(2023, 7, 4));
+            offerMoTue.setTo(LocalDate.of(2023, 7, 14));
             offerMoTue.setParkingLot(parkingLotMoTue);
+
+            var offerMoTuePast = new OfferEntity();
+            offerMoTuePast.setMonday(true);
+            offerMoTuePast.setTuesday(true);
+            offerMoTuePast.setWednesday(false);
+            offerMoTuePast.setThursday(false);
+            offerMoTuePast.setFriday(false);
+            offerMoTuePast.setSaturday(false);
+            offerMoTuePast.setSunday(false);
+            offerMoTuePast.setFrom(LocalDate.of(2023, 6, 3));
+            offerMoTuePast.setTo(LocalDate.of(2023, 6, 14));
+            offerMoTuePast.setParkingLot(parkingLotMoTue);
 
             var offerWeek = new OfferEntity();
             offerWeek.setMonday(true);
@@ -213,7 +225,7 @@ public class ParkshipApplication {
             offerWorkdays.setTo(LocalDate.of(2023, 8, 25));
             offerWorkdays.setParkingLot(parkingLotWorkdays);
 
-            offerRepository.saveAll(List.of(offerMoTue, offerWeek, offerWorkdays));
+            offerRepository.saveAll(List.of(offerMoTue, offerWeek, offerWorkdays,offerMoTuePast));
 
             // create four reservations each two days long for offerWeek
             var reservationWeek1 = new ReservationEntity();

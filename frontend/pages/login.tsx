@@ -6,11 +6,15 @@ import { TextFieldElement } from 'react-hook-form-mui';
 import { toast } from 'react-toastify';
 import { UserRole } from '../src/models';
 import { ErrorMapCtx, z, ZodIssueOptionalMessage } from 'zod';
+import { useState } from 'react';
+import Image from 'next/image';
 import { makeStyles } from '@mui/styles';
 
 export default function Login({ signIn }) {
   const router = useRouter();
   const classNames = useStyles();
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const formSchema = z.object({
     email: z.string().email(),
@@ -76,7 +80,17 @@ export default function Login({ signIn }) {
       toast.error(error.message);
     }
   };
-
+  const Loading = () => {
+    return (
+      <Image
+        // src={'/parking-animation-1.gif'}
+        src={'/parkship-loading-2.gif'}
+        alt={'loading'}
+        width={240}
+        height={240}
+      ></Image>
+    );
+  };
   return (
     <div style={{ margin: 'auto 0' }}>
       <Box className={classNames.root}>
@@ -85,46 +99,56 @@ export default function Login({ signIn }) {
         </Typography>
         <form
           className={classNames.form}
-          onSubmit={handleSubmit((data) => handleFormSubmit(data))}
+          onSubmit={handleSubmit((data) => {
+            setLoading(true);
+            setTimeout(() => handleFormSubmit(data), 3000);
+          })}
         >
           <Paper elevation={3} className={classNames.container}>
-            <TextFieldElement
-              required
-              fullWidth
-              id="email"
-              placeholder="mail@domain.ch"
-              label="Email Addresse"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              control={control}
-              className={classNames.textField}
-            />
-            <TextFieldElement
-              required
-              fullWidth
-              name="password"
-              label="Passwort"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              control={control}
-              autoFocus
-              className={classNames.textField}
-            />
-            <Button
-              type={'submit'}
-              variant={'contained'}
-              className={classNames.button}
-            >
-              Einloggen
-            </Button>
+            {!loading ? (
+              <>
+                <TextFieldElement
+                  required
+                  fullWidth
+                  id="email"
+                  placeholder="mail@domain.ch"
+                  label="Email Addresse"
+                  name="email"
+                  autoComplete="email"
+                  autoFocus
+                  control={control}
+                  className={classNames.textField}
+                />
+                <TextFieldElement
+                  required
+                  fullWidth
+                  name="password"
+                  label="Passwort"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  control={control}
+                  autoFocus
+                  className={classNames.textField}
+                />
+                <Button
+                  type={'submit'}
+                  variant={'contained'}
+                  className={classNames.button}
+                >
+                  Einloggen
+                </Button>
+              </>
+            ) : (
+              <Loading></Loading>
+            )}
           </Paper>
         </form>
       </Box>
     </div>
   );
 }
+
 const useStyles = makeStyles(() => ({
   container: {
     display: 'flex',

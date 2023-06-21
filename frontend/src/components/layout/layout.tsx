@@ -56,6 +56,6 @@ const useStyles = makeStyles((theme) => ({
   bottomBar: {
     display: 'flex',
     justifyContent: 'center',
-    paddingTop:'1rem'
+    paddingTop: '1rem'
   }
 }));

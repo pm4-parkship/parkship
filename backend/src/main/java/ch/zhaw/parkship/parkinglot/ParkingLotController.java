@@ -1,10 +1,9 @@
 package ch.zhaw.parkship.parkinglot;
 
 import ch.zhaw.parkship.common.PaginatedResponse;
-import ch.zhaw.parkship.parkinglot.dtos.ParkingLotCreateDto;
-import ch.zhaw.parkship.parkinglot.dtos.ParkingLotDto;
-import ch.zhaw.parkship.parkinglot.dtos.ParkingLotSearchDto;
-import ch.zhaw.parkship.parkinglot.dtos.PerimeterSearchDto;
+import ch.zhaw.parkship.offer.OfferDto;
+import ch.zhaw.parkship.offer.OfferService;
+import ch.zhaw.parkship.parkinglot.dtos.*;
 import ch.zhaw.parkship.reservation.ReservationEntity;
 import ch.zhaw.parkship.reservation.ReservationHistoryDto;
 import ch.zhaw.parkship.reservation.ReservationService;
@@ -45,9 +44,12 @@ public class ParkingLotController {
     private ParkingLotService parkingLotService;
     @Autowired
     private ReservationService reservationService;
+    @Autowired
+    private OfferService offerService;
 
     private final String DEFAULT_PAGE_NUM = "0";
     private final String DEFAULT_PAGE_SIZE = "100";
+    private final ParkingLotRepository parkingLotRepository;
 
 
     @GetMapping(path = "/perimetersearch")
@@ -124,12 +126,17 @@ public class ParkingLotController {
      * body with a status code of 200 if updated successfully, otherwise returns a not found
      * status code.
      */
+    @Transactional
     @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<ParkingLotDto> updateParkingLot(@PathVariable Long id, @Valid @RequestBody ParkingLotDto parkingLotDto) {
-        validateRequest(parkingLotDto);
-
+    public ResponseEntity<ParkingLotDto> updateParkingLot(@PathVariable Long id, @Valid @RequestBody ParkingLotUpdateDto parkingLotDto) {
         parkingLotDto.setId(id);
+        ParkingLotEntity parkingLot = parkingLotRepository.getByIdLocked(id);
+
         Optional<ParkingLotDto> updatedParkingLot = parkingLotService.update(parkingLotDto);
+
+        offerService.getByParkingLotId(id).iterator().forEachRemaining(offerDto -> offerService.deleteById(offerDto.getId()));
+        parkingLotDto.getOffers().forEach(offerDto -> offerService.create(parkingLot, offerDto));
+
         return updatedParkingLot.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

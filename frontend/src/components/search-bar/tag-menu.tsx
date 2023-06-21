@@ -1,7 +1,7 @@
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import React from 'react';
-import { TagData } from './tag-bar';
+import { TagData } from '../../models';
 
 export interface TagMenuProps {
   options: TagData[];
@@ -18,7 +18,7 @@ const TagMenu = ({ options, selected, addTag }: TagMenuProps) => {
   };
 
   const handleMenuItemClick = (key: number) => {
-    const tag = options.find((value) => value.key == key);
+    const tag = options.find((value) => value.id == key);
     if (tag) addTag(tag);
     if (options.length == selected.length) setAnchorEl(null);
   };
@@ -46,13 +46,13 @@ const TagMenu = ({ options, selected, addTag }: TagMenuProps) => {
         }}
       >
         {options
-          .filter((value) => !selected.includes(value))
+          .filter((value) => !selected.some((item) => item.id === value.id))
           .map((option) => (
             <MenuItem
-              key={option.key}
-              onClick={() => handleMenuItemClick(option.key)}
+              key={option.id}
+              onClick={() => handleMenuItemClick(option.id)}
             >
-              {option.label}
+              {option.name}
             </MenuItem>
           ))}
       </Menu>

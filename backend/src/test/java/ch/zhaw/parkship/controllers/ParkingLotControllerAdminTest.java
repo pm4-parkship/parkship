@@ -1,6 +1,7 @@
 package ch.zhaw.parkship.controllers;
 
 import ch.zhaw.parkship.offer.OfferRepository;
+import ch.zhaw.parkship.offer.OfferService;
 import ch.zhaw.parkship.parkinglot.ParkingLotController;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
 import ch.zhaw.parkship.parkinglot.ParkingLotService;
@@ -10,6 +11,7 @@ import ch.zhaw.parkship.reservation.ReservationService;
 import ch.zhaw.parkship.user.UserRepository;
 import ch.zhaw.parkship.user.UserService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -55,6 +57,8 @@ public class ParkingLotControllerAdminTest {
 
     @MockBean
     private UserRepository userRepository;
+    @MockBean
+    private OfferService offerService;
 
     @Test
     @WithMockUser(username = "user")

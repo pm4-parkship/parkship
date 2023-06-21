@@ -1,15 +1,15 @@
 import React from 'react';
 import { Grid } from '@mui/material';
-import { CreateParkingModal } from 'src/components/create-parking-modal/create-parking-modal';
-import { logger } from 'src/logger';
 import {
   CreateParkingLotModel,
+  EMPTY_CREATE_PARKINGLOT,
   OfferCreateModel,
   OfferModel
 } from '../../src/models';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import apiClient from 'pages/api/api-client';
+import { CreateParkingStepper } from '../../src/components/create-parking/create-parking-lot-stepper';
 
 const CreatePage = ({ user }) => {
   const router = useRouter();
@@ -34,8 +34,6 @@ const CreatePage = ({ user }) => {
         apiClient()
           .user.createParkingLotOffer(user, offersToCreate)
           .then((response) => {
-            logger.log('offer created');
-            logger.log(response);
             toast.success(
               `Parkplatz ${newParkingLot.name} wurde erfolgreich erstellt!`
             );
@@ -52,7 +50,11 @@ const CreatePage = ({ user }) => {
 
   return (
     <Grid padding={2}>
-      <CreateParkingModal addParkingLot={addParkingLot} owner={user.name} />
+      <CreateParkingStepper
+        addParkingLot={addParkingLot}
+        owner={user.name}
+        parkingLotData={EMPTY_CREATE_PARKINGLOT}
+      />
     </Grid>
   );
 };

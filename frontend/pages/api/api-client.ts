@@ -6,6 +6,7 @@ import {
   CreateUserModel,
   OfferCreateModel,
   ParkingLotModel,
+  UpdateParkingLotModel,
   UserDto,
   UserModel,
   UserRole,
@@ -128,7 +129,7 @@ const apiClient = () => {
       startDate: format(searchParameters.fromDate, 'yyy-MM-dd'),
       endDate: format(searchParameters.toDate, 'yyy-MM-dd')
     });
-    searchParameters.tags.forEach((tag) => query.append('tagList', tag.label));
+    searchParameters.tags.forEach((tag) => query.append('tagList', tag.name));
     return fetchData<SearchResultModel[]>(
       `/parking-lot/searchTerm?${query}`,
       user,
@@ -147,13 +148,31 @@ const apiClient = () => {
     user: User,
     body: CreateParkingLotModel
   ): Promise<ParkingLotModel> => {
-    return fetchData('/parking-lot', user, 'POST', body);
+    const mapped = {
+      ...body,
+      tags: body.tags.map((value) => value.name)
+    };
+    return fetchData('/parking-lot', user, 'POST', mapped);
+  };
+  const updateParkingLot = async (
+    user: User,
+    body: UpdateParkingLotModel,
+    id: number
+  ): Promise<ParkingLotModel> => {
+    return fetchData('/parking-lot/' + id, user, 'PUT', body);
   };
   const createParkingLotOffer = async (
     user: User,
     body: OfferCreateModel[]
   ): Promise<OfferCreateModel[]> => {
     return fetchData('/offer', user, 'POST', body);
+  };
+
+  const getParkingLotOffer = async (
+    user: User,
+    parkingLotID: number
+  ): Promise<OfferCreateModel[]> => {
+    return fetchData('/offer/parking-lot/' + parkingLotID, user, 'GET');
   };
   //ADMIN
   const getAllUsers = async (user: User): Promise<UserModel[]> => {
@@ -228,7 +247,9 @@ const apiClient = () => {
     cancelReservation,
     searchParkingLot,
     createParkingLot,
-    createParkingLotOffer
+    createParkingLotOffer,
+    getParkingLotOffer,
+    updateParkingLot
   };
   return {
     user,
