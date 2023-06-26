@@ -1,4 +1,4 @@
-qqqqqqqqqqqqFROM nginx:1.23.3
+FROM nginx:1.23.3
 
 ARG PARKSHIP_ENV
 ARG JDBC_DATABASE_URL
