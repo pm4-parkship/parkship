@@ -14,6 +14,7 @@ import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRole;
 import ch.zhaw.parkship.user.UserService;
 import ch.zhaw.parkship.user.UserState;
+import ch.zhaw.parkship.util.SeedGenerator;
 import jakarta.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -46,7 +47,7 @@ public class ParkshipApplication {
     @Bean
     @Profile({"dev", "production"})
     @Transactional
-    public CommandLineRunner initTemplate(UserService userService, TagRepository tagRepository) {
+    public CommandLineRunner initTemplate(UserService userService, TagRepository tagRepository, SeedGenerator seedGenerator) {
         return args -> {
             UserEntity lukas = userService.signUp("Lukas", "Müller", "lukas.mueller@bluewin.ch", "pass123",
                     UserRole.USER);
@@ -273,6 +274,10 @@ public class ParkshipApplication {
 
             reservationRepository.saveAll(List.of(reservationWeek1, reservationWeek2, reservationWeek3,
                     reservationWeek4, reservationWorkdays1, reservationWorkdays2));
+
+            seedGenerator.generateSeeds(100);
+
+
         };
     }
 }
