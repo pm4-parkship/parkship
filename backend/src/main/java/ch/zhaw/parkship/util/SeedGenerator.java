@@ -1,11 +1,11 @@
 package ch.zhaw.parkship.util;
 
 import ch.zhaw.parkship.offer.OfferEntity;
+import ch.zhaw.parkship.offer.OfferRepository;
 import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
 import ch.zhaw.parkship.parkinglot.ParkingLotRepository;
 import ch.zhaw.parkship.parkinglot.ParkingLotState;
 import ch.zhaw.parkship.tag.TagEntity;
-import ch.zhaw.parkship.tag.TagRepository;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRole;
 import ch.zhaw.parkship.user.UserService;
@@ -14,6 +14,7 @@ import com.github.javafaker.Faker;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -21,25 +22,28 @@ import java.util.Random;
 public class SeedGenerator {
     private static Faker faker = new Faker(new Locale("de-DE"));
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     private final UserService userService;
-    private final TagRepository tagRepository;
     private final ParkingLotRepository parkingLotRepository;
+    private final OfferRepository offerRepository;
 
 
-    public SeedGenerator(UserService userService, TagRepository tagRepository, ParkingLotRepository parkingLotRepository) {
+    public SeedGenerator(UserService userService, ParkingLotRepository parkingLotRepository, OfferRepository offerRepository) {
         this.userService = userService;
-        this.tagRepository = tagRepository;
         this.parkingLotRepository = parkingLotRepository;
-
+        this.offerRepository = offerRepository;
     }
 
-    public void generateSeeds(int numberOfSeeds) {
+    public void generateSeeds(int numberOfSeeds, List<TagEntity> tags) {
         for (int i = 0; i < numberOfSeeds; i++) {
             UserEntity user = generateUser();
-            ParkingLotEntity parkingLot = generateParkingLot(user);
-            generateOffer(parkingLot);
+            ParkingLotEntity parkingLot = generateParkingLot(user,tags);
+            parkingLotRepository.save(parkingLot);
+
+            OfferEntity offer = generateOffer(parkingLot);
+            offerRepository.save(offer);
+
         }
     }
 
@@ -55,32 +59,36 @@ public class SeedGenerator {
     }
 
 
-    private ParkingLotEntity generateParkingLot(UserEntity user) {
+    private ParkingLotEntity generateParkingLot(UserEntity user, List<TagEntity> allTags) {
         ParkingLotEntity parkingLot = new ParkingLotEntity();
-        parkingLot.getTags().add(getRandomTag());
-        parkingLot.getTags().add(getRandomTag());
-        parkingLot.getTags().add(getRandomTag());
-        parkingLot.setName(faker.funnyName().name() + faker.name().bloodGroup());
-        parkingLot.setLatitude(47.363893212583704);
-        parkingLot.setLongitude(8.507525639760503);
-        parkingLot.setNr(faker.address().streetAddressNumber());
-        parkingLot.setAddress(faker.address().streetAddress());
+
+        parkingLot.getTags().add(getRandomTag(allTags));
+        parkingLot.getTags().add(getRandomTag(allTags));
+        parkingLot.getTags().add(getRandomTag(allTags));
+
+        if (random.nextDouble() < 0.5){
+            parkingLot.setName(faker.beer().name() + " " + faker.name().bloodGroup());
+        }else{
+            parkingLot.setName(faker.funnyName().name() + " " + faker.name().bloodGroup());
+        }
+
+        parkingLot.setLatitude(47.37773821639167 + random.nextFloat()/100);
+        parkingLot.setLongitude(8.53285841502799 + random.nextFloat()/100);
+        parkingLot.setAddress(faker.address().streetName());
         parkingLot.setAddressNr(faker.address().streetAddressNumber());
-        parkingLot.setPrice(10.0);
+        parkingLot.setPrice(Double.valueOf(faker.commerce().price()));
         parkingLot.setState(ParkingLotState.ACTIVE);
-        parkingLot.setDescription(faker.weather().description());
+        String description = faker.chuckNorris().fact() + "\n" + faker.shakespeare().romeoAndJulietQuote();
+        parkingLot.setDescription(description.substring(0,Math.min(description.length(),254)));
         parkingLot.setOwner(user);
-        parkingLotRepository.save(parkingLot);
         return parkingLot;
     }
 
-    private TagEntity getRandomTag() {
-        int qty = tagRepository.findAll().size();
-        Long index = random.nextLong(qty);
-        return tagRepository.findById(index).get();
+    private TagEntity getRandomTag(List<TagEntity> tags) {
+        return tags.get(random.nextInt(tags.size()));
     }
 
-    private void generateOffer(ParkingLotEntity parkingLotEntity) {
+    private OfferEntity generateOffer(ParkingLotEntity parkingLotEntity) {
         OfferEntity offer = new OfferEntity();
         offer.setMonday(true);
         offer.setTuesday(true);
@@ -89,8 +97,9 @@ public class SeedGenerator {
         offer.setFriday(true);
         offer.setSaturday(true);
         offer.setSunday(true);
-        offer.setFrom(LocalDate.of(2023, 7, 1));
+        offer.setFrom(LocalDate.of(2023, 6, 1));
         offer.setTo(LocalDate.of(2023, 12, 30));
         offer.setParkingLot(parkingLotEntity);
+        return offer;
     }
 }

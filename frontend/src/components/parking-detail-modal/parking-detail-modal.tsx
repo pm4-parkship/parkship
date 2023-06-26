@@ -55,7 +55,7 @@ const ParkingDetailModal = ({
         <div className={classes.boxRoot}>
           <div className={classes.header}>
             <Typography component={'span'} variant="h3">
-              Parkplatz {parkingLotModel.nr}
+              Parkplatz {parkingLotModel.name}
             </Typography>
             <div className={classes.closeIconOnHeader}>
               <Icon
@@ -142,7 +142,7 @@ const ParkingDetailModal = ({
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       <Typography component={'span'} variant="body1">
-                        +41 79 123 45 67
+                        {parkingLotModel.owner.email}
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -177,27 +177,6 @@ const ParkingDetailModal = ({
                   <TableRow className={classes.tableRow} key={nanoid()}>
                     <TableCell className={classes.tableCellLabel}>
                       <Typography component={'span'} variant="body1">
-                        {/* placeholder */}
-                      </Typography>
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      <Typography component={'span'} variant="body1">
-                        mail@email.com
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </Grid>
-
-            <Grid item xs={0} sm={0} md={6}></Grid>
-
-            <Grid item xs={12} sm={12} md={6}>
-              <Table className={classes.tableRoot}>
-                <TableBody className={classes.tableBody}>
-                  <TableRow className={classes.tableRow} key={nanoid()}>
-                    <TableCell className={classes.tableCellLabel}>
-                      <Typography component={'span'} variant="body1">
                         Wo:
                       </Typography>
                     </TableCell>
@@ -211,7 +190,6 @@ const ParkingDetailModal = ({
               </Table>
             </Grid>
           </Grid>
-          <Divider variant="middle" />
 
           <Paper elevation={0}>{parkingLotModel.description}</Paper>
           <Grid item xs={12}>

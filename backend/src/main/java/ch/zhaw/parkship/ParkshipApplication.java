@@ -275,7 +275,8 @@ public class ParkshipApplication {
             reservationRepository.saveAll(List.of(reservationWeek1, reservationWeek2, reservationWeek3,
                     reservationWeek4, reservationWorkdays1, reservationWorkdays2));
 
-            seedGenerator.generateSeeds(100);
+            seedGenerator.generateSeeds(100, List.of(ueberdacht, schatten, ladestation, barrierefrei, garage, ueberwacht,
+                    niedrigEinfahrtsHoehe, zugangskontrolle, nahverkehrsanbindung));
 
 
         };
