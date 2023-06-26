@@ -14,8 +14,9 @@ ENV JDBC_DATABASE_PASSWORD=$JDBC_DATABASE_PASSWORD
 
 RUN apt update -y && apt upgrade -y
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && apt install -y nodejs
-RUN apt install openjdk-17-jdk -y
 RUN apt install ca-certificates-java 
+RUN apt install openjdk-17-jdk -y
+
 
 WORKDIR /app
 
