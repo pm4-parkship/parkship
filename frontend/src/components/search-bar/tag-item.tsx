@@ -1,7 +1,7 @@
 import { Chip } from '@mui/material';
 import React from 'react';
 import { styled } from '@mui/styles';
-import { TagData } from './tag-bar';
+import { TagData } from '../../models';
 
 const ListItem = styled('li')(({ theme }) => ({
   margin: theme.spacing(0.5)
@@ -18,8 +18,8 @@ const TagItem = ({ data, handleDelete }: TagItemProps) => {
       <Chip
         color={'default'}
         variant={'filled'}
-        label={data.label}
-        onDelete={({ key = data.key }) => handleDelete(key)}
+        label={data.name}
+        onDelete={({ key = data.id }) => handleDelete(key)}
       />
     </ListItem>
   );

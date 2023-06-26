@@ -20,8 +20,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { enGB } from 'date-fns/locale';
 import useSession from '../src/auth/use-session';
 import { useAuthRedirect } from 'src/auth/use-redirect';
-import "leaflet/dist/leaflet.css";
-import next from 'next/types';
+import 'leaflet/dist/leaflet.css';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -38,7 +37,7 @@ const App = ({
   const { isInitialized, isSignedIn, user, signIn, signOut } = useSession();
   useAuthRedirect(pageProps, { isInitialized, isSignedIn, user });
 
-  const [mode, setMode] = useState<string>("light");
+  const [mode, setMode] = useState<string>('light');
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -46,7 +45,7 @@ const App = ({
   }, [mode]);
 
   useEffect(() => {
-    const mode = localStorage.getItem("mode") || "light";
+    const mode = localStorage.getItem('mode') || 'light';
     setMode(mode);
   }, []);
 
@@ -55,10 +54,11 @@ const App = ({
       toggleColorMode: () => {
         setMode((prevMode) => {
           const nextMode = prevMode === 'light' ? 'dark' : 'light';
-          localStorage.setItem("mode", nextMode);
+          localStorage.setItem('mode', nextMode);
           return nextMode;
         });
-      }}),
+      }
+    }),
     []
   );
 
@@ -124,5 +124,5 @@ const App = ({
 export default App;
 
 declare module '@mui/styles/defaultTheme' {
-  interface DefaultTheme extends Theme { }
+  interface DefaultTheme extends Theme {}
 }

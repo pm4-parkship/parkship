@@ -7,6 +7,7 @@ import ch.zhaw.parkship.parkinglot.ParkingLotState;
 import ch.zhaw.parkship.parkinglot.dtos.ParkingLotCreateDto;
 import ch.zhaw.parkship.parkinglot.dtos.ParkingLotDto;
 import ch.zhaw.parkship.parkinglot.dtos.ParkingLotSearchDto;
+import ch.zhaw.parkship.parkinglot.dtos.ParkingLotUpdateDto;
 import ch.zhaw.parkship.reservation.ReservationService;
 import ch.zhaw.parkship.tag.TagDto;
 import ch.zhaw.parkship.tag.TagEntity;
@@ -195,7 +196,17 @@ class ParkingLotServiceTest {
         when(parkingLotRepository.save(any(ParkingLotEntity.class))).thenReturn(parkingLotEntity);
         when(tagRepository.findById(1L)).thenReturn(Optional.ofNullable(tagEntity));
 
-        var data = createParkingLotDto();
+        ParkingLotUpdateDto data = new ParkingLotUpdateDto();
+        Set<TagDto> tagDtos = new HashSet<>();
+        tagDtos.add(new TagDto("schoener Parkplatz", 1L));
+        data.setId(1L);
+        data.setLongitude(15.5);
+        data.setLatitude(16.22);
+        data.setPrice(15.55);
+        data.setAddress("Muster Street");
+        data.setAddressNr("44");
+        data.setDescription("next to the entrance");
+        data.setTags(tagDtos);
 
         var result = parkingLotService.update(data);
 

@@ -1,10 +1,9 @@
 import SearchBar from '../../src/components/search-bar/search-bar';
 import React, { useState } from 'react';
 import { Grid } from '@mui/material';
-import { TagData } from '../../src/components/search-bar/tag-bar';
 import SearchParkingLotTable from '../../src/components/search-parking-lot/search-parking-lot-table';
 import ParkingDetailModal from '../../src/components/parking-detail-modal/parking-detail-modal';
-import { ParkingLotModel } from '../../src/models';
+import { ParkingLotModel, TagData } from '../../src/models';
 import { toast } from 'react-toastify';
 import { Loading } from '../../src/components/loading-buffer/loading-buffer';
 import { SearchResultModel } from '../../src/models/search/search-result.model';

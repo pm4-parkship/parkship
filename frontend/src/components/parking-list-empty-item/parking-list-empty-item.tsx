@@ -2,7 +2,7 @@ import { makeStyles } from '@mui/styles';
 import { Paper, Typography } from '@mui/material';
 
 const ParkingListEmptyItem = () => {
-    const {listItem} = useStyles();
+  const { listItem } = useStyles();
 
   return (
     <Paper elevation={1} className={listItem}>
@@ -13,14 +13,14 @@ const ParkingListEmptyItem = () => {
 
 const useStyles = makeStyles(() => ({
   listItem: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center",
-    verticalAlign: "middle",
-    backgroundColor: "grey",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    verticalAlign: 'middle',
+    backgroundColor: 'grey',
     margin: 10,
-    width : 130,
+    width: 130,
     height: 165
   }
 }));

@@ -4,11 +4,6 @@ import React from 'react';
 import TagItem from './tag-item';
 import TagMenu, { TagMenuProps } from './tag-menu';
 
-export interface TagData {
-  key: number;
-  label: string;
-}
-
 export interface TagbarProps extends TagMenuProps {
   handleDelete: (arg: number) => void;
 }
@@ -36,7 +31,7 @@ const TagBar = ({ options, selected, addTag, handleDelete }: TagbarProps) => {
       {selected.map((data) => {
         return (
           <TagItem
-            key={data.key}
+            key={data.id}
             data={data}
             handleDelete={handleDelete}
           ></TagItem>

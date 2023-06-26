@@ -1,16 +1,17 @@
 package ch.zhaw.parkship.controllers;
 
-import ch.zhaw.parkship.parkinglot.ParkingLotController;
-import ch.zhaw.parkship.parkinglot.ParkingLotEntity;
-import ch.zhaw.parkship.parkinglot.ParkingLotService;
-import ch.zhaw.parkship.parkinglot.ParkingLotState;
+import ch.zhaw.parkship.offer.OfferService;
+import ch.zhaw.parkship.parkinglot.*;
 import ch.zhaw.parkship.parkinglot.dtos.ParkingLotCreateDto;
 import ch.zhaw.parkship.parkinglot.dtos.ParkingLotDto;
 import ch.zhaw.parkship.parkinglot.dtos.ParkingLotSearchDto;
+import ch.zhaw.parkship.parkinglot.dtos.ParkingLotUpdateDto;
 import ch.zhaw.parkship.reservation.ReservationDto;
 import ch.zhaw.parkship.reservation.ReservationHistoryDto;
 import ch.zhaw.parkship.reservation.ReservationService;
+import ch.zhaw.parkship.tag.TagDto;
 import ch.zhaw.parkship.user.ParkshipUserDetails;
+import ch.zhaw.parkship.user.UserDto;
 import ch.zhaw.parkship.user.UserEntity;
 import ch.zhaw.parkship.user.UserRepository;
 import ch.zhaw.parkship.util.UserGenerator;
@@ -51,6 +52,12 @@ class ParkingLotControllerTest {
 
     @Mock
     private ReservationService reservationService;
+    @Mock
+    private ParkingLotRepository parkingLotRepository;
+
+    @Mock
+    private OfferService offerService;
+
 
     @InjectMocks
     private ParkingLotController parkingLotController;
@@ -59,6 +66,8 @@ class ParkingLotControllerTest {
 
     @Captor
     private ArgumentCaptor<ParkingLotDto> parkingLotDtoCaptor;
+    @Captor
+    private ArgumentCaptor<ParkingLotUpdateDto> parkingLotUpdateDtoCaptor;
 
     @Captor
     private ArgumentCaptor<ParkingLotCreateDto> parkingLotCreateDtoCaptor;
@@ -160,18 +169,33 @@ class ParkingLotControllerTest {
 
     @Test
     public void updateParkingLotTest() throws Exception {
-        ParkingLotDto parkingLotDto = createBasicParkingLotDto();
-        parkingLotDto.setId(1L);
+        ParkingLotUpdateDto parkingLotDto = new ParkingLotUpdateDto();
 
-        when(parkingLotService.update(parkingLotDto))
-                .thenReturn(Optional.of(parkingLotDto));
+        Set<TagDto> tagDtos = new HashSet<>();
+        tagDtos.add(new TagDto("schoener Parkplatz", 1L));
+        parkingLotDto.setId(1L);
+        parkingLotDto.setName("ABC");
+        parkingLotDto.setLongitude(15.5);
+        parkingLotDto.setLatitude(16.22);
+        parkingLotDto.setPrice(15.55);
+        parkingLotDto.setAddress("Muster Street");
+        parkingLotDto.setAddressNr("44");
+        parkingLotDto.setDescription("next to the entrance");
+        parkingLotDto.setTags(tagDtos);
+        parkingLotDto.setOffers(List.of());
+
+        when(parkingLotService.update(parkingLotUpdateDtoCaptor.capture()))
+                .thenReturn(Optional.of(createBasicParkingLotDto()));
+        when(offerService.getByParkingLotId(1L)).thenReturn(List.of());
 
         mockMvc
-                .perform(put("/parking-lot/{id}", 1).contentType(MediaType.APPLICATION_JSON)
+                .perform(put("/parking-lot/{id}", 1L).contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(parkingLotDto)))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.id").value(1));
 
-        verify(parkingLotService, times(1)).update(parkingLotDtoCaptor.capture());
+        verify(parkingLotService, times(1)).update(parkingLotUpdateDtoCaptor.capture());
+
+        verify(offerService, times(1)).getByParkingLotId(1L);
     }
 
     @Test
@@ -197,17 +221,32 @@ class ParkingLotControllerTest {
 
     @Test
     public void updateParkingLotNotFoundTest() throws Exception {
-        ParkingLotDto parkingLotDto = createBasicParkingLotDto();
-        parkingLotDto.setId(1L);
+        ParkingLotUpdateDto parkingLotDto = new ParkingLotUpdateDto();
 
-        when(parkingLotService.update(parkingLotDtoCaptor.capture())).thenReturn(Optional.empty());
+        Set<TagDto> tagDtos = new HashSet<>();
+        tagDtos.add(new TagDto("schoener Parkplatz", 1L));
+        parkingLotDto.setId(1L);
+        parkingLotDto.setName("ABC");
+        parkingLotDto.setLongitude(15.5);
+        parkingLotDto.setLatitude(16.22);
+        parkingLotDto.setPrice(15.55);
+        parkingLotDto.setAddress("Muster Street");
+        parkingLotDto.setAddressNr("44");
+        parkingLotDto.setDescription("next to the entrance");
+        parkingLotDto.setTags(tagDtos);
+        parkingLotDto.setOffers(List.of());
+
+
+        when(offerService.getByParkingLotId(1L)).thenReturn(List.of());
+
+        when(parkingLotService.update(parkingLotUpdateDtoCaptor.capture())).thenReturn(Optional.empty());
 
         mockMvc
                 .perform(put("/parking-lot/{id}", 1).contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(parkingLotDto)))
                 .andExpect(status().isNotFound());
 
-        verify(parkingLotService, times(1)).update(parkingLotDtoCaptor.capture());
+        verify(parkingLotService, times(1)).update(parkingLotUpdateDtoCaptor.capture());
     }
 
     @Test

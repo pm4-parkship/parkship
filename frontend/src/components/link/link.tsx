@@ -46,7 +46,7 @@ const Link: FC<LinkProps> = ({
   return (
     <NextLink
       {...props}
-        key={'next-link-' + hrefLocal}
+      key={'next-link-' + hrefLocal}
       href={hrefLocal}
       passHref
       legacyBehavior
