@@ -1,4 +1,4 @@
-FROM nginx:1.23.3
+qqqqqqqqqqqqFROM nginx:1.23.3
 
 ARG PARKSHIP_ENV
 ARG JDBC_DATABASE_URL
@@ -14,7 +14,7 @@ ENV JDBC_DATABASE_PASSWORD=$JDBC_DATABASE_PASSWORD
 
 RUN apt update -y && apt upgrade -y
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && apt install -y nodejs
-RUN apt install ca-certificates-java 
+RUN apt install ca-certificates-java -y
 RUN apt install openjdk-17-jdk -y
 
 
