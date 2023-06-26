@@ -11,7 +11,6 @@ import ch.zhaw.parkship.user.UserRole;
 import ch.zhaw.parkship.user.UserService;
 import ch.zhaw.parkship.user.UserState;
 import com.github.javafaker.Faker;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,7 +18,6 @@ import java.util.Locale;
 import java.util.Random;
 
 @Service
-@Transactional
 public class SeedGenerator {
     private static Faker faker = new Faker(new Locale("de-DE"));
 
